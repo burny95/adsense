@@ -102,25 +102,21 @@ const year = new Date().getFullYear();
     </header>
 
     <script is:inline>
-      (function () {
-        function apply(next) {
-          document.documentElement.dataset.theme = next;
-          try {
-            localStorage.setItem('theme', next);
-          } catch (e) {}
-        }
-        document.querySelectorAll('.theme-toggle').forEach(function (btn) {
-          btn.addEventListener('click', function () {
-            var root = document.documentElement;
-            var current =
-              root.dataset.theme ||
-              (window.matchMedia('(prefers-color-scheme: dark)').matches
-                ? 'dark'
-                : 'light');
-            apply(current === 'dark' ? 'light' : 'dark');
-          });
-        });
-      })();
+      // 이벤트 위임: 헤더·푸터 어느 토글 버튼을 눌러도 동작 (푸터는 이 시점에 아직 미파싱)
+      document.addEventListener('click', function (e) {
+        if (!e.target.closest('.theme-toggle')) return;
+        var root = document.documentElement;
+        var current =
+          root.dataset.theme ||
+          (window.matchMedia('(prefers-color-scheme: dark)').matches
+            ? 'dark'
+            : 'light');
+        var next = current === 'dark' ? 'light' : 'dark';
+        root.dataset.theme = next;
+        try {
+          localStorage.setItem('theme', next);
+        } catch (e) {}
+      });
     </script>
 
     <main id="main">
