@@ -231,17 +231,21 @@ main {
   font-weight: 600;
 }
 
-/* 좁은 화면: 로고+토글은 첫 줄, 메뉴는 아래 줄 전체 폭으로 */
+/* 좁은 화면: 상단은 로고 + 핵심 메뉴(홈/도구/블로그)만.
+   소개·문의·테마토글은 헤더에서 숨기고 푸터로 (아래 .site-footer 규칙 참고) */
 @media (max-width: 600px) {
   .site-header nav {
-    order: 1;
-    flex: 0 0 100%; /* 줄바꿈 강제 (shrink 0 이라 첫 줄에 끼지 않음) */
-    justify-content: space-between;
-    gap: var(--space-1);
+    gap: 0;
   }
   .site-header nav a {
     padding: var(--space-2);
-    font-size: 0.88rem;
+    font-size: 0.9rem;
+  }
+  .site-header nav a.nav-secondary {
+    display: none;
+  }
+  .theme-toggle--header {
+    display: none;
   }
 }
 
@@ -267,6 +271,16 @@ main {
 .theme-toggle svg {
   width: 18px;
   height: 18px;
+}
+
+/* 푸터용 토글은 기본(데스크톱)에서 숨김 → 좁은 화면에서만 표시 */
+.theme-toggle--footer {
+  display: none;
+}
+@media (max-width: 600px) {
+  .theme-toggle--footer {
+    display: inline-flex;
+  }
 }
 
 /* 아이콘 표시: 현재 적용된 테마 아이콘만 노출 */
@@ -308,8 +322,12 @@ main {
 }
 .site-footer nav {
   display: flex;
+  align-items: center;
   gap: var(--space-4);
   flex-wrap: wrap;
+}
+.site-footer .theme-toggle {
+  color: var(--muted);
 }
 .site-footer a {
   color: var(--muted);
