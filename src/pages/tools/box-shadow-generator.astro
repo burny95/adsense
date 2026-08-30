@@ -36,8 +36,12 @@ const related = (await getCollection('blog', ({ data }) => !data.draft)).filter(
 
     <div class="preview shadow-preview">
       <span class="preview-label">미리보기</span>
-      <div class="preview-stage">
+      <div class="preview-stage" id="stage" data-bg="light">
         <div id="shadow-box"></div>
+      </div>
+      <div class="preview-toggle">
+        <button type="button" class="btn" data-bg="light" aria-pressed="true">밝은 배경</button>
+        <button type="button" class="btn" data-bg="dark" aria-pressed="false">어두운 배경</button>
       </div>
     </div>
   </div>
@@ -211,6 +215,17 @@ const related = (await getCollection('blog', ({ data }) => !data.draft)).filter(
     setTimeout(() => (copyBtn.textContent = '복사'), 1500);
   });
 
+  // 미리보기 배경(밝게/어둡게) 전환
+  const stage = document.getElementById('stage')!;
+  document.querySelectorAll<HTMLButtonElement>('.preview-toggle .btn').forEach((b) => {
+    b.addEventListener('click', () => {
+      stage.dataset.bg = b.dataset.bg!;
+      document.querySelectorAll('.preview-toggle .btn').forEach((x) =>
+        x.setAttribute('aria-pressed', String(x === b)),
+      );
+    });
+  });
+
   render();
 </script>
 
@@ -264,19 +279,45 @@ const related = (await getCollection('blog', ({ data }) => !data.draft)).filter(
     position: sticky;
     top: 5rem;
   }
+  /* 그림자 가시성을 위해 미리보기 배경은 테마와 무관하게 직접 지정 */
   .preview-stage {
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 220px;
-    padding: var(--space-6);
-    background: var(--bg-subtle);
+    min-height: 240px;
+    padding: var(--space-7);
+    border: 1px solid var(--border);
     border-radius: var(--radius-md);
+  }
+  .preview-stage[data-bg='light'] {
+    background: #eef0f2;
+  }
+  .preview-stage[data-bg='light'] #shadow-box {
+    background: #ffffff;
+  }
+  .preview-stage[data-bg='dark'] {
+    background: #1c1f26;
+  }
+  .preview-stage[data-bg='dark'] #shadow-box {
+    background: #2b2f3a;
   }
   #shadow-box {
     width: 120px;
     height: 120px;
     border-radius: var(--radius-md);
-    background: var(--surface);
+  }
+  .preview-toggle {
+    display: flex;
+    gap: var(--space-2);
+    margin-top: var(--space-3);
+  }
+  .preview-toggle .btn {
+    font-size: 0.83rem;
+    padding: 0.35rem 0.8rem;
+    min-height: 0;
+  }
+  .preview-toggle .btn[aria-pressed='true'] {
+    border-color: var(--accent);
+    color: var(--accent);
   }
 </style>
