@@ -229,7 +229,8 @@ const related = (await getCollection('blog', ({ data }) => !data.draft)).filter(
   render();
 </script>
 
-<style>
+<!-- 레이어 행이 JS로 동적 생성되므로 스코프 스타일이 안 먹음 → 전역으로 -->
+<style is:global>
   .shadow-layout {
     display: grid;
     grid-template-columns: 1fr;
