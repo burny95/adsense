@@ -14,16 +14,19 @@ const dateFmt = new Intl.DateTimeFormat('ko-KR', { dateStyle: 'long' });
 
 <Layout title="블로그" description="프론트엔드 도구 사용법과 실무 팁">
   <h1>블로그</h1>
+  <p class="tool-intro">도구를 제대로 쓰기 위한 배경지식과 실무 팁.</p>
 
   {posts.length === 0 && <p>첫 번째 글을 준비 중입니다.</p>}
 
-  <ul class="post-list">
+  <ul class="stack-list">
     {
       posts.map((post) => (
         <li>
           <a href={`/blog/${post.id}`}>{post.data.title}</a>
-          <p class="meta">
-            {CATEGORIES[post.data.category]} · {dateFmt.format(post.data.publishedAt)}
+          <p class="post-meta">
+            <span class="badge">{CATEGORIES[post.data.category]}</span>
+            {' '}
+            {dateFmt.format(post.data.publishedAt)}
           </p>
           <p>{post.data.description}</p>
         </li>
@@ -31,23 +34,3 @@ const dateFmt = new Intl.DateTimeFormat('ko-KR', { dateStyle: 'long' });
     }
   </ul>
 </Layout>
-
-<style>
-  .post-list {
-    list-style: none;
-    padding: 0;
-  }
-  .post-list li {
-    padding: 20px 0;
-    border-bottom: 1px solid var(--border);
-  }
-  .post-list a {
-    font-size: 1.15rem;
-    font-weight: 600;
-  }
-  .meta {
-    color: var(--muted);
-    font-size: 0.9rem;
-    margin: 4px 0;
-  }
-</style>

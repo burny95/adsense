@@ -8,8 +8,9 @@ const lastUpdated = '2026-08-30';
 ---
 
 <Layout title="개인정보처리방침" description={`${SITE_NAME} 개인정보처리방침`}>
+  <article class="prose">
   <h1>개인정보처리방침</h1>
-  <p>최종 수정일: {lastUpdated}</p>
+  <p class="post-meta">최종 수정일: {lastUpdated}</p>
 
   <h2>1. 수집하는 정보</h2>
   <p>
@@ -54,4 +55,5 @@ const lastUpdated = '2026-08-30';
   <p>
     개인정보 관련 문의: <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
   </p>
+  </article>
 </Layout>

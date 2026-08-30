@@ -12,15 +12,18 @@ import '../styles/global.css';
 interface Props {
   title?: string;
   description?: string;
+  wide?: boolean; // 도구 페이지처럼 넓은 본문이 필요할 때
 }
 
-const { title, description = SITE_DESCRIPTION } = Astro.props;
+const { title, description = SITE_DESCRIPTION, wide = false } = Astro.props;
 
 // 페이지 제목: 개별 제목이 있으면 "제목 | 사이트명", 없으면 사이트명만
 const pageTitle = title ? `${title} | ${SITE_NAME}` : SITE_NAME;
 
-// 현재 경로 (네비게이션 활성 표시에 사용)
+// 현재 경로 (네비게이션 활성 표시에 사용, 하위 경로도 활성 처리)
 const pathname = Astro.url.pathname;
+const isActive = (href: string) =>
+  href === '/' ? pathname === '/' : pathname.startsWith(href);
 
 // 검색엔진 색인용 정규 URL
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
@@ -59,15 +62,17 @@ const year = new Date().getFullYear();
     <!-- 애드센스 승인 후 여기에 구글이 제공한 광고 스크립트를 삽입 -->
   </head>
   <body>
+    <a class="skip-link" href="#main">본문 바로가기</a>
+
     <header class="site-header">
-      <div class="container">
+      <div class:list={['container', { wide }]}>
         <a class="site-title" href="/">{SITE_NAME}</a>
-        <nav>
+        <nav aria-label="주요 메뉴">
           {
             NAV_LINKS.map((link) => (
               <a
                 href={link.href}
-                aria-current={pathname === link.href ? 'page' : undefined}
+                aria-current={isActive(link.href) ? 'page' : undefined}
               >
                 {link.label}
               </a>
@@ -77,16 +82,16 @@ const year = new Date().getFullYear();
       </div>
     </header>
 
-    <main>
-      <div class="container">
+    <main id="main">
+      <div class:list={['container', { wide }]}>
         <slot />
       </div>
     </main>
 
     <footer class="site-footer">
-      <div class="container">
+      <div class:list={['container', { wide }]}>
         <span>© {year} {SITE_NAME}</span>
-        <nav>
+        <nav aria-label="하단 메뉴">
           <a href="/about">소개</a>
           <a href="/contact">문의</a>
           <a href="/privacy">개인정보처리방침</a>

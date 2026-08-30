@@ -11,77 +11,79 @@ const related = (await getCollection('blog', ({ data }) => !data.draft)).filter(
 );
 ---
 
-<Layout title={tool.title} description={tool.description}>
+<Layout title={tool.title} description={tool.description} wide>
   <h1>{tool.title}</h1>
-  <p>{tool.description}</p>
+  <p class="tool-intro">{tool.description}</p>
 
-  <form id="og-form" class="fields">
-    <label>
+  <form id="og-form" class="panel og-fields">
+    <label class="field">
       페이지 제목
-      <input type="text" name="title" value="페이지 제목을 입력하세요" />
+      <input class="control" type="text" name="title" value="페이지 제목을 입력하세요" />
       <small class="count" data-for="title" data-max="60"></small>
     </label>
-    <label>
+    <label class="field">
       설명
-      <textarea name="description" rows="2">이 페이지가 어떤 내용인지 한두 문장으로 설명합니다.</textarea>
+      <textarea class="control" name="description" rows="2"
+        >이 페이지가 어떤 내용인지 한두 문장으로 설명합니다.</textarea
+      >
       <small class="count" data-for="description" data-max="155"></small>
     </label>
-    <label>
+    <label class="field">
       페이지 URL
-      <input type="url" name="url" value="https://example.com/page" />
+      <input class="control" type="url" name="url" value="https://example.com/page" />
     </label>
-    <label>
+    <label class="field">
       이미지 URL
-      <input type="url" name="image" value="https://example.com/og-image.png" />
-      <small>권장 1200×630px</small>
+      <input class="control" type="url" name="image" value="https://example.com/og-image.png" />
+      <small>권장 1200×630px, 절대 URL</small>
     </label>
-    <label>
+    <label class="field">
       사이트 이름
-      <input type="text" name="siteName" value="사이트 이름" />
+      <input class="control" type="text" name="siteName" value="사이트 이름" />
     </label>
-    <div class="row">
-      <label>
+    <div class="field-grid">
+      <label class="field">
         콘텐츠 유형
-        <select name="type">
+        <select class="control" name="type">
           <option value="website">website</option>
           <option value="article">article</option>
         </select>
       </label>
-      <label>
+      <label class="field">
         트위터 카드
-        <select name="twitterCard">
+        <select class="control" name="twitterCard">
           <option value="summary_large_image">summary_large_image</option>
           <option value="summary">summary</option>
         </select>
       </label>
-      <label>
+      <label class="field">
         로케일
-        <input type="text" name="locale" value="ko_KR" />
+        <input class="control" type="text" name="locale" value="ko_KR" />
       </label>
     </div>
   </form>
 
-  <div class="result">
-    <div class="result-head">
-      <label for="output">결과 (&lt;head&gt; 안에 붙여넣기)</label>
-      <button type="button" id="copy">복사</button>
+  <div class="output">
+    <div class="output-head">
+      <span>결과 — &lt;head&gt; 안에 붙여넣기</span>
+      <button type="button" class="btn" id="copy">복사</button>
     </div>
     <pre><code id="output"></code></pre>
   </div>
 
-  <div class="card-preview">
-    <span class="preview-label">공유 미리보기 (카카오톡·슬랙 등 대략적인 모습)</span>
-    <div class="card">
-      <div class="card-img" id="p-img"></div>
-      <div class="card-body">
-        <span class="card-domain" id="p-domain"></span>
-        <strong class="card-title" id="p-title"></strong>
-        <span class="card-desc" id="p-desc"></span>
+  <div class="preview">
+    <span class="preview-label">공유 미리보기 — 카카오톡·슬랙 등의 대략적인 모습</span>
+    <div class="og-card">
+      <div class="og-img empty" id="p-img"></div>
+      <div class="og-body">
+        <span class="og-domain" id="p-domain"></span>
+        <strong id="p-title"></strong>
+        <span class="og-desc" id="p-desc"></span>
       </div>
     </div>
   </div>
 
-  <section class="usage">
+  <section>
     <h2>사용법</h2>
     <p>
       다섯 개 항목을 채우면 <strong>Open Graph</strong>(<code>og:</code>) 태그와
@@ -98,8 +100,7 @@ const related = (await getCollection('blog', ({ data }) => !data.draft)).filter(
     <p>
       블로그 글·뉴스처럼 작성일이 있는 콘텐츠는 유형을 <code>article</code>로
       두세요. 일반 페이지는 <code>website</code>입니다. 공유 카드가 갱신되지 않을
-      때는 각 플랫폼의 디버거(페이스북 공유 디버거, 카카오 캐시 초기화 등)로
-      캐시를 비워야 합니다.
+      때는 각 플랫폼의 디버거로 캐시를 비워야 합니다.
     </p>
   </section>
 
@@ -176,20 +177,18 @@ const related = (await getCollection('blog', ({ data }) => !data.draft)).filter(
       `<meta name="twitter:title" content="${esc(title)}" />`,
       `<meta name="twitter:description" content="${esc(description)}" />`,
       image && `<meta name="twitter:image" content="${esc(image)}" />`,
-    ].filter((l) => l !== false && l !== undefined);
+    ].filter((l): l is string => typeof l === 'string' && l !== undefined);
 
     output.textContent = lines.join('\n');
 
-    // 글자 수 안내
     counts.forEach((el) => {
       const field = el.dataset.for!;
       const max = Number(el.dataset.max);
       const len = String(d.get(field) ?? '').length;
       el.textContent = `${len} / 권장 ${max}자`;
-      el.classList.toggle('over', len > max);
+      el.style.color = len > max ? 'var(--danger)' : '';
     });
 
-    // 미리보기 카드
     pTitle.textContent = title || '(제목 없음)';
     pDesc.textContent = description;
     pDomain.textContent = domainOf(url);
@@ -214,86 +213,25 @@ const related = (await getCollection('blog', ({ data }) => !data.draft)).filter(
 </script>
 
 <style>
-  .fields {
+  .og-fields {
     display: flex;
     flex-direction: column;
-    gap: 16px;
-    margin: 24px 0;
+    gap: var(--space-4);
   }
-  .fields label {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    font-size: 0.9rem;
-  }
-  .fields input,
-  .fields textarea,
-  .fields select {
-    padding: 8px 10px;
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    background: var(--bg);
-    color: var(--text);
-    font: inherit;
-  }
-  .fields small {
-    color: var(--muted);
-    font-size: 0.8rem;
-  }
-  .count.over {
-    color: #c0392b;
-  }
-  .row {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 12px;
-  }
-  .result {
-    margin: 24px 0;
-  }
-  .result-head {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 6px;
-  }
-  #copy {
-    padding: 6px 14px;
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    background: var(--bg);
-    color: var(--text);
-    cursor: pointer;
-  }
-  .result pre {
-    background: var(--border);
-    padding: 14px 16px;
-    border-radius: 6px;
-    overflow-x: auto;
-    margin: 0;
-  }
-  .card-preview {
-    margin: 24px 0;
-  }
-  .preview-label {
-    display: block;
-    font-size: 0.8rem;
-    color: var(--muted);
-    margin-bottom: 10px;
-  }
-  .card {
+  .og-card {
     max-width: 480px;
     border: 1px solid var(--border);
-    border-radius: 10px;
+    border-radius: var(--radius-md);
     overflow: hidden;
+    background: var(--surface);
   }
-  .card-img {
+  .og-img {
     aspect-ratio: 1200 / 630;
     background-size: cover;
     background-position: center;
-    background-color: var(--border);
+    background-color: var(--bg-subtle);
   }
-  .card-img.empty::after {
+  .og-img.empty::after {
     content: '이미지 없음';
     display: flex;
     align-items: center;
@@ -302,33 +240,23 @@ const related = (await getCollection('blog', ({ data }) => !data.draft)).filter(
     color: var(--muted);
     font-size: 0.85rem;
   }
-  .card-body {
-    padding: 12px 14px;
+  .og-body {
+    padding: var(--space-3) var(--space-4);
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: var(--space-1);
   }
-  .card-domain {
-    font-size: 0.78rem;
+  .og-domain {
+    font-size: 0.76rem;
     color: var(--muted);
   }
-  .card-title {
-    font-size: 1rem;
-  }
-  .card-desc {
+  .og-desc {
     font-size: 0.85rem;
     color: var(--muted);
     display: -webkit-box;
     -webkit-line-clamp: 2;
+    line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
-  }
-  .usage h2,
-  .related {
-    margin-top: 40px;
-  }
-  .related {
-    padding-top: 20px;
-    border-top: 1px solid var(--border);
   }
 </style>

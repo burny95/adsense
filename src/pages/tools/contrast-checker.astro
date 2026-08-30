@@ -11,59 +11,62 @@ const related = (await getCollection('blog', ({ data }) => !data.draft)).filter(
 );
 ---
 
-<Layout title={tool.title} description={tool.description}>
+<Layout title={tool.title} description={tool.description} wide>
   <h1>{tool.title}</h1>
-  <p>{tool.description}</p>
+  <p class="tool-intro">{tool.description}</p>
 
-  <form id="cc-form" class="colors">
-    <label>
-      글자색
-      <span class="input-row">
-        <input type="color" name="fgPick" value="#1a1a1a" />
-        <input type="text" name="fg" value="#1a1a1a" spellcheck="false" />
-      </span>
-    </label>
-    <label>
-      배경색
-      <span class="input-row">
-        <input type="color" name="bgPick" value="#ffffff" />
-        <input type="text" name="bg" value="#ffffff" spellcheck="false" />
-      </span>
-    </label>
+  <form id="cc-form" class="panel">
+    <div class="field-grid">
+      <label class="field">
+        글자색
+        <span class="color-row">
+          <input type="color" name="fgPick" value="#1a1a1a" aria-label="글자색 선택" />
+          <input class="control" type="text" name="fg" value="#1a1a1a" spellcheck="false" />
+        </span>
+      </label>
+      <label class="field">
+        배경색
+        <span class="color-row">
+          <input type="color" name="bgPick" value="#ffffff" aria-label="배경색 선택" />
+          <input class="control" type="text" name="bg" value="#ffffff" spellcheck="false" />
+        </span>
+      </label>
+    </div>
   </form>
 
-  <div class="ratio">
-    <span id="ratio-value">–</span>
-    <span class="ratio-label">대비비</span>
-  </div>
+  <p class="ratio">
+    <span id="ratio-value">–</span><span class="ratio-label">대비비</span>
+  </p>
 
-  <table class="checks">
+  <table class="data-table">
     <thead>
       <tr><th>기준</th><th>최소 대비</th><th>결과</th></tr>
     </thead>
     <tbody>
       <tr data-min="4.5"><td>AA · 일반 텍스트</td><td>4.5 : 1</td><td class="verdict"></td></tr>
-      <tr data-min="3"><td>AA · 큰 텍스트 (18.66px 굵게 / 24px)</td><td>3 : 1</td><td class="verdict"></td></tr>
+      <tr data-min="3"><td>AA · 큰 텍스트</td><td>3 : 1</td><td class="verdict"></td></tr>
       <tr data-min="7"><td>AAA · 일반 텍스트</td><td>7 : 1</td><td class="verdict"></td></tr>
       <tr data-min="4.5"><td>AAA · 큰 텍스트</td><td>4.5 : 1</td><td class="verdict"></td></tr>
       <tr data-min="3"><td>UI 요소 · 그래픽</td><td>3 : 1</td><td class="verdict"></td></tr>
     </tbody>
   </table>
 
-  <div id="suggestion" class="suggestion" hidden>
-    <p>
-      AA 일반 텍스트 기준을 통과하지 못합니다. 배경을 유지하면서 글자색을
-      <button type="button" id="apply-suggestion"><code id="sugg-hex"></code></button>
-      (으)로 바꾸면 통과합니다.
-    </p>
+  <div class="callout" id="suggestion" hidden>
+    AA 일반 텍스트 기준 미달입니다. 배경을 유지하면서 글자색을
+    <button type="button" class="btn" id="apply-suggestion" style="padding:2px 8px;min-height:0">
+      <code id="sugg-hex"></code>
+    </button>
+    (으)로 바꾸면 통과합니다.
   </div>
 
   <div class="preview" id="preview">
-    <p class="lg">큰 텍스트 미리보기 — Large text 24px</p>
-    <p class="sm">일반 텍스트 미리보기입니다. The quick brown fox jumps over the lazy dog. 0123456789</p>
+    <p class="p-lg">큰 텍스트 미리보기 — Large text 24px</p>
+    <p class="p-sm">
+      일반 텍스트 미리보기입니다. The quick brown fox jumps over the lazy dog. 0123456789
+    </p>
   </div>
 
-  <section class="usage">
+  <section>
     <h2>사용법</h2>
     <p>
       글자색과 배경색을 입력하면 두 색의 <strong>명도 대비(contrast ratio)</strong>를
@@ -102,7 +105,7 @@ const related = (await getCollection('blog', ({ data }) => !data.draft)).filter(
   // WCAG 명도 대비 계산 (클라이언트에서만 실행)
   const form = document.getElementById('cc-form') as HTMLFormElement;
   const ratioValue = document.getElementById('ratio-value')!;
-  const rows = document.querySelectorAll<HTMLTableRowElement>('.checks tbody tr');
+  const rows = document.querySelectorAll<HTMLTableRowElement>('.data-table tbody tr');
   const preview = document.getElementById('preview')!;
   const suggestionBox = document.getElementById('suggestion') as HTMLElement;
   const suggHex = document.getElementById('sugg-hex')!;
@@ -113,8 +116,10 @@ const related = (await getCollection('blog', ({ data }) => !data.draft)).filter(
   const bgText = form.elements.namedItem('bg') as HTMLInputElement;
   const bgPick = form.elements.namedItem('bgPick') as HTMLInputElement;
 
+  type RGB = [number, number, number];
+
   // "#abc" / "#aabbcc" / "aabbcc" → [r,g,b] (0~255), 실패 시 null
-  function parseHex(input: string): [number, number, number] | null {
+  function parseHex(input: string): RGB | null {
     let h = input.trim().replace(/^#/, '');
     if (h.length === 3) h = h.split('').map((c) => c + c).join('');
     if (!/^[0-9a-fA-F]{6}$/.test(h)) return null;
@@ -125,12 +130,12 @@ const related = (await getCollection('blog', ({ data }) => !data.draft)).filter(
     ];
   }
 
-  function toHex([r, g, b]: [number, number, number]): string {
+  function toHex([r, g, b]: RGB): string {
     return '#' + [r, g, b].map((n) => n.toString(16).padStart(2, '0')).join('');
   }
 
   // 상대 휘도 (relative luminance)
-  function luminance([r, g, b]: [number, number, number]): number {
+  function luminance([r, g, b]: RGB): number {
     const lin = [r, g, b].map((v) => {
       const s = v / 255;
       return s <= 0.03928 ? s / 12.92 : Math.pow((s + 0.055) / 1.055, 2.4);
@@ -138,10 +143,7 @@ const related = (await getCollection('blog', ({ data }) => !data.draft)).filter(
     return 0.2126 * lin[0] + 0.7152 * lin[1] + 0.0722 * lin[2];
   }
 
-  function contrast(
-    a: [number, number, number],
-    b: [number, number, number],
-  ): number {
+  function contrast(a: RGB, b: RGB): number {
     const l1 = luminance(a);
     const l2 = luminance(b);
     const [hi, lo] = l1 > l2 ? [l1, l2] : [l2, l1];
@@ -149,18 +151,15 @@ const related = (await getCollection('blog', ({ data }) => !data.draft)).filter(
   }
 
   // 배경 유지, 글자색을 검정/흰색 쪽으로 섞어가며 AA(4.5) 통과하는 가장 가까운 색
-  function suggest(
-    fg: [number, number, number],
-    bg: [number, number, number],
-  ): string | null {
-    const targets: [number, number, number][] = [
+  function suggest(fg: RGB, bg: RGB): string | null {
+    const targets: RGB[] = [
       [0, 0, 0],
       [255, 255, 255],
     ];
     let best: { hex: string; dist: number } | null = null;
     for (const target of targets) {
       for (let t = 0.05; t <= 1.0001; t += 0.05) {
-        const mix: [number, number, number] = [
+        const mix: RGB = [
           Math.round(fg[0] + (target[0] - fg[0]) * t),
           Math.round(fg[1] + (target[1] - fg[1]) * t),
           Math.round(fg[2] + (target[2] - fg[2]) * t),
@@ -184,12 +183,15 @@ const related = (await getCollection('blog', ({ data }) => !data.draft)).filter(
 
     if (!fg || !bg) {
       ratioValue.textContent = '색 형식 오류';
-      rows.forEach((r) => (r.querySelector('.verdict')!.textContent = ''));
+      rows.forEach((r) => {
+        const c = r.querySelector('.verdict')!;
+        c.textContent = '';
+        c.className = 'verdict';
+      });
       suggestionBox.hidden = true;
       return;
     }
 
-    // 유효한 값이면 색상 선택기도 동기화
     fgPick.value = toHex(fg);
     bgPick.value = toHex(bg);
 
@@ -201,14 +203,12 @@ const related = (await getCollection('blog', ({ data }) => !data.draft)).filter(
       const cell = row.querySelector<HTMLElement>('.verdict')!;
       const pass = ratio >= min;
       cell.textContent = pass ? '통과' : '실패';
-      cell.className = 'verdict ' + (pass ? 'pass' : 'fail');
+      cell.className = 'verdict ' + (pass ? 'is-pass' : 'is-fail');
     });
 
-    // 미리보기
     preview.style.background = toHex(bg);
     preview.style.color = toHex(fg);
 
-    // AA 일반 텍스트(4.5) 실패 시 추천
     if (ratio < 4.5) {
       const s = suggest(fg, bg);
       if (s) {
@@ -222,7 +222,6 @@ const related = (await getCollection('blog', ({ data }) => !data.draft)).filter(
     }
   }
 
-  // 텍스트 입력 ↔ 색상 선택기 연동
   fgPick.addEventListener('input', () => {
     fgText.value = fgPick.value;
     update();
@@ -235,7 +234,6 @@ const related = (await getCollection('blog', ({ data }) => !data.draft)).filter(
     if (e.target === fgPick || e.target === bgPick) return;
     update();
   });
-
   applyBtn.addEventListener('click', () => {
     fgText.value = suggHex.textContent ?? fgText.value;
     update();
@@ -245,105 +243,39 @@ const related = (await getCollection('blog', ({ data }) => !data.draft)).filter(
 </script>
 
 <style>
-  .colors {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 16px;
-    margin: 24px 0;
-  }
-  .colors label {
+  .color-row {
     display: flex;
-    flex-direction: column;
-    gap: 8px;
-    font-size: 0.9rem;
+    gap: var(--space-2);
   }
-  .input-row {
-    display: flex;
-    gap: 8px;
-  }
-  .input-row input[type='color'] {
+  .color-row input[type='color'] {
     width: 44px;
-    height: 40px;
+    min-width: 44px;
+    height: 2.6rem;
     padding: 2px;
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    background: var(--bg);
-  }
-  .input-row input[type='text'] {
-    flex: 1;
-    padding: 8px 10px;
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    background: var(--bg);
-    color: var(--text);
-    font: inherit;
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-sm);
+    background: var(--surface);
   }
   .ratio {
     display: flex;
     align-items: baseline;
-    gap: 10px;
-    margin: 24px 0 12px;
+    gap: var(--space-3);
+    margin: var(--space-5) 0 var(--space-3);
   }
   #ratio-value {
-    font-size: 2rem;
+    font-size: clamp(1.6rem, 1.2rem + 1.5vw, 2.2rem);
     font-weight: 700;
+    font-variant-numeric: tabular-nums;
   }
   .ratio-label {
     color: var(--muted);
   }
-  .checks {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 0.92rem;
-  }
-  .checks th,
-  .checks td {
-    text-align: left;
-    padding: 10px 8px;
-    border-bottom: 1px solid var(--border);
-  }
-  .verdict.pass {
-    color: #1a7f37;
-    font-weight: 600;
-  }
-  .verdict.fail {
-    color: #c0392b;
-    font-weight: 600;
-  }
-  .suggestion {
-    margin: 20px 0;
-    padding: 12px 16px;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    background: var(--border);
-  }
-  .suggestion button {
-    border: 1px solid var(--muted);
-    background: var(--bg);
-    border-radius: 4px;
-    padding: 1px 4px;
-    cursor: pointer;
-  }
-  .preview {
-    margin: 24px 0;
-    padding: 24px;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-  }
-  .preview .lg {
+  .preview .p-lg {
     font-size: 24px;
     margin: 0 0 12px;
   }
-  .preview .sm {
+  .preview .p-sm {
     font-size: 16px;
     margin: 0;
-  }
-  .usage h2,
-  .related {
-    margin-top: 40px;
-  }
-  .related {
-    padding-top: 20px;
-    border-top: 1px solid var(--border);
   }
 </style>
