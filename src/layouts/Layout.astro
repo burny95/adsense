@@ -83,25 +83,24 @@ const year = new Date().getFullYear();
     <header class="site-header">
       <div class:list={['container', { wide }]}>
         <a class="site-title" href="/">{SITE_NAME}</a>
-        <div class="header-right">
-          <nav aria-label="주요 메뉴">
-            {
-              NAV_LINKS.map((link) => (
-                <a
-                  href={link.href}
-                  aria-current={isActive(link.href) ? 'page' : undefined}
-                >
-                  {link.label}
-                </a>
-              ))
-            }
-          </nav>
-          <button
-            type="button"
-            id="theme-toggle"
-            class="theme-toggle"
-            aria-label="라이트/다크 테마 전환"
-          >
+        <nav aria-label="주요 메뉴">
+          {
+            NAV_LINKS.map((link) => (
+              <a
+                href={link.href}
+                aria-current={isActive(link.href) ? 'page' : undefined}
+              >
+                {link.label}
+              </a>
+            ))
+          }
+        </nav>
+        <button
+          type="button"
+          id="theme-toggle"
+          class="theme-toggle"
+          aria-label="라이트/다크 테마 전환"
+        >
             <svg
               class="icon-sun"
               viewBox="0 0 24 24"
@@ -128,8 +127,7 @@ const year = new Date().getFullYear();
             >
               <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path>
             </svg>
-          </button>
-        </div>
+        </button>
       </div>
     </header>
 

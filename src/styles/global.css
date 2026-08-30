@@ -197,8 +197,8 @@ main {
 .site-header .container {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: var(--space-4);
+  flex-wrap: wrap;
+  gap: var(--space-2);
   padding-block: var(--space-3);
 }
 .site-title {
@@ -207,15 +207,11 @@ main {
   color: var(--text);
   text-decoration: none;
   white-space: nowrap;
+  margin-right: auto; /* 나머지(nav·토글)를 오른쪽으로 밀기 */
 }
 .site-header nav {
   display: flex;
-  gap: var(--space-2);
-  overflow-x: auto;
-  scrollbar-width: none;
-}
-.site-header nav::-webkit-scrollbar {
-  display: none;
+  gap: var(--space-1);
 }
 .site-header nav a {
   color: var(--muted);
@@ -235,10 +231,18 @@ main {
   font-weight: 600;
 }
 
-.header-right {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
+/* 좁은 화면: 로고+토글은 첫 줄, 메뉴는 아래 줄 전체 폭으로 */
+@media (max-width: 600px) {
+  .site-header nav {
+    order: 1;
+    flex-basis: 100%;
+    justify-content: space-between;
+    gap: var(--space-1);
+  }
+  .site-header nav a {
+    padding: var(--space-2);
+    font-size: 0.88rem;
+  }
 }
 
 /* 테마 토글 버튼 */
