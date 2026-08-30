@@ -110,11 +110,13 @@ const related = (await getCollection('blog', ({ data }) => !data.draft)).filter(
   function layerToCss(l: Layer): string {
     const [r, g, b] = hexToRgb(l.color);
     const rgba = `rgba(${r}, ${g}, ${b}, ${l.alpha})`;
+    // blur 는 음수가 될 수 없음(CSS 규격)
+    const blur = Math.max(0, l.blur);
     const parts = [
       l.inset ? 'inset' : '',
       `${l.x}px`,
       `${l.y}px`,
-      `${l.blur}px`,
+      `${blur}px`,
       `${l.spread}px`,
       rgba,
     ].filter(Boolean);
@@ -184,7 +186,9 @@ const related = (await getCollection('blog', ({ data }) => !data.draft)).filter(
       const label = el.closest('.field')!;
       label.childNodes[0].textContent = `투명도 (${layer.alpha}) `;
     } else {
-      (layer as Record<string, unknown>)[k] = Number(el.value);
+      let n = Number(el.value);
+      if (k === 'blur') n = Math.max(0, n); // blur 음수 방지
+      (layer as Record<string, unknown>)[k] = n;
     }
     refreshOutput();
   });

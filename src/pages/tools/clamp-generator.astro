@@ -117,6 +117,12 @@ const related = (await getCollection('blog', ({ data }) => !data.draft)).filter(
 
     if (!minVw || !maxVw || minVw === maxVw) {
       hint.textContent = '뷰포트 값을 서로 다르게 입력하세요.';
+      output.textContent = 'clamp(...)';
+      return;
+    }
+    if (minVw > maxVw) {
+      hint.textContent = '최소 뷰포트가 최대 뷰포트보다 큽니다. 값을 바꿔 입력하세요.';
+      output.textContent = 'clamp(...)';
       return;
     }
     hint.textContent =

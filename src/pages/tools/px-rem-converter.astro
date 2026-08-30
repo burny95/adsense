@@ -125,6 +125,11 @@ const commonPx = [10, 12, 14, 16, 18, 20, 24, 28, 32, 40, 48, 64];
   }
 
   function setResult() {
+    // 두 칸 모두 비어 있으면 안내만
+    if (pxInput.value.trim() === '' && remInput.value.trim() === '') {
+      result.textContent = '값을 입력하세요.';
+      return;
+    }
     const px = Number(pxInput.value);
     const rem = Number(remInput.value);
     result.textContent =
@@ -132,18 +137,22 @@ const commonPx = [10, 12, 14, 16, 18, 20, 24, 28, 32, 40, 48, 64];
       `   |   ${trim(rem)}rem = ${trim(rem * root())}px`;
   }
 
-  // 어느 칸을 편집했는지에 따라 반대편 값 갱신
+  // 어느 칸을 편집했는지에 따라 반대편 값 갱신 (빈 칸이면 반대편도 비움)
   pxInput.addEventListener('input', () => {
-    remInput.value = trim(Number(pxInput.value) / root());
+    remInput.value =
+      pxInput.value.trim() === '' ? '' : trim(Number(pxInput.value) / root());
     setResult();
   });
   remInput.addEventListener('input', () => {
-    pxInput.value = trim(Number(remInput.value) * root());
+    pxInput.value =
+      remInput.value.trim() === '' ? '' : trim(Number(remInput.value) * root());
     setResult();
   });
   rootInput.addEventListener('input', () => {
     // 기준이 바뀌면 px를 고정하고 rem을 재계산
-    remInput.value = trim(Number(pxInput.value) / root());
+    if (pxInput.value.trim() !== '') {
+      remInput.value = trim(Number(pxInput.value) / root());
+    }
     refreshTable();
     setResult();
   });
