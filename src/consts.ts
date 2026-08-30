@@ -14,7 +14,7 @@ export const SITE_LIVE = false;
 
 // 검색엔진 소유확인용 메타 태그 값 (각 콘솔에서 'HTML 태그' 방식으로 발급받아 입력)
 export const VERIFICATION = {
-  naver: '', // 네이버 서치어드바이저: <meta name="naver-site-verification" content="여기">
+  naver: '261f9f84ec2f15dc260db12079fca98272f6a0a4', // 네이버 서치어드바이저
 };
 
 // 상단 네비게이션 메뉴
