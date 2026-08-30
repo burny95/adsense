@@ -47,6 +47,26 @@ a {
   color: var(--link);
 }
 
+/* 본문 글(블로그) 가독성 */
+.prose {
+  overflow-wrap: break-word;
+}
+.prose h2 {
+  margin-top: 2em;
+}
+.prose pre {
+  background: var(--border);
+  padding: 14px 16px;
+  border-radius: 6px;
+  overflow-x: auto;
+}
+.prose :not(pre) > code {
+  background: var(--border);
+  padding: 2px 5px;
+  border-radius: 4px;
+  font-size: 0.9em;
+}
+
 /* 상단 헤더 */
 .site-header {
   border-bottom: 1px solid var(--border);

@@ -1,0 +1,65 @@
+---
+// 개별 블로그 글
+import { getCollection, render } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import { CATEGORIES } from '../../consts';
+import { TOOLS } from '../../tools';
+
+// 발행된 글만 정적 경로로 생성
+export async function getStaticPaths() {
+  const posts = await getCollection('blog', ({ data }) => !data.draft);
+  return posts.map((post) => ({
+    params: { slug: post.id },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+
+const dateFmt = new Intl.DateTimeFormat('ko-KR', { dateStyle: 'long' });
+
+// 이 글이 참조하는 관련 도구
+const relatedTools = TOOLS.filter((t) =>
+  post.data.relatedTools?.includes(t.slug),
+);
+---
+
+<Layout title={post.data.title} description={post.data.description}>
+  <article class="prose">
+    <h1>{post.data.title}</h1>
+    <p class="meta">
+      {CATEGORIES[post.data.category]} · {dateFmt.format(post.data.publishedAt)}
+      {post.data.updatedAt && ` · 수정 ${dateFmt.format(post.data.updatedAt)}`}
+    </p>
+
+    <Content />
+  </article>
+
+  {
+    relatedTools.length > 0 && (
+      <aside class="related">
+        <h2>관련 도구</h2>
+        <ul>
+          {relatedTools.map((t) => (
+            <li>
+              <a href={`/tools/${t.slug}`}>{t.title}</a> — {t.description}
+            </li>
+          ))}
+        </ul>
+      </aside>
+    )
+  }
+</Layout>
+
+<style>
+  .meta {
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+  .related {
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+  }
+</style>

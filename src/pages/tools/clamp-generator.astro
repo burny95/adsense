@@ -1,0 +1,230 @@
+---
+// CSS clamp() 생성기
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import { getTool } from '../../tools';
+
+const tool = getTool('clamp-generator');
+
+// 이 도구와 연결된, 실제로 발행된 블로그 글만 노출
+const related = (await getCollection('blog', ({ data }) => !data.draft)).filter(
+  (p) => p.data.relatedTools?.includes(tool.slug),
+);
+---
+
+<Layout title={tool.title} description={tool.description}>
+  <h1>{tool.title}</h1>
+  <p>{tool.description}</p>
+
+  <form id="clamp-form" class="grid">
+    <label>
+      최소 뷰포트 (px)
+      <input type="number" name="minVw" value="360" min="1" step="1" />
+    </label>
+    <label>
+      최대 뷰포트 (px)
+      <input type="number" name="maxVw" value="1280" min="1" step="1" />
+    </label>
+    <label>
+      최소 크기 (px)
+      <input type="number" name="minSize" value="16" min="0" step="0.1" />
+    </label>
+    <label>
+      최대 크기 (px)
+      <input type="number" name="maxSize" value="24" min="0" step="0.1" />
+    </label>
+    <label>
+      기준 폰트 크기 (px, rem 변환용)
+      <input type="number" name="rootSize" value="16" min="1" step="1" />
+    </label>
+  </form>
+
+  <div class="result">
+    <label for="output">결과</label>
+    <div class="output-row">
+      <code id="output">clamp(...)</code>
+      <button type="button" id="copy">복사</button>
+    </div>
+    <p id="hint" class="hint"></p>
+  </div>
+
+  <div class="preview">
+    <span class="preview-label">미리보기 (브라우저 창 크기를 바꿔보세요)</span>
+    <p id="preview-text">다람쥐 헌 쳇바퀴에 타고파 — The quick brown fox 0123</p>
+  </div>
+
+  <section class="usage">
+    <h2>사용법</h2>
+    <p>
+      네 개의 값을 정합니다. <strong>최소 뷰포트</strong>와 <strong>최대 뷰포트</strong>는
+      크기가 변하기 시작하고 멈추는 화면 너비이고, <strong>최소 크기</strong>와
+      <strong>최대 크기</strong>는 그 두 지점에서의 값입니다. 예를 들어 화면
+      360px에서 16px, 1280px에서 24px로 두면, 그 사이에서는 글자 크기가 화면
+      너비에 비례해 부드럽게 커집니다. 중단점(media query)은 필요 없습니다.
+    </p>
+    <p>
+      생성되는 값의 가운데 항(선호값)에는 <code>vw</code>와 <code>rem</code>이
+      함께 들어갑니다. <code>rem</code>을 빼고 <code>vw</code>만 쓰면 사용자가
+      브라우저 확대를 해도 글자가 커지지 않아 접근성 문제가 생기기 때문입니다.
+      결과를 <code>font-size</code>, <code>margin</code>, <code>padding</code>,
+      <code>gap</code> 등 길이가 필요한 어느 속성에나 그대로 붙여 쓸 수 있습니다.
+    </p>
+    <p>
+      최소·최대 크기가 같으면 변화가 없으니 두 값은 다르게 두세요. 최소 뷰포트가
+      최대 뷰포트보다 크면 계산이 뒤집히므로 입력 순서도 확인하시고요.
+    </p>
+  </section>
+
+  {
+    related.length > 0 && (
+      <aside class="related">
+        <h2>관련 글</h2>
+        <ul>
+          {related.map((p) => (
+            <li>
+              <a href={`/blog/${p.id}`}>{p.data.title}</a>
+            </li>
+          ))}
+        </ul>
+      </aside>
+    )
+  }
+</Layout>
+
+<script>
+  // clamp() 계산 및 화면 갱신 (클라이언트에서만 실행)
+  const form = document.getElementById('clamp-form') as HTMLFormElement;
+  const output = document.getElementById('output')!;
+  const hint = document.getElementById('hint')!;
+  const previewText = document.getElementById('preview-text')!;
+  const copyBtn = document.getElementById('copy') as HTMLButtonElement;
+
+  // 소수점 정리: 최대 4자리, 불필요한 0 제거
+  const round = (n: number) => parseFloat(n.toFixed(4)).toString();
+
+  function compute() {
+    const data = new FormData(form);
+    const minVw = Number(data.get('minVw'));
+    const maxVw = Number(data.get('maxVw'));
+    const minSize = Number(data.get('minSize'));
+    const maxSize = Number(data.get('maxSize'));
+    const root = Number(data.get('rootSize')) || 16;
+
+    // 유효성 검사
+    if (!minVw || !maxVw || minVw === maxVw) {
+      hint.textContent = '뷰포트 값을 서로 다르게 입력하세요.';
+      return;
+    }
+    if (minSize === maxSize) {
+      hint.textContent = '최소·최대 크기가 같으면 clamp가 의미 없습니다.';
+    } else {
+      hint.textContent = '';
+    }
+
+    const minRem = minSize / root;
+    const maxRem = maxSize / root;
+
+    // 선호값 = 기울기(vw) * 뷰포트 + 절편(rem)
+    const slope = (maxSize - minSize) / (maxVw - minVw); // px per px
+    const slopeVw = slope * 100;
+    const interceptPx = minSize - slope * minVw;
+    const interceptRem = interceptPx / root;
+
+    const sign = interceptRem >= 0 ? '+' : '-';
+    const preferred = `${round(slopeVw)}vw ${sign} ${round(Math.abs(interceptRem))}rem`;
+
+    // clamp는 첫 인자에 더 작은 값, 세 번째에 더 큰 값이 와야 함
+    const lo = Math.min(minRem, maxRem);
+    const hi = Math.max(minRem, maxRem);
+    const value = `clamp(${round(lo)}rem, ${preferred}, ${round(hi)}rem)`;
+
+    output.textContent = `font-size: ${value};`;
+    previewText.style.fontSize = value;
+  }
+
+  form.addEventListener('input', compute);
+
+  copyBtn.addEventListener('click', async () => {
+    await navigator.clipboard.writeText(output.textContent ?? '');
+    copyBtn.textContent = '복사됨';
+    setTimeout(() => (copyBtn.textContent = '복사'), 1500);
+  });
+
+  compute();
+</script>
+
+<style>
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 14px;
+    margin: 24px 0;
+  }
+  .grid label {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 0.9rem;
+  }
+  .grid input {
+    padding: 8px 10px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 1rem;
+  }
+  .result {
+    margin: 24px 0;
+  }
+  .output-row {
+    display: flex;
+    gap: 8px;
+    align-items: stretch;
+    margin-top: 6px;
+  }
+  #output {
+    flex: 1;
+    padding: 12px 14px;
+    background: var(--border);
+    border-radius: 6px;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+  #copy {
+    padding: 0 16px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--bg);
+    color: var(--text);
+    cursor: pointer;
+  }
+  .hint {
+    color: #c0392b;
+    font-size: 0.85rem;
+    min-height: 1.2em;
+  }
+  .preview {
+    border: 1px dashed var(--border);
+    border-radius: 8px;
+    padding: 20px;
+    margin: 24px 0;
+  }
+  .preview-label {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--muted);
+    margin-bottom: 10px;
+  }
+  #preview-text {
+    margin: 0;
+  }
+  .usage h2,
+  .related {
+    margin-top: 40px;
+  }
+  .related {
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+  }
+</style>
