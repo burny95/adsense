@@ -1,0 +1,13 @@
+{
+  "name": "Burny Tools",
+  "short_name": "Burny Tools",
+  "description": "웹 퍼블리셔·디자이너를 위한 프론트엔드 도구와 가이드 모음",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ],
+  "theme_color": "#FF7A1A",
+  "background_color": "#ffffff",
+  "display": "standalone",
+  "start_url": "/"
+}
