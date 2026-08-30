@@ -20,6 +20,14 @@ export const TOOLS: Tool[] = [
     category: 'css',
     relatedPosts: ['responsive-typography-with-clamp'],
   },
+  {
+    slug: 'contrast-checker',
+    title: '색상 대비 검사기 (WCAG)',
+    description:
+      '글자색과 배경색의 명도 대비를 계산해 WCAG AA·AAA 기준 통과 여부를 알려주고, 실패 시 통과하는 색을 추천합니다.',
+    category: 'color',
+    relatedPosts: ['understanding-wcag-contrast'],
+  },
 ];
 
 export function getTool(slug: string): Tool {

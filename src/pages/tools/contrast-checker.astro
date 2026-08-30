@@ -1,0 +1,349 @@
+---
+// 색상 대비 검사기 (WCAG 2.x)
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import { getTool } from '../../tools';
+
+const tool = getTool('contrast-checker');
+
+const related = (await getCollection('blog', ({ data }) => !data.draft)).filter(
+  (p) => p.data.relatedTools?.includes(tool.slug),
+);
+---
+
+<Layout title={tool.title} description={tool.description}>
+  <h1>{tool.title}</h1>
+  <p>{tool.description}</p>
+
+  <form id="cc-form" class="colors">
+    <label>
+      글자색
+      <span class="input-row">
+        <input type="color" name="fgPick" value="#1a1a1a" />
+        <input type="text" name="fg" value="#1a1a1a" spellcheck="false" />
+      </span>
+    </label>
+    <label>
+      배경색
+      <span class="input-row">
+        <input type="color" name="bgPick" value="#ffffff" />
+        <input type="text" name="bg" value="#ffffff" spellcheck="false" />
+      </span>
+    </label>
+  </form>
+
+  <div class="ratio">
+    <span id="ratio-value">–</span>
+    <span class="ratio-label">대비비</span>
+  </div>
+
+  <table class="checks">
+    <thead>
+      <tr><th>기준</th><th>최소 대비</th><th>결과</th></tr>
+    </thead>
+    <tbody>
+      <tr data-min="4.5"><td>AA · 일반 텍스트</td><td>4.5 : 1</td><td class="verdict"></td></tr>
+      <tr data-min="3"><td>AA · 큰 텍스트 (18.66px 굵게 / 24px)</td><td>3 : 1</td><td class="verdict"></td></tr>
+      <tr data-min="7"><td>AAA · 일반 텍스트</td><td>7 : 1</td><td class="verdict"></td></tr>
+      <tr data-min="4.5"><td>AAA · 큰 텍스트</td><td>4.5 : 1</td><td class="verdict"></td></tr>
+      <tr data-min="3"><td>UI 요소 · 그래픽</td><td>3 : 1</td><td class="verdict"></td></tr>
+    </tbody>
+  </table>
+
+  <div id="suggestion" class="suggestion" hidden>
+    <p>
+      AA 일반 텍스트 기준을 통과하지 못합니다. 배경을 유지하면서 글자색을
+      <button type="button" id="apply-suggestion"><code id="sugg-hex"></code></button>
+      (으)로 바꾸면 통과합니다.
+    </p>
+  </div>
+
+  <div class="preview" id="preview">
+    <p class="lg">큰 텍스트 미리보기 — Large text 24px</p>
+    <p class="sm">일반 텍스트 미리보기입니다. The quick brown fox jumps over the lazy dog. 0123456789</p>
+  </div>
+
+  <section class="usage">
+    <h2>사용법</h2>
+    <p>
+      글자색과 배경색을 입력하면 두 색의 <strong>명도 대비(contrast ratio)</strong>를
+      1:1 ~ 21:1 범위로 계산합니다. WCAG는 이 값으로 가독성 기준을 정합니다.
+      <strong>AA 일반 텍스트는 4.5:1 이상</strong>, 큰 텍스트(약 24px 이상, 또는
+      굵은 18.66px 이상)는 3:1 이상이어야 합니다. 더 엄격한 AAA는 각각 7:1, 4.5:1입니다.
+    </p>
+    <p>
+      색은 <code>#RGB</code>, <code>#RRGGBB</code> 형식으로 입력하거나 색상 선택기를
+      쓸 수 있습니다. 기준을 통과하지 못하면 배경은 그대로 두고 글자색만 조정해
+      AA를 통과하는 가장 가까운 색을 추천합니다. 추천 색을 누르면 바로 적용됩니다.
+    </p>
+    <p>
+      대비는 색상(hue)이 아니라 밝기 차이로 결정됩니다. 빨강 위의 초록처럼
+      채도가 높아도 밝기가 비슷하면 대비비는 낮게 나옵니다.
+    </p>
+  </section>
+
+  {
+    related.length > 0 && (
+      <aside class="related">
+        <h2>관련 글</h2>
+        <ul>
+          {related.map((p) => (
+            <li>
+              <a href={`/blog/${p.id}`}>{p.data.title}</a>
+            </li>
+          ))}
+        </ul>
+      </aside>
+    )
+  }
+</Layout>
+
+<script>
+  // WCAG 명도 대비 계산 (클라이언트에서만 실행)
+  const form = document.getElementById('cc-form') as HTMLFormElement;
+  const ratioValue = document.getElementById('ratio-value')!;
+  const rows = document.querySelectorAll<HTMLTableRowElement>('.checks tbody tr');
+  const preview = document.getElementById('preview')!;
+  const suggestionBox = document.getElementById('suggestion') as HTMLElement;
+  const suggHex = document.getElementById('sugg-hex')!;
+  const applyBtn = document.getElementById('apply-suggestion') as HTMLButtonElement;
+
+  const fgText = form.elements.namedItem('fg') as HTMLInputElement;
+  const fgPick = form.elements.namedItem('fgPick') as HTMLInputElement;
+  const bgText = form.elements.namedItem('bg') as HTMLInputElement;
+  const bgPick = form.elements.namedItem('bgPick') as HTMLInputElement;
+
+  // "#abc" / "#aabbcc" / "aabbcc" → [r,g,b] (0~255), 실패 시 null
+  function parseHex(input: string): [number, number, number] | null {
+    let h = input.trim().replace(/^#/, '');
+    if (h.length === 3) h = h.split('').map((c) => c + c).join('');
+    if (!/^[0-9a-fA-F]{6}$/.test(h)) return null;
+    return [
+      parseInt(h.slice(0, 2), 16),
+      parseInt(h.slice(2, 4), 16),
+      parseInt(h.slice(4, 6), 16),
+    ];
+  }
+
+  function toHex([r, g, b]: [number, number, number]): string {
+    return '#' + [r, g, b].map((n) => n.toString(16).padStart(2, '0')).join('');
+  }
+
+  // 상대 휘도 (relative luminance)
+  function luminance([r, g, b]: [number, number, number]): number {
+    const lin = [r, g, b].map((v) => {
+      const s = v / 255;
+      return s <= 0.03928 ? s / 12.92 : Math.pow((s + 0.055) / 1.055, 2.4);
+    });
+    return 0.2126 * lin[0] + 0.7152 * lin[1] + 0.0722 * lin[2];
+  }
+
+  function contrast(
+    a: [number, number, number],
+    b: [number, number, number],
+  ): number {
+    const l1 = luminance(a);
+    const l2 = luminance(b);
+    const [hi, lo] = l1 > l2 ? [l1, l2] : [l2, l1];
+    return (hi + 0.05) / (lo + 0.05);
+  }
+
+  // 배경 유지, 글자색을 검정/흰색 쪽으로 섞어가며 AA(4.5) 통과하는 가장 가까운 색
+  function suggest(
+    fg: [number, number, number],
+    bg: [number, number, number],
+  ): string | null {
+    const targets: [number, number, number][] = [
+      [0, 0, 0],
+      [255, 255, 255],
+    ];
+    let best: { hex: string; dist: number } | null = null;
+    for (const target of targets) {
+      for (let t = 0.05; t <= 1.0001; t += 0.05) {
+        const mix: [number, number, number] = [
+          Math.round(fg[0] + (target[0] - fg[0]) * t),
+          Math.round(fg[1] + (target[1] - fg[1]) * t),
+          Math.round(fg[2] + (target[2] - fg[2]) * t),
+        ];
+        if (contrast(mix, bg) >= 4.5) {
+          const dist =
+            Math.abs(mix[0] - fg[0]) +
+            Math.abs(mix[1] - fg[1]) +
+            Math.abs(mix[2] - fg[2]);
+          if (!best || dist < best.dist) best = { hex: toHex(mix), dist };
+          break;
+        }
+      }
+    }
+    return best?.hex ?? null;
+  }
+
+  function update() {
+    const fg = parseHex(fgText.value);
+    const bg = parseHex(bgText.value);
+
+    if (!fg || !bg) {
+      ratioValue.textContent = '색 형식 오류';
+      rows.forEach((r) => (r.querySelector('.verdict')!.textContent = ''));
+      suggestionBox.hidden = true;
+      return;
+    }
+
+    // 유효한 값이면 색상 선택기도 동기화
+    fgPick.value = toHex(fg);
+    bgPick.value = toHex(bg);
+
+    const ratio = contrast(fg, bg);
+    ratioValue.textContent = `${ratio.toFixed(2)} : 1`;
+
+    rows.forEach((row) => {
+      const min = Number(row.dataset.min);
+      const cell = row.querySelector<HTMLElement>('.verdict')!;
+      const pass = ratio >= min;
+      cell.textContent = pass ? '통과' : '실패';
+      cell.className = 'verdict ' + (pass ? 'pass' : 'fail');
+    });
+
+    // 미리보기
+    preview.style.background = toHex(bg);
+    preview.style.color = toHex(fg);
+
+    // AA 일반 텍스트(4.5) 실패 시 추천
+    if (ratio < 4.5) {
+      const s = suggest(fg, bg);
+      if (s) {
+        suggHex.textContent = s;
+        suggestionBox.hidden = false;
+      } else {
+        suggestionBox.hidden = true;
+      }
+    } else {
+      suggestionBox.hidden = true;
+    }
+  }
+
+  // 텍스트 입력 ↔ 색상 선택기 연동
+  fgPick.addEventListener('input', () => {
+    fgText.value = fgPick.value;
+    update();
+  });
+  bgPick.addEventListener('input', () => {
+    bgText.value = bgPick.value;
+    update();
+  });
+  form.addEventListener('input', (e) => {
+    if (e.target === fgPick || e.target === bgPick) return;
+    update();
+  });
+
+  applyBtn.addEventListener('click', () => {
+    fgText.value = suggHex.textContent ?? fgText.value;
+    update();
+  });
+
+  update();
+</script>
+
+<style>
+  .colors {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+    margin: 24px 0;
+  }
+  .colors label {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-size: 0.9rem;
+  }
+  .input-row {
+    display: flex;
+    gap: 8px;
+  }
+  .input-row input[type='color'] {
+    width: 44px;
+    height: 40px;
+    padding: 2px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--bg);
+  }
+  .input-row input[type='text'] {
+    flex: 1;
+    padding: 8px 10px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--bg);
+    color: var(--text);
+    font: inherit;
+  }
+  .ratio {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    margin: 24px 0 12px;
+  }
+  #ratio-value {
+    font-size: 2rem;
+    font-weight: 700;
+  }
+  .ratio-label {
+    color: var(--muted);
+  }
+  .checks {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.92rem;
+  }
+  .checks th,
+  .checks td {
+    text-align: left;
+    padding: 10px 8px;
+    border-bottom: 1px solid var(--border);
+  }
+  .verdict.pass {
+    color: #1a7f37;
+    font-weight: 600;
+  }
+  .verdict.fail {
+    color: #c0392b;
+    font-weight: 600;
+  }
+  .suggestion {
+    margin: 20px 0;
+    padding: 12px 16px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--border);
+  }
+  .suggestion button {
+    border: 1px solid var(--muted);
+    background: var(--bg);
+    border-radius: 4px;
+    padding: 1px 4px;
+    cursor: pointer;
+  }
+  .preview {
+    margin: 24px 0;
+    padding: 24px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+  }
+  .preview .lg {
+    font-size: 24px;
+    margin: 0 0 12px;
+  }
+  .preview .sm {
+    font-size: 16px;
+    margin: 0;
+  }
+  .usage h2,
+  .related {
+    margin-top: 40px;
+  }
+  .related {
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+  }
+</style>
