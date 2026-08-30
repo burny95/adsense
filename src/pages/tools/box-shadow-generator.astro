@@ -1,20 +1,9 @@
 ---
 // box-shadow 생성기 (여러 레이어 지원)
-import { getCollection } from 'astro:content';
-import Layout from '../../layouts/Layout.astro';
-import { getTool } from '../../tools';
-
-const tool = getTool('box-shadow-generator');
-
-const related = (await getCollection('blog', ({ data }) => !data.draft)).filter(
-  (p) => p.data.relatedTools?.includes(tool.slug),
-);
+import ToolPage from '../../layouts/ToolPage.astro';
 ---
 
-<Layout title={tool.title} description={tool.description} wide>
-  <h1>{tool.title}</h1>
-  <p class="tool-intro">{tool.description}</p>
-
+<ToolPage slug="box-shadow-generator">
   <div class="shadow-layout">
     <div>
       <div class="output">
@@ -61,22 +50,7 @@ const related = (await getCollection('blog', ({ data }) => !data.draft)).filter(
       완전 불투명한 회색보다 반투명 검정이 배경색과 자연스럽게 섞입니다.
     </p>
   </section>
-
-  {
-    related.length > 0 && (
-      <aside class="related">
-        <h2>관련 글</h2>
-        <ul>
-          {related.map((p) => (
-            <li>
-              <a href={`/blog/${p.id}`}>{p.data.title}</a>
-            </li>
-          ))}
-        </ul>
-      </aside>
-    )
-  }
-</Layout>
+</ToolPage>
 
 <script>
   // box-shadow 레이어 관리 및 CSS 생성 (클라이언트에서만 실행)

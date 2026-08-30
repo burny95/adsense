@@ -64,3 +64,17 @@ export function getTool(slug: string): Tool {
   if (!tool) throw new Error(`등록되지 않은 도구: ${slug}`);
   return tool;
 }
+
+// 도구 페이지용 JSON-LD (SoftwareApplication)
+export function toolSchema(tool: Tool, siteUrl: string) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'SoftwareApplication',
+    name: tool.title,
+    description: tool.description,
+    url: `${siteUrl}tools/${tool.slug}/`,
+    applicationCategory: 'DeveloperApplication',
+    operatingSystem: 'Web browser',
+    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+  };
+}

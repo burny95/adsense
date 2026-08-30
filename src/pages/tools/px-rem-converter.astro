@@ -1,23 +1,12 @@
 ---
 // px ↔ rem 변환기
-import { getCollection } from 'astro:content';
-import Layout from '../../layouts/Layout.astro';
-import { getTool } from '../../tools';
-
-const tool = getTool('px-rem-converter');
-
-const related = (await getCollection('blog', ({ data }) => !data.draft)).filter(
-  (p) => p.data.relatedTools?.includes(tool.slug),
-);
+import ToolPage from '../../layouts/ToolPage.astro';
 
 // 자주 쓰는 px 값 (대조표용)
 const commonPx = [10, 12, 14, 16, 18, 20, 24, 28, 32, 40, 48, 64];
 ---
 
-<Layout title={tool.title} description={tool.description} wide>
-  <h1>{tool.title}</h1>
-  <p class="tool-intro">{tool.description}</p>
-
+<ToolPage slug="px-rem-converter">
   <form id="conv-form" class="panel">
     <div class="field-grid">
       <label class="field">
@@ -82,22 +71,7 @@ const commonPx = [10, 12, 14, 16, 18, 20, 24, 28, 32, 40, 48, 64];
       <code>1rem = 10px</code>로 계산됩니다.
     </p>
   </section>
-
-  {
-    related.length > 0 && (
-      <aside class="related">
-        <h2>관련 글</h2>
-        <ul>
-          {related.map((p) => (
-            <li>
-              <a href={`/blog/${p.id}`}>{p.data.title}</a>
-            </li>
-          ))}
-        </ul>
-      </aside>
-    )
-  }
-</Layout>
+</ToolPage>
 
 <script>
   // px ↔ rem 상호 변환 (클라이언트에서만 실행)

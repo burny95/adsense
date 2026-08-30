@@ -1,20 +1,9 @@
 ---
 // 색상 대비 검사기 (WCAG 2.x)
-import { getCollection } from 'astro:content';
-import Layout from '../../layouts/Layout.astro';
-import { getTool } from '../../tools';
-
-const tool = getTool('contrast-checker');
-
-const related = (await getCollection('blog', ({ data }) => !data.draft)).filter(
-  (p) => p.data.relatedTools?.includes(tool.slug),
-);
+import ToolPage from '../../layouts/ToolPage.astro';
 ---
 
-<Layout title={tool.title} description={tool.description} wide>
-  <h1>{tool.title}</h1>
-  <p class="tool-intro">{tool.description}</p>
-
+<ToolPage slug="contrast-checker">
   <form id="cc-form" class="panel">
     <div class="field-grid">
       <label class="field">
@@ -84,22 +73,7 @@ const related = (await getCollection('blog', ({ data }) => !data.draft)).filter(
       채도가 높아도 밝기가 비슷하면 대비비는 낮게 나옵니다.
     </p>
   </section>
-
-  {
-    related.length > 0 && (
-      <aside class="related">
-        <h2>관련 글</h2>
-        <ul>
-          {related.map((p) => (
-            <li>
-              <a href={`/blog/${p.id}`}>{p.data.title}</a>
-            </li>
-          ))}
-        </ul>
-      </aside>
-    )
-  }
-</Layout>
+</ToolPage>
 
 <script>
   // WCAG 명도 대비 계산 (클라이언트에서만 실행)

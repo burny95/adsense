@@ -1,20 +1,9 @@
 ---
 // Open Graph / meta 태그 생성기
-import { getCollection } from 'astro:content';
-import Layout from '../../layouts/Layout.astro';
-import { getTool } from '../../tools';
-
-const tool = getTool('og-tag-generator');
-
-const related = (await getCollection('blog', ({ data }) => !data.draft)).filter(
-  (p) => p.data.relatedTools?.includes(tool.slug),
-);
+import ToolPage from '../../layouts/ToolPage.astro';
 ---
 
-<Layout title={tool.title} description={tool.description} wide>
-  <h1>{tool.title}</h1>
-  <p class="tool-intro">{tool.description}</p>
-
+<ToolPage slug="og-tag-generator">
   <form id="og-form" class="panel og-fields">
     <label class="field">
       페이지 제목
@@ -103,22 +92,7 @@ const related = (await getCollection('blog', ({ data }) => !data.draft)).filter(
       때는 각 플랫폼의 디버거로 캐시를 비워야 합니다.
     </p>
   </section>
-
-  {
-    related.length > 0 && (
-      <aside class="related">
-        <h2>관련 글</h2>
-        <ul>
-          {related.map((p) => (
-            <li>
-              <a href={`/blog/${p.id}`}>{p.data.title}</a>
-            </li>
-          ))}
-        </ul>
-      </aside>
-    )
-  }
-</Layout>
+</ToolPage>
 
 <script>
   // OG/meta 태그 문자열 생성 (클라이언트에서만 실행)

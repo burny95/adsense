@@ -1,21 +1,9 @@
 ---
 // CSS clamp() 생성기
-import { getCollection } from 'astro:content';
-import Layout from '../../layouts/Layout.astro';
-import { getTool } from '../../tools';
-
-const tool = getTool('clamp-generator');
-
-// 이 도구와 연결된, 실제로 발행된 블로그 글만 노출
-const related = (await getCollection('blog', ({ data }) => !data.draft)).filter(
-  (p) => p.data.relatedTools?.includes(tool.slug),
-);
+import ToolPage from '../../layouts/ToolPage.astro';
 ---
 
-<Layout title={tool.title} description={tool.description} wide>
-  <h1>{tool.title}</h1>
-  <p class="tool-intro">{tool.description}</p>
-
+<ToolPage slug="clamp-generator">
   <form id="clamp-form" class="panel">
     <div class="field-grid">
       <label class="field">
@@ -79,22 +67,7 @@ const related = (await getCollection('blog', ({ data }) => !data.draft)).filter(
       최대 뷰포트보다 크면 계산이 뒤집히므로 입력 순서도 확인하시고요.
     </p>
   </section>
-
-  {
-    related.length > 0 && (
-      <aside class="related">
-        <h2>관련 글</h2>
-        <ul>
-          {related.map((p) => (
-            <li>
-              <a href={`/blog/${p.id}`}>{p.data.title}</a>
-            </li>
-          ))}
-        </ul>
-      </aside>
-    )
-  }
-</Layout>
+</ToolPage>
 
 <script>
   // clamp() 계산 및 화면 갱신 (클라이언트에서만 실행)

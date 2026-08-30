@@ -10,7 +10,7 @@ const recentPosts = (await getCollection('blog', ({ data }) => !data.draft))
   .slice(0, 5);
 ---
 
-<Layout>
+<Layout wide>
   <h1>{SITE_NAME}</h1>
   <p class="tool-intro">{SITE_DESCRIPTION}</p>
 

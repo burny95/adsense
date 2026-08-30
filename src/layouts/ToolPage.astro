@@ -1,0 +1,50 @@
+---
+// 도구 페이지 공통 래퍼: 빵부스러기 + 제목 + 설명 + 관련 글 + JSON-LD
+import Layout from './Layout.astro';
+import Breadcrumb from '../components/Breadcrumb.astro';
+import { getCollection } from 'astro:content';
+import { getTool, toolSchema } from '../tools';
+
+interface Props {
+  slug: string;
+}
+const { slug } = Astro.props;
+const tool = getTool(slug);
+
+// 이 도구와 연결된, 발행된 블로그 글만
+const related = (await getCollection('blog', ({ data }) => !data.draft)).filter(
+  (p) => p.data.relatedTools?.includes(slug),
+);
+
+const schema = toolSchema(tool, Astro.site!.toString());
+---
+
+<Layout title={tool.title} description={tool.description} wide schema={schema}>
+  <Breadcrumb
+    items={[
+      { label: '홈', href: '/' },
+      { label: '도구', href: '/tools' },
+      { label: tool.title, href: `/tools/${slug}` },
+    ]}
+  />
+
+  <h1>{tool.title}</h1>
+  <p class="tool-intro">{tool.description}</p>
+
+  <slot />
+
+  {
+    related.length > 0 && (
+      <aside class="related">
+        <h2>관련 글</h2>
+        <ul>
+          {related.map((p) => (
+            <li>
+              <a href={`/blog/${p.id}`}>{p.data.title}</a>
+            </li>
+          ))}
+        </ul>
+      </aside>
+    )
+  }
+</Layout>

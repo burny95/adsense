@@ -1,0 +1,60 @@
+---
+// 빵부스러기 네비게이션 + BreadcrumbList 구조화 데이터
+interface Crumb {
+  label: string;
+  href: string; // 마지막 항목도 href 포함 (schema용)
+}
+interface Props {
+  items: Crumb[]; // 홈부터 현재 페이지까지
+}
+const { items } = Astro.props;
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: items.map((c, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    name: c.label,
+    item: new URL(c.href, Astro.site).toString(),
+  })),
+};
+---
+
+<nav class="breadcrumb" aria-label="위치">
+  {
+    items.map((c, i) => (
+      <>
+        {i > 0 && <span aria-hidden="true">›</span>}
+        {i === items.length - 1 ? (
+          <span aria-current="page">{c.label}</span>
+        ) : (
+          <a href={c.href}>{c.label}</a>
+        )}
+      </>
+    ))
+  }
+</nav>
+
+<script type="application/ld+json" set:html={JSON.stringify(schema)} />
+
+<style>
+  .breadcrumb {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin-bottom: var(--space-4);
+  }
+  .breadcrumb a {
+    color: var(--muted);
+    text-decoration: none;
+  }
+  .breadcrumb a:hover {
+    color: var(--text);
+  }
+  .breadcrumb [aria-current='page'] {
+    color: var(--text);
+  }
+</style>

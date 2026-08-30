@@ -1,29 +1,18 @@
 ---
 // 네이밍 컨벤션 변환기
-import { getCollection } from 'astro:content';
-import Layout from '../../layouts/Layout.astro';
-import { getTool } from '../../tools';
-
-const tool = getTool('case-converter');
-
-const related = (await getCollection('blog', ({ data }) => !data.draft)).filter(
-  (p) => p.data.relatedTools?.includes(tool.slug),
-);
+import ToolPage from '../../layouts/ToolPage.astro';
 
 const formats = [
-  { key: 'camel', label: 'camelCase', example: 'userProfileId' },
-  { key: 'pascal', label: 'PascalCase', example: 'UserProfileId' },
-  { key: 'snake', label: 'snake_case', example: 'user_profile_id' },
-  { key: 'kebab', label: 'kebab-case', example: 'user-profile-id' },
-  { key: 'constant', label: 'CONSTANT_CASE', example: 'USER_PROFILE_ID' },
-  { key: 'dot', label: 'dot.case', example: 'user.profile.id' },
+  { key: 'camel', label: 'camelCase' },
+  { key: 'pascal', label: 'PascalCase' },
+  { key: 'snake', label: 'snake_case' },
+  { key: 'kebab', label: 'kebab-case' },
+  { key: 'constant', label: 'CONSTANT_CASE' },
+  { key: 'dot', label: 'dot.case' },
 ];
 ---
 
-<Layout title={tool.title} description={tool.description} wide>
-  <h1>{tool.title}</h1>
-  <p class="tool-intro">{tool.description}</p>
-
+<ToolPage slug="case-converter">
   <form id="case-form" class="panel">
     <label class="field">
       입력 (여러 줄이면 줄마다 변환)
@@ -66,22 +55,7 @@ API_BASE_URL</textarea
       <code>CONSTANT_CASE</code>로 정리할 때 등입니다.
     </p>
   </section>
-
-  {
-    related.length > 0 && (
-      <aside class="related">
-        <h2>관련 글</h2>
-        <ul>
-          {related.map((p) => (
-            <li>
-              <a href={`/blog/${p.id}`}>{p.data.title}</a>
-            </li>
-          ))}
-        </ul>
-      </aside>
-    )
-  }
-</Layout>
+</ToolPage>
 
 <script>
   // 네이밍 표기법 변환 (클라이언트에서만 실행)

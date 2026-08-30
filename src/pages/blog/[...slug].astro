@@ -2,6 +2,7 @@
 // 개별 블로그 글
 import { getCollection, render } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
+import Breadcrumb from '../../components/Breadcrumb.astro';
 import { CATEGORIES } from '../../consts';
 import { TOOLS } from '../../tools';
 
@@ -23,9 +24,34 @@ const dateFmt = new Intl.DateTimeFormat('ko-KR', { dateStyle: 'long' });
 const relatedTools = TOOLS.filter((t) =>
   post.data.relatedTools?.includes(t.slug),
 );
+
+// 글 구조화 데이터 (Article)
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: post.data.title,
+  description: post.data.description,
+  datePublished: post.data.publishedAt.toISOString(),
+  dateModified: (post.data.updatedAt ?? post.data.publishedAt).toISOString(),
+  articleSection: CATEGORIES[post.data.category],
+  url: new URL(`/blog/${post.id}/`, Astro.site).toString(),
+};
 ---
 
-<Layout title={post.data.title} description={post.data.description}>
+<Layout
+  title={post.data.title}
+  description={post.data.description}
+  ogType="article"
+  schema={schema}
+>
+  <Breadcrumb
+    items={[
+      { label: '홈', href: '/' },
+      { label: '블로그', href: '/blog' },
+      { label: post.data.title, href: `/blog/${post.id}` },
+    ]}
+  />
+
   <article class="prose">
     <h1>{post.data.title}</h1>
     <p class="post-meta">

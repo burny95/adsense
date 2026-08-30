@@ -12,7 +12,7 @@ const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
 const dateFmt = new Intl.DateTimeFormat('ko-KR', { dateStyle: 'long' });
 ---
 
-<Layout title="블로그" description="프론트엔드 도구 사용법과 실무 팁">
+<Layout title="블로그" description="프론트엔드 도구 사용법과 실무 팁" wide>
   <h1>블로그</h1>
   <p class="tool-intro">도구를 제대로 쓰기 위한 배경지식과 실무 팁.</p>
 
