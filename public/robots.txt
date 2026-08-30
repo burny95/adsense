@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://example.pages.dev/sitemap-index.xml
+Sitemap: https://adsense.shskse5.workers.dev/sitemap-index.xml
