@@ -1,6 +1,12 @@
 ---
 // 모든 페이지가 공유하는 기본 레이아웃 (head 메타, 헤더, 푸터)
-import { SITE_NAME, SITE_DESCRIPTION, NAV_LINKS, SITE_LIVE } from '../consts';
+import {
+  SITE_NAME,
+  SITE_DESCRIPTION,
+  NAV_LINKS,
+  SITE_LIVE,
+  VERIFICATION,
+} from '../consts';
 import '../styles/global.css';
 
 interface Props {
@@ -36,6 +42,13 @@ const year = new Date().getFullYear();
 
     {/* 완성 전까지 검색엔진 색인 차단 (consts.ts의 SITE_LIVE) */}
     {!SITE_LIVE && <meta name="robots" content="noindex, nofollow" />}
+
+    {/* 검색엔진 소유확인 */}
+    {
+      VERIFICATION.naver && (
+        <meta name="naver-site-verification" content={VERIFICATION.naver} />
+      )
+    }
 
     <!-- 소셜 공유 미리보기 -->
     <meta property="og:type" content="website" />

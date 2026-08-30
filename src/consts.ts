@@ -8,9 +8,14 @@ export const SITE_DESCRIPTION =
 export const CONTACT_EMAIL = 'shskse5@gmail.com';
 
 // 검색엔진 노출 스위치.
-// false = 모든 페이지에 noindex → 구글 검색에 안 잡힘 (완성 전까지 유지)
-// 도메인 연결 + Search Console 등록 끝나면 true 로 바꾸고 푸시
+// false = 모든 페이지에 noindex → 검색에 안 잡힘 (완성 전까지 유지)
+// 콘텐츠 충분해지면 true 로 바꾸고 푸시
 export const SITE_LIVE = false;
+
+// 검색엔진 소유확인용 메타 태그 값 (각 콘솔에서 'HTML 태그' 방식으로 발급받아 입력)
+export const VERIFICATION = {
+  naver: '', // 네이버 서치어드바이저: <meta name="naver-site-verification" content="여기">
+};
 
 // 상단 네비게이션 메뉴
 export const NAV_LINKS = [
