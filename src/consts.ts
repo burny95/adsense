@@ -1,6 +1,6 @@
 // 사이트 전역 설정값 (여러 페이지에서 공통으로 사용)
 
-export const SITE_NAME = '사이트 이름'; // TODO: 실제 사이트 이름으로 교체
+export const SITE_NAME = 'Burny Tools'; // 원하는 이름으로 자유롭게 변경 가능
 export const SITE_DESCRIPTION =
   '웹 퍼블리셔·디자이너를 위한 프론트엔드 도구와 가이드 모음';
 
