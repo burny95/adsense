@@ -1,0 +1,22 @@
+---
+// 소개 페이지 (애드센스 심사 필수 페이지)
+import Layout from '../layouts/Layout.astro';
+import { SITE_NAME, CONTACT_EMAIL } from '../consts';
+---
+
+<Layout title="소개" description={`${SITE_NAME} 소개`}>
+  <h1>소개</h1>
+  <p>
+    {SITE_NAME}은(는) ___를 위해 만들어진 사이트입니다. 누가 운영하는지, 어떤
+    목적으로 어떤 정보·도구를 제공하는지 구체적으로 적어주세요. (심사에서
+    실제 운영 주체가 있는지 확인합니다.)
+  </p>
+
+  <h2>운영자</h2>
+  <p>운영자 이름 또는 닉네임을 적어주세요.</p>
+
+  <h2>연락처</h2>
+  <p>
+    문의: <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
+  </p>
+</Layout>

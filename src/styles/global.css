@@ -1,0 +1,99 @@
+/* 전역 기본 스타일 - 최소한만 정의 */
+
+:root {
+  --max-width: 720px;
+  --text: #1a1a1a;
+  --muted: #666;
+  --bg: #ffffff;
+  --border: #e5e5e5;
+  --link: #1a56db;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --text: #e5e5e5;
+    --muted: #999;
+    --bg: #121212;
+    --border: #2a2a2a;
+    --link: #7aa7ff;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, 'Segoe UI', 'Malgun Gothic', sans-serif;
+  line-height: 1.7;
+  color: var(--text);
+  background: var(--bg);
+}
+
+/* 본문 영역 가운데 정렬 */
+.container {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+main {
+  min-height: 60vh;
+  padding: 32px 0;
+}
+
+a {
+  color: var(--link);
+}
+
+/* 상단 헤더 */
+.site-header {
+  border-bottom: 1px solid var(--border);
+}
+
+.site-header .container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding-top: 16px;
+  padding-bottom: 16px;
+}
+
+.site-header a {
+  text-decoration: none;
+  color: var(--text);
+}
+
+.site-header nav {
+  display: flex;
+  gap: 16px;
+}
+
+.site-title {
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+/* 하단 푸터 */
+.site-footer {
+  border-top: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.site-footer .container {
+  padding-top: 24px;
+  padding-bottom: 24px;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.site-footer nav {
+  display: flex;
+  gap: 12px;
+}
