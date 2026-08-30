@@ -1,0 +1,156 @@
+---
+// 네이밍 컨벤션 변환기
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import { getTool } from '../../tools';
+
+const tool = getTool('case-converter');
+
+const related = (await getCollection('blog', ({ data }) => !data.draft)).filter(
+  (p) => p.data.relatedTools?.includes(tool.slug),
+);
+
+const formats = [
+  { key: 'camel', label: 'camelCase', example: 'userProfileId' },
+  { key: 'pascal', label: 'PascalCase', example: 'UserProfileId' },
+  { key: 'snake', label: 'snake_case', example: 'user_profile_id' },
+  { key: 'kebab', label: 'kebab-case', example: 'user-profile-id' },
+  { key: 'constant', label: 'CONSTANT_CASE', example: 'USER_PROFILE_ID' },
+  { key: 'dot', label: 'dot.case', example: 'user.profile.id' },
+];
+---
+
+<Layout title={tool.title} description={tool.description} wide>
+  <h1>{tool.title}</h1>
+  <p class="tool-intro">{tool.description}</p>
+
+  <form id="case-form" class="panel">
+    <label class="field">
+      입력 (여러 줄이면 줄마다 변환)
+      <textarea class="control" name="input" rows="3" spellcheck="false"
+        >user profile id
+getUserName
+API_BASE_URL</textarea
+      >
+    </label>
+  </form>
+
+  <div class="case-results">
+    {
+      formats.map((f) => (
+        <div class="output" data-format={f.key}>
+          <div class="output-head">
+            <span>{f.label}</span>
+            <button type="button" class="btn btn-copy" data-format={f.key}>
+              복사
+            </button>
+          </div>
+          <code class="output-code result" />
+        </div>
+      ))
+    }
+  </div>
+
+  <section>
+    <h2>사용법</h2>
+    <p>
+      아무 형식으로나 이름을 입력하면 여섯 가지 표기법으로 한 번에 바꿉니다.
+      공백, 하이픈(<code>-</code>), 밑줄(<code>_</code>), 점(<code>.</code>),
+      그리고 <code>camelCase</code>의 대소문자 경계를 모두 단어 구분으로 인식합니다.
+      여러 줄을 넣으면 줄 단위로 변환하고, 각 형식의 결과 전체를 복사할 수 있습니다.
+    </p>
+    <p>
+      쓰임새: API 응답의 <code>snake_case</code> 키를 프론트엔드
+      <code>camelCase</code>로 옮길 때, 디자인 토큰 이름을 CSS 변수
+      <code>--kebab-case</code>로 바꿀 때, 상수 목록을
+      <code>CONSTANT_CASE</code>로 정리할 때 등입니다.
+    </p>
+  </section>
+
+  {
+    related.length > 0 && (
+      <aside class="related">
+        <h2>관련 글</h2>
+        <ul>
+          {related.map((p) => (
+            <li>
+              <a href={`/blog/${p.id}`}>{p.data.title}</a>
+            </li>
+          ))}
+        </ul>
+      </aside>
+    )
+  }
+</Layout>
+
+<script>
+  // 네이밍 표기법 변환 (클라이언트에서만 실행)
+  const form = document.getElementById('case-form') as HTMLFormElement;
+  const input = form.elements.namedItem('input') as HTMLTextAreaElement;
+  const blocks = document.querySelectorAll<HTMLElement>('.case-results .output');
+
+  // 한 개의 식별자를 소문자 단어 배열로 분해
+  function tokenize(raw: string): string[] {
+    return raw
+      .trim()
+      .replace(/([a-z0-9])([A-Z])/g, '$1 $2') // camel 경계
+      .replace(/([A-Z]+)([A-Z][a-z])/g, '$1 $2') // 연속 대문자 뒤 단어
+      .split(/[\s\-_.]+/)
+      .filter(Boolean)
+      .map((w) => w.toLowerCase());
+  }
+
+  const converters: Record<string, (w: string[]) => string> = {
+    camel: (w) =>
+      w
+        .map((x, i) => (i === 0 ? x : x[0].toUpperCase() + x.slice(1)))
+        .join(''),
+    pascal: (w) => w.map((x) => x[0].toUpperCase() + x.slice(1)).join(''),
+    snake: (w) => w.join('_'),
+    kebab: (w) => w.join('-'),
+    constant: (w) => w.join('_').toUpperCase(),
+    dot: (w) => w.join('.'),
+  };
+
+  function convert() {
+    const lines = input.value.split('\n');
+    blocks.forEach((block) => {
+      const fmt = block.dataset.format!;
+      const fn = converters[fmt];
+      const out = lines
+        .map((line) => (line.trim() ? fn(tokenize(line)) : ''))
+        .join('\n');
+      block.querySelector('.result')!.textContent = out;
+    });
+  }
+
+  form.addEventListener('input', convert);
+
+  document.querySelectorAll<HTMLButtonElement>('.btn-copy').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      const block = btn.closest('.output')!;
+      await navigator.clipboard.writeText(
+        block.querySelector('.result')!.textContent ?? '',
+      );
+      btn.textContent = '복사됨';
+      setTimeout(() => (btn.textContent = '복사'), 1500);
+    });
+  });
+
+  convert();
+</script>
+
+<style>
+  .case-results {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+    gap: var(--space-4);
+    margin: var(--space-5) 0;
+  }
+  .case-results .output {
+    margin: 0;
+  }
+  .case-results .output-code {
+    min-height: 3rem;
+  }
+</style>

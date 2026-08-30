@@ -1,15 +1,32 @@
 ---
 // 문의 페이지 (애드센스 심사 필수 페이지)
 import Layout from '../layouts/Layout.astro';
-import { CONTACT_EMAIL } from '../consts';
+import { SITE_NAME, CONTACT_EMAIL } from '../consts';
 ---
 
-<Layout title="문의" description="문의 및 연락 방법">
+<Layout title="문의" description={`${SITE_NAME} 문의 및 연락 방법`}>
   <article class="prose">
     <h1>문의</h1>
-    <p>사이트 관련 문의, 오류 신고, 제안은 아래 이메일로 보내주세요.</p>
+
+    <p>
+      아래 내용은 이메일로 받고 있습니다. 보통 며칠 안에 답변드립니다.
+    </p>
+    <ul>
+      <li>도구의 계산 결과가 잘못된 것 같을 때 (입력값을 함께 적어주세요)</li>
+      <li>추가되었으면 하는 도구나 기능 제안</li>
+      <li>블로그 글 내용의 오류 지적</li>
+      <li>제휴·기타 문의</li>
+    </ul>
+
+    <h2>이메일</h2>
     <p>
       <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
+    </p>
+
+    <p>
+      개인정보 처리에 관한 문의는
+      <a href="/privacy">개인정보처리방침</a>을 먼저 확인하신 뒤 같은 주소로
+      보내주세요.
     </p>
   </article>
 </Layout>

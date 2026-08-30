@@ -36,6 +36,27 @@ export const TOOLS: Tool[] = [
     category: 'markup',
     relatedPosts: ['link-preview-not-showing-checklist'],
   },
+  {
+    slug: 'px-rem-converter',
+    title: 'px ↔ rem 변환기',
+    description:
+      'px 값을 rem으로, rem 값을 px로 바꿔 줍니다. 기준 폰트 크기를 바꿔 계산할 수 있고, 자주 쓰는 값 대조표도 제공합니다.',
+    category: 'css',
+  },
+  {
+    slug: 'box-shadow-generator',
+    title: 'box-shadow 생성기',
+    description:
+      '그림자 레이어를 여러 겹 쌓아 자연스러운 box-shadow를 만들고, 실시간 미리보기와 함께 CSS 코드를 복사할 수 있습니다.',
+    category: 'css',
+  },
+  {
+    slug: 'case-converter',
+    title: '네이밍 컨벤션 변환기',
+    description:
+      '변수·클래스 이름을 camelCase, PascalCase, snake_case, kebab-case, CONSTANT_CASE 등으로 한 번에 변환합니다. 여러 줄 일괄 처리도 됩니다.',
+    category: 'productivity',
+  },
 ];
 
 export function getTool(slug: string): Tool {

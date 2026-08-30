@@ -1,0 +1,278 @@
+---
+// box-shadow 생성기 (여러 레이어 지원)
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import { getTool } from '../../tools';
+
+const tool = getTool('box-shadow-generator');
+
+const related = (await getCollection('blog', ({ data }) => !data.draft)).filter(
+  (p) => p.data.relatedTools?.includes(tool.slug),
+);
+---
+
+<Layout title={tool.title} description={tool.description} wide>
+  <h1>{tool.title}</h1>
+  <p class="tool-intro">{tool.description}</p>
+
+  <div class="shadow-layout">
+    <div>
+      <div class="output">
+        <div class="output-head">
+          <span>결과</span>
+          <button type="button" class="btn" id="copy">복사</button>
+        </div>
+        <code class="output-code" id="output"></code>
+      </div>
+
+      <div class="layer-controls">
+        <div class="layer-head">
+          <span class="section-label" style="margin:0;border:0;padding:0">그림자 레이어</span>
+          <button type="button" class="btn" id="add-layer">+ 레이어 추가</button>
+        </div>
+        <div id="layers"></div>
+      </div>
+    </div>
+
+    <div class="preview shadow-preview">
+      <span class="preview-label">미리보기</span>
+      <div class="preview-stage">
+        <div id="shadow-box"></div>
+      </div>
+    </div>
+  </div>
+
+  <section>
+    <h2>사용법</h2>
+    <p>
+      <code>box-shadow</code>는 <strong>가로 오프셋, 세로 오프셋, 흐림(blur),
+      번짐(spread), 색상</strong> 순서로 값을 씁니다. 여기서는 여러 레이어를
+      쉼표로 이어 붙여 겹칠 수 있습니다. 하나의 진한 그림자보다
+      <strong>흐림과 투명도가 다른 그림자를 2~4겹 쌓으면</strong> 훨씬 자연스러운
+      깊이감이 나옵니다.
+    </p>
+    <p>
+      <strong>inset</strong>을 켜면 요소 안쪽으로 그림자가 들어가 눌린 느낌이나
+      내부 경계선 효과를 줍니다. 색상은 보통 검정에 낮은 투명도(0.1~0.2)를 씁니다.
+      완전 불투명한 회색보다 반투명 검정이 배경색과 자연스럽게 섞입니다.
+    </p>
+  </section>
+
+  {
+    related.length > 0 && (
+      <aside class="related">
+        <h2>관련 글</h2>
+        <ul>
+          {related.map((p) => (
+            <li>
+              <a href={`/blog/${p.id}`}>{p.data.title}</a>
+            </li>
+          ))}
+        </ul>
+      </aside>
+    )
+  }
+</Layout>
+
+<script>
+  // box-shadow 레이어 관리 및 CSS 생성 (클라이언트에서만 실행)
+  interface Layer {
+    x: number;
+    y: number;
+    blur: number;
+    spread: number;
+    color: string;
+    alpha: number;
+    inset: boolean;
+  }
+
+  const layersEl = document.getElementById('layers')!;
+  const output = document.getElementById('output')!;
+  const box = document.getElementById('shadow-box')!;
+  const addBtn = document.getElementById('add-layer') as HTMLButtonElement;
+  const copyBtn = document.getElementById('copy') as HTMLButtonElement;
+
+  let layers: Layer[] = [
+    { x: 0, y: 1, blur: 2, spread: 0, color: '#000000', alpha: 0.12, inset: false },
+    { x: 0, y: 8, blur: 24, spread: -4, color: '#000000', alpha: 0.14, inset: false },
+  ];
+
+  function hexToRgb(hex: string): [number, number, number] {
+    let h = hex.replace(/^#/, '');
+    if (h.length === 3) h = h.split('').map((c) => c + c).join('');
+    return [
+      parseInt(h.slice(0, 2), 16) || 0,
+      parseInt(h.slice(2, 4), 16) || 0,
+      parseInt(h.slice(4, 6), 16) || 0,
+    ];
+  }
+
+  function layerToCss(l: Layer): string {
+    const [r, g, b] = hexToRgb(l.color);
+    const rgba = `rgba(${r}, ${g}, ${b}, ${l.alpha})`;
+    const parts = [
+      l.inset ? 'inset' : '',
+      `${l.x}px`,
+      `${l.y}px`,
+      `${l.blur}px`,
+      `${l.spread}px`,
+      rgba,
+    ].filter(Boolean);
+    return parts.join(' ');
+  }
+
+  function render() {
+    // 컨트롤 UI 다시 그리기
+    layersEl.innerHTML = '';
+    layers.forEach((layer, i) => {
+      const wrap = document.createElement('div');
+      wrap.className = 'panel layer-row';
+      wrap.innerHTML = `
+        <div class="layer-row-head">
+          <strong>레이어 ${i + 1}</strong>
+          <button type="button" class="btn btn-remove" data-i="${i}" ${layers.length === 1 ? 'disabled' : ''}>삭제</button>
+        </div>
+        <div class="field-grid">
+          <label class="field">X (px)<input class="control" type="number" data-i="${i}" data-k="x" value="${layer.x}"></label>
+          <label class="field">Y (px)<input class="control" type="number" data-i="${i}" data-k="y" value="${layer.y}"></label>
+          <label class="field">Blur (px)<input class="control" type="number" data-i="${i}" data-k="blur" min="0" value="${layer.blur}"></label>
+          <label class="field">Spread (px)<input class="control" type="number" data-i="${i}" data-k="spread" value="${layer.spread}"></label>
+          <label class="field">색상
+            <span class="color-row">
+              <input type="color" data-i="${i}" data-k="color" value="${layer.color}" aria-label="레이어 ${i + 1} 색상">
+              <input class="control" type="text" data-i="${i}" data-k="colorText" value="${layer.color}" spellcheck="false">
+            </span>
+          </label>
+          <label class="field">투명도 (${layer.alpha})
+            <input class="control" type="range" data-i="${i}" data-k="alpha" min="0" max="1" step="0.01" value="${layer.alpha}">
+          </label>
+          <label class="field field-inline">
+            <input type="checkbox" data-i="${i}" data-k="inset" ${layer.inset ? 'checked' : ''}> inset (안쪽 그림자)
+          </label>
+        </div>
+      `;
+      layersEl.appendChild(wrap);
+    });
+
+    refreshOutput();
+  }
+
+  function refreshOutput() {
+    const css = layers.map(layerToCss).join(',\n            ');
+    output.textContent = `box-shadow: ${css};`;
+    (box as HTMLElement).style.boxShadow = layers.map(layerToCss).join(', ');
+  }
+
+  layersEl.addEventListener('input', (e) => {
+    const el = e.target as HTMLInputElement;
+    const i = Number(el.dataset.i);
+    const k = el.dataset.k;
+    if (Number.isNaN(i) || !k) return;
+    const layer = layers[i];
+
+    if (k === 'inset') {
+      layer.inset = el.checked;
+    } else if (k === 'color') {
+      layer.color = el.value;
+      // 짝을 이루는 텍스트 입력도 동기화
+      const text = el.parentElement!.querySelector<HTMLInputElement>('[data-k="colorText"]');
+      if (text) text.value = el.value;
+    } else if (k === 'colorText') {
+      if (/^#[0-9a-fA-F]{3}([0-9a-fA-F]{3})?$/.test(el.value)) layer.color = el.value;
+    } else if (k === 'alpha') {
+      layer.alpha = Number(el.value);
+      const label = el.closest('.field')!;
+      label.childNodes[0].textContent = `투명도 (${layer.alpha}) `;
+    } else {
+      (layer as Record<string, unknown>)[k] = Number(el.value);
+    }
+    refreshOutput();
+  });
+
+  layersEl.addEventListener('click', (e) => {
+    const btn = (e.target as HTMLElement).closest('.btn-remove') as HTMLButtonElement;
+    if (!btn) return;
+    layers.splice(Number(btn.dataset.i), 1);
+    render();
+  });
+
+  addBtn.addEventListener('click', () => {
+    layers.push({ x: 0, y: 4, blur: 12, spread: 0, color: '#000000', alpha: 0.1, inset: false });
+    render();
+  });
+
+  copyBtn.addEventListener('click', async () => {
+    await navigator.clipboard.writeText(output.textContent ?? '');
+    copyBtn.textContent = '복사됨';
+    setTimeout(() => (copyBtn.textContent = '복사'), 1500);
+  });
+
+  render();
+</script>
+
+<style>
+  .shadow-layout {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-5);
+    margin: var(--space-5) 0;
+  }
+  @media (min-width: 60rem) {
+    .shadow-layout {
+      grid-template-columns: 3fr 2fr;
+      align-items: start;
+    }
+  }
+  .layer-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-3);
+  }
+  .layer-row {
+    margin: var(--space-3) 0;
+  }
+  .layer-row-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-3);
+  }
+  .field-inline {
+    flex-direction: row !important;
+    align-items: center;
+    gap: var(--space-2);
+  }
+  .color-row {
+    display: flex;
+    gap: var(--space-2);
+  }
+  .color-row input[type='color'] {
+    width: 44px;
+    min-width: 44px;
+    height: 2.6rem;
+    padding: 2px;
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-sm);
+    background: var(--surface);
+  }
+  .shadow-preview {
+    position: sticky;
+    top: 5rem;
+  }
+  .preview-stage {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 220px;
+    padding: var(--space-6);
+    background: var(--bg-subtle);
+    border-radius: var(--radius-md);
+  }
+  #shadow-box {
+    width: 120px;
+    height: 120px;
+    border-radius: var(--radius-md);
+    background: var(--surface);
+  }
+</style>

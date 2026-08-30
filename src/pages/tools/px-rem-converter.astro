@@ -1,0 +1,153 @@
+---
+// px ↔ rem 변환기
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import { getTool } from '../../tools';
+
+const tool = getTool('px-rem-converter');
+
+const related = (await getCollection('blog', ({ data }) => !data.draft)).filter(
+  (p) => p.data.relatedTools?.includes(tool.slug),
+);
+
+// 자주 쓰는 px 값 (대조표용)
+const commonPx = [10, 12, 14, 16, 18, 20, 24, 28, 32, 40, 48, 64];
+---
+
+<Layout title={tool.title} description={tool.description} wide>
+  <h1>{tool.title}</h1>
+  <p class="tool-intro">{tool.description}</p>
+
+  <form id="conv-form" class="panel">
+    <div class="field-grid">
+      <label class="field">
+        기준 폰트 크기 (px)
+        <input class="control" type="number" name="root" value="16" min="1" step="1" />
+        <small>보통 html 요소의 font-size (기본 16)</small>
+      </label>
+      <label class="field">
+        px 값
+        <input class="control" type="number" name="px" value="24" step="0.1" />
+      </label>
+      <label class="field">
+        rem 값
+        <input class="control" type="number" name="rem" value="1.5" step="0.01" />
+      </label>
+    </div>
+  </form>
+
+  <div class="output">
+    <div class="output-head"><span>변환 결과</span></div>
+    <code class="output-code" id="result"></code>
+  </div>
+
+  <section>
+    <h2>자주 쓰는 값 대조표</h2>
+    <p class="tool-intro">
+      현재 기준 폰트 크기(<span id="root-label">16</span>px) 기준입니다.
+    </p>
+    <table class="data-table">
+      <thead>
+        <tr><th>px</th><th>rem</th></tr>
+      </thead>
+      <tbody id="table-body">
+        {
+          commonPx.map((px) => (
+            <tr data-px={px}>
+              <td>{px}px</td>
+              <td class="rem-cell" />
+            </tr>
+          ))
+        }
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>사용법</h2>
+    <p>
+      세 칸 중 하나에 값을 입력하면 나머지가 자동으로 계산됩니다.
+      <strong>rem</strong>은 루트 요소(<code>html</code>)의 글자 크기를 1로 보는
+      상대 단위입니다. 기본값 16px 기준으로 <code>1rem = 16px</code>,
+      <code>1.5rem = 24px</code>이 됩니다.
+    </p>
+    <p>
+      레이아웃 여백·폰트 크기를 <code>rem</code>으로 두면 사용자가 브라우저
+      기본 글자 크기를 키웠을 때 전체가 함께 커져 접근성에 유리합니다.
+      디자인 시안이 px로 나왔을 때 이 표로 빠르게 옮길 수 있습니다.
+    </p>
+    <p>
+      프로젝트에서 <code>html {`{ font-size: 62.5% }`}</code>처럼 기준을 10px로
+      잡았다면 위 "기준 폰트 크기"를 10으로 바꾸세요. 그러면
+      <code>1rem = 10px</code>로 계산됩니다.
+    </p>
+  </section>
+
+  {
+    related.length > 0 && (
+      <aside class="related">
+        <h2>관련 글</h2>
+        <ul>
+          {related.map((p) => (
+            <li>
+              <a href={`/blog/${p.id}`}>{p.data.title}</a>
+            </li>
+          ))}
+        </ul>
+      </aside>
+    )
+  }
+</Layout>
+
+<script>
+  // px ↔ rem 상호 변환 (클라이언트에서만 실행)
+  const form = document.getElementById('conv-form') as HTMLFormElement;
+  const rootInput = form.elements.namedItem('root') as HTMLInputElement;
+  const pxInput = form.elements.namedItem('px') as HTMLInputElement;
+  const remInput = form.elements.namedItem('rem') as HTMLInputElement;
+  const result = document.getElementById('result')!;
+  const rootLabel = document.getElementById('root-label')!;
+  const tableRows = document.querySelectorAll<HTMLTableRowElement>('#table-body tr');
+
+  // 소수점 정리: 최대 4자리, 뒤 0 제거
+  const trim = (n: number) => parseFloat(n.toFixed(4)).toString();
+
+  function root() {
+    return Number(rootInput.value) || 16;
+  }
+
+  function refreshTable() {
+    rootLabel.textContent = String(root());
+    tableRows.forEach((row) => {
+      const px = Number(row.dataset.px);
+      row.querySelector('.rem-cell')!.textContent = `${trim(px / root())}rem`;
+    });
+  }
+
+  function setResult() {
+    const px = Number(pxInput.value);
+    const rem = Number(remInput.value);
+    result.textContent =
+      `${trim(px)}px = ${trim(px / root())}rem` +
+      `   |   ${trim(rem)}rem = ${trim(rem * root())}px`;
+  }
+
+  // 어느 칸을 편집했는지에 따라 반대편 값 갱신
+  pxInput.addEventListener('input', () => {
+    remInput.value = trim(Number(pxInput.value) / root());
+    setResult();
+  });
+  remInput.addEventListener('input', () => {
+    pxInput.value = trim(Number(remInput.value) * root());
+    setResult();
+  });
+  rootInput.addEventListener('input', () => {
+    // 기준이 바뀌면 px를 고정하고 rem을 재계산
+    remInput.value = trim(Number(pxInput.value) / root());
+    refreshTable();
+    setResult();
+  });
+
+  refreshTable();
+  setResult();
+</script>
