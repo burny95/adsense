@@ -235,7 +235,7 @@ main {
 @media (max-width: 600px) {
   .site-header nav {
     order: 1;
-    flex-basis: 100%;
+    flex: 0 0 100%; /* 줄바꿈 강제 (shrink 0 이라 첫 줄에 끼지 않음) */
     justify-content: space-between;
     gap: var(--space-1);
   }
