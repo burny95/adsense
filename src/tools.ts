@@ -26,7 +26,7 @@ export const TOOLS: Tool[] = [
     description:
       '글자색과 배경색의 명도 대비를 계산해 WCAG AA·AAA 기준 통과 여부를 알려주고, 실패 시 통과하는 색을 추천합니다.',
     category: 'color',
-    relatedPosts: ['understanding-wcag-contrast'],
+    relatedPosts: ['wcag-contrast-basics', 'wcag-contrast-practical'],
   },
   {
     slug: 'og-tag-generator',
