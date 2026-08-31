@@ -18,7 +18,7 @@ export const TOOLS: Tool[] = [
     description:
       '뷰포트 범위와 최소·최대 크기를 입력하면 미디어쿼리 없이 반응하는 clamp() 값을 만들어 줍니다.',
     category: 'css',
-    relatedPosts: ['responsive-typography-with-clamp'],
+    relatedPosts: ['css-clamp-basics', 'css-clamp-practical'],
   },
   {
     slug: 'contrast-checker',
