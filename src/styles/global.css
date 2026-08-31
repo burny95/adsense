@@ -316,22 +316,80 @@ main {
 }
 .site-footer .container {
   display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: var(--space-3);
+  flex-direction: column;
+  gap: var(--space-5);
   padding-block: var(--space-6);
 }
-.site-footer nav {
-  display: flex;
-  align-items: center;
-  gap: var(--space-4);
-  flex-wrap: wrap;
+.site-footer a {
+  color: var(--muted);
 }
 .site-footer .theme-toggle {
   color: var(--muted);
 }
-.site-footer a {
+
+/* 푸터 사이트맵: 전체 도구 목록 + 주요 페이지 */
+.footer-sitemap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-6);
+}
+.footer-col {
+  min-width: 11rem;
+}
+.footer-head {
+  margin: 0 0 var(--space-3);
+  font-weight: 600;
+  color: var(--text);
+}
+.footer-head a {
+  color: var(--text);
+  text-decoration: none;
+}
+.footer-col ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+.footer-col a:hover {
+  color: var(--text);
+}
+
+.footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-3);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--border);
+}
+
+/* 카테고리 바로가기 칩 (도구·블로그 목록 상단) */
+.cat-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin: 0 0 var(--space-5);
+}
+.cat-nav a {
+  font-size: 0.85rem;
   color: var(--muted);
+  text-decoration: none;
+  padding: var(--space-1) var(--space-3);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+}
+.cat-nav a:hover {
+  color: var(--text);
+  background: var(--bg-subtle);
+  border-color: var(--border-strong);
+}
+
+/* 앵커로 이동 시 sticky 헤더에 가리지 않도록 */
+:target {
+  scroll-margin-top: 5rem;
 }
 
 /* ---------- 카드 목록 (홈 / 도구 / 블로그) ---------- */

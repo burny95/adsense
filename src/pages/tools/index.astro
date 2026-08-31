@@ -1,6 +1,7 @@
 ---
 // 도구 전체 목록 (카테고리별 섹션)
 import Layout from '../../layouts/Layout.astro';
+import CategoryNav from '../../components/CategoryNav.astro';
 import { CATEGORIES } from '../../consts';
 import { TOOLS } from '../../tools';
 
@@ -20,9 +21,11 @@ const sections = (Object.keys(CATEGORIES) as (keyof typeof CATEGORIES)[])
 
   {sections.length === 0 && <p>도구를 준비 중입니다.</p>}
 
+  {sections.length > 1 && <CategoryNav sections={sections} />}
+
   {
     sections.map((section) => (
-      <section>
+      <section id={section.key}>
         <p class="section-label">{section.label}</p>
         <div class="card-grid">
           {section.tools.map((tool) => (

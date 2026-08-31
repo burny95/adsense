@@ -8,6 +8,7 @@ import {
   VERIFICATION,
 } from '../consts';
 import ThemeToggle from '../components/ThemeToggle.astro';
+import { TOOLS } from '../tools';
 import '../styles/global.css';
 
 interface Props {
@@ -166,13 +167,35 @@ const year = new Date().getFullYear();
 
     <footer class="site-footer">
       <div class:list={['container', { wide }]}>
-        <span>© {year} {SITE_NAME}</span>
-        <nav aria-label="하단 메뉴">
-          <a href="/about">소개</a>
-          <a href="/contact">문의</a>
-          <a href="/privacy">개인정보처리방침</a>
-          <ThemeToggle class="theme-toggle--footer" />
+        {/* 전체 도구·페이지 목록 (사이드바 대신 어느 페이지에서든 전체 접근) */}
+        <nav class="footer-sitemap" aria-label="사이트맵">
+          <div class="footer-col">
+            <p class="footer-head"><a href="/tools">도구</a></p>
+            <ul>
+              {
+                TOOLS.map((tool) => (
+                  <li>
+                    <a href={`/tools/${tool.slug}`}>{tool.title}</a>
+                  </li>
+                ))
+              }
+            </ul>
+          </div>
+          <div class="footer-col">
+            <p class="footer-head">사이트</p>
+            <ul>
+              <li><a href="/blog">블로그</a></li>
+              <li><a href="/about">소개</a></li>
+              <li><a href="/contact">문의</a></li>
+              <li><a href="/privacy">개인정보처리방침</a></li>
+              <li><a href="/rss.xml">RSS</a></li>
+            </ul>
+          </div>
         </nav>
+        <div class="footer-bottom">
+          <span>© {year} {SITE_NAME}</span>
+          <ThemeToggle class="theme-toggle--footer" />
+        </div>
       </div>
     </footer>
   </body>

@@ -1,7 +1,8 @@
 ---
-// 블로그 글 목록
+// 블로그 글 목록 (카테고리별 섹션 + 상단 바로가기)
 import { getCollection } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
+import CategoryNav from '../../components/CategoryNav.astro';
 import { CATEGORIES } from '../../consts';
 
 // 발행된 글만, 최신순 정렬
@@ -10,6 +11,15 @@ const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
 );
 
 const dateFmt = new Intl.DateTimeFormat('ko-KR', { dateStyle: 'long' });
+
+// 글이 하나라도 있는 카테고리만 순서대로 섹션으로 노출 (각 섹션 내부는 최신순 유지)
+const sections = (Object.keys(CATEGORIES) as (keyof typeof CATEGORIES)[])
+  .map((key) => ({
+    key,
+    label: CATEGORIES[key],
+    posts: posts.filter((p) => p.data.category === key),
+  }))
+  .filter((s) => s.posts.length > 0);
 ---
 
 <Layout title="블로그" description="프론트엔드 도구 사용법과 실무 팁" wide>
@@ -18,19 +28,25 @@ const dateFmt = new Intl.DateTimeFormat('ko-KR', { dateStyle: 'long' });
 
   {posts.length === 0 && <p>첫 번째 글을 준비 중입니다.</p>}
 
-  <ul class="stack-list">
-    {
-      posts.map((post) => (
-        <li>
-          <a href={`/blog/${post.id}`}>{post.data.title}</a>
-          <p class="post-meta">
-            <span class="badge">{CATEGORIES[post.data.category]}</span>
-            {' '}
-            {dateFmt.format(post.data.publishedAt)}
-          </p>
-          <p>{post.data.description}</p>
-        </li>
-      ))
-    }
-  </ul>
+  {sections.length > 1 && <CategoryNav sections={sections} />}
+
+  {
+    sections.map((section) => (
+      <section id={section.key}>
+        <p class="section-label">{section.label}</p>
+        <ul class="stack-list">
+          {section.posts.map((post) => (
+            <li>
+              <a href={`/blog/${post.id}`}>{post.data.title}</a>
+              <p class="post-meta">
+                <span class="badge">{CATEGORIES[post.data.category]}</span>{' '}
+                {dateFmt.format(post.data.publishedAt)}
+              </p>
+              <p>{post.data.description}</p>
+            </li>
+          ))}
+        </ul>
+      </section>
+    ))
+  }
 </Layout>

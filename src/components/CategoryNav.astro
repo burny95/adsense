@@ -1,0 +1,12 @@
+---
+// 목록 페이지(도구·블로그) 상단의 카테고리 바로가기 칩.
+// 각 칩은 같은 페이지의 #<key> 섹션으로 스크롤하는 앵커 링크라 JS가 필요 없음.
+interface Props {
+  sections: { key: string; label: string }[];
+}
+const { sections } = Astro.props;
+---
+
+<nav class="cat-nav" aria-label="카테고리 바로가기">
+  {sections.map((s) => <a href={`#${s.key}`}>{s.label}</a>)}
+</nav>
