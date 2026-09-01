@@ -34,7 +34,7 @@ export const TOOLS: Tool[] = [
     description:
       '제목·설명·이미지·URL을 입력하면 SNS 공유용 Open Graph와 Twitter 카드 메타 태그를 만들고, 미리보기 카드로 결과를 보여줍니다.',
     category: 'markup',
-    relatedPosts: ['link-preview-not-showing-checklist'],
+    relatedPosts: ['seo-meta-tags-and-open-graph', 'link-preview-not-showing-checklist'],
   },
   {
     slug: 'px-rem-converter',

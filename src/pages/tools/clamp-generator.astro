@@ -56,7 +56,7 @@ import ToolPage from '../../layouts/ToolPage.astro';
       너비에 비례해 부드럽게 커집니다. 중단점(media query)은 필요 없습니다.
     </p>
     <p>
-      생성되는 값의 가운데 항(선호값)에는 <code>vw</code>와 <code>rem</code>이
+      생성되는 값의 가운데 항(선호값)에는 <code>rem</code>과 <code>vw</code>가
       함께 들어갑니다. <code>rem</code>을 빼고 <code>vw</code>만 쓰면 사용자가
       브라우저 확대를 해도 글자가 커지지 않아 접근성 문제가 생기기 때문입니다.
       결과를 <code>font-size</code>, <code>margin</code>, <code>padding</code>,
@@ -104,13 +104,14 @@ import ToolPage from '../../layouts/ToolPage.astro';
     const minRem = minSize / root;
     const maxRem = maxSize / root;
 
-    // 선호값 = 기울기(vw) * 뷰포트 + 절편(rem)
+    // 선호값 = 고정 부분(rem) + 화면 비례 부분(vw)
     const slope = (maxSize - minSize) / (maxVw - minVw);
     const slopeVw = slope * 100;
     const interceptRem = (minSize - slope * minVw) / root;
 
-    const sign = interceptRem >= 0 ? '+' : '-';
-    const preferred = `${round(slopeVw)}vw ${sign} ${round(Math.abs(interceptRem))}rem`;
+    // 고정값(rem)을 앞에 두는 관례를 따름. vw가 음수면 부호를 연산자로 빼서 유효한 CSS 유지
+    const sign = slopeVw >= 0 ? '+' : '-';
+    const preferred = `${round(interceptRem)}rem ${sign} ${round(Math.abs(slopeVw))}vw`;
 
     const lo = Math.min(minRem, maxRem);
     const hi = Math.max(minRem, maxRem);
