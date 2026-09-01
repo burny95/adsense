@@ -2,10 +2,10 @@
 title: SEO에 중요한 메타태그와 Open Graph 태그
 description: 검색결과에 쓰이는 메타태그와 SNS 공유 카드에 쓰이는 Open Graph 태그, 두 가지의 정의와 작성법을 예제 하나로 정리합니다.
 category: markup
-publishedAt: 2026-09-03
+publishedAt: 2026-08-31
 relatedTools:
   - og-tag-generator
-draft: true
+draft: false
 ---
 
 검색 엔진과 메신저는 페이지를 열 때 본문보다 `<head>` 안의 메타 정보를 먼저 읽습니다. 여기서 검색결과에 뜨는 제목·설명이 정해지고, 카톡이나 슬랙에 링크를 붙였을 때 나오는 카드가 만들어집니다. 본문이 아무리 좋아도 이 부분이 비어 있으면 검색결과 제목이 파일명처럼 나오거나, 공유 카드에 아무 이미지도 안 붙습니다.

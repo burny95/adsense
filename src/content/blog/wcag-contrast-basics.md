@@ -2,10 +2,10 @@
 title: 색 대비비 기초 — 정의와 WCAG 기준 읽는 법
 description: 대비비가 무엇을 재는 값인지, 4.5:1·3:1 숫자가 어디서 나왔는지, AA와 AAA·큰 텍스트 예외를 예제 하나로 정리합니다.
 category: color
-publishedAt: 2026-08-31
+publishedAt: 2026-08-30
 relatedTools:
   - contrast-checker
-draft: true
+draft: false
 ---
 
 ## 같은 회색인데 왜 하나는 되고 하나는 안 되나

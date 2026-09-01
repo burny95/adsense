@@ -2,10 +2,10 @@
 title: CSS clamp() 실전 — 어디에 쓰고 무엇을 조심할까
 description: clamp()을 타이포 스케일, 여백, 유동 레이아웃에 적용하는 실전 패턴과 접근성을 해치는 흔한 실수를 정리합니다.
 category: css
-publishedAt: 2026-09-01
+publishedAt: 2026-08-29
 relatedTools:
   - clamp-generator
-draft: true
+draft: false
 ---
 
 기본 문법과 계산식 뽑는 법은 [CSS clamp() 기초](/blog/css-clamp-basics)에서 다뤘습니다. 이번 편은 "그래서 어디에 쓰느냐"입니다.

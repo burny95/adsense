@@ -2,10 +2,10 @@
 title: CSS clamp() 기초 — 정의와 기본 사용법
 description: clamp() 함수가 받는 세 값의 의미와 브라우저의 계산 방식, 선호값 숫자가 어디서 나오는지까지 예제 하나로 정리합니다.
 category: css
-publishedAt: 2026-08-31
+publishedAt: 2026-08-28
 relatedTools:
   - clamp-generator
-draft: true
+draft: false
 ---
 
 ## 반응형 크기, 왜 값을 여러 개 관리하게 되나

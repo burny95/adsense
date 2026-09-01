@@ -8,7 +8,6 @@ export interface Tool {
   title: string;
   description: string; // 목록·검색결과에 노출되는 한 줄 설명
   category: CategoryKey;
-  relatedPosts?: string[]; // 관련 블로그 글 slug 목록
 }
 
 export const TOOLS: Tool[] = [
@@ -18,7 +17,6 @@ export const TOOLS: Tool[] = [
     description:
       '뷰포트 범위와 최소·최대 크기를 입력하면 미디어쿼리 없이 반응하는 clamp() 값을 만들어 줍니다.',
     category: 'css',
-    relatedPosts: ['css-clamp-basics', 'css-clamp-practical'],
   },
   {
     slug: 'contrast-checker',
@@ -26,7 +24,6 @@ export const TOOLS: Tool[] = [
     description:
       '글자색과 배경색의 명도 대비를 계산해 WCAG AA·AAA 기준 통과 여부를 알려주고, 실패 시 통과하는 색을 추천합니다.',
     category: 'color',
-    relatedPosts: ['wcag-contrast-basics', 'wcag-contrast-practical'],
   },
   {
     slug: 'og-tag-generator',
@@ -34,7 +31,6 @@ export const TOOLS: Tool[] = [
     description:
       '제목·설명·이미지·URL을 입력하면 SNS 공유용 Open Graph와 Twitter 카드 메타 태그를 만들고, 미리보기 카드로 결과를 보여줍니다.',
     category: 'markup',
-    relatedPosts: ['seo-meta-tags-and-open-graph', 'link-preview-not-showing-checklist'],
   },
   {
     slug: 'px-rem-converter',

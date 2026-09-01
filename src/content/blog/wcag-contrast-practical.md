@@ -2,10 +2,10 @@
 title: 색 대비 실무 — 흔한 실패와 통과시키는 법
 description: 연한 회색 본문, 컬러 버튼 위 흰 글자 등 대비가 자주 무너지는 곳과, 브랜드색을 유지하며 기준을 통과시키는 방법을 정리합니다.
 category: color
-publishedAt: 2026-09-02
+publishedAt: 2026-08-31
 relatedTools:
   - contrast-checker
-draft: true
+draft: false
 ---
 
 대비비의 정의와 WCAG 기준은 [색 대비비 기초](/blog/wcag-contrast-basics)에서 다뤘습니다. 이번 편은 실제 화면에서 대비가 어디서 자주 무너지고, 어떻게 고치느냐입니다.

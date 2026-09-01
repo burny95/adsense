@@ -2,10 +2,10 @@
 title: 카톡·슬랙 링크 미리보기가 안 뜰 때 — 원인과 점검 순서
 description: 링크를 공유했는데 카드가 안 나오거나 예전 정보가 그대로일 때, 원인을 자주 있는 순서대로 짚고 플랫폼별 캐시 갱신법을 정리합니다.
 category: markup
-publishedAt: 2026-09-04
+publishedAt: 2026-09-01
 relatedTools:
   - og-tag-generator
-draft: true
+draft: false
 ---
 
 [SEO에 중요한 메타태그와 Open Graph 태그](/blog/seo-meta-tags-and-open-graph)에서 공유 카드를 만드는 태그를 정리했습니다. 이번 편은 그 태그를 넣었는데도 카드가 안 뜨거나, 고쳤는데 예전 내용이 그대로일 때 무엇을 확인하느냐입니다.
