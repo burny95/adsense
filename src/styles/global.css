@@ -703,6 +703,75 @@ textarea.control {
   font-size: 0.88rem;
 }
 
+/* 글 목차 (h2만, 본문 시작 전) */
+.toc {
+  padding: var(--space-4) var(--space-5);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg-subtle);
+  font-size: 0.92rem;
+}
+.toc-head {
+  margin: 0 0 var(--space-2);
+  font-weight: 600;
+}
+.toc ol {
+  margin: 0;
+  padding-left: 1.2em;
+  color: var(--muted);
+}
+.toc li + li {
+  margin-top: var(--space-1);
+}
+
+/* 이전·다음 글 (본문 하단) */
+.post-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  margin-top: var(--space-6);
+}
+.post-nav-link {
+  flex: 1 1 15rem;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-4);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  text-decoration: none;
+  color: inherit;
+  transition:
+    border-color 0.15s,
+    transform 0.15s;
+}
+.post-nav-link:hover {
+  border-color: var(--border-strong);
+  transform: translateY(-2px);
+}
+/* 다음 글만 있을 때도 오른쪽에 붙도록 */
+.post-nav-link.is-next {
+  margin-left: auto;
+  text-align: right;
+}
+.post-nav-label {
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+.post-nav-title {
+  font-weight: 600;
+}
+
+/* 404의 단순 링크 목록 */
+.plain-links {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+}
+
 /* 가로 스크롤 방지: 넓은 자식은 각자 overflow 처리 */
 body {
   overflow-x: hidden;

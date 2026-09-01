@@ -6,17 +6,32 @@ import Breadcrumb from '../../components/Breadcrumb.astro';
 import { CATEGORIES } from '../../consts';
 import { TOOLS } from '../../tools';
 
-// 발행된 글만 정적 경로로 생성
+// 발행된 글만 정적 경로로 생성.
+// 이전·다음 글은 같은 카테고리 안에서 발행일 순으로 이어 붙인다
+// (도구 1개당 기초편 → 활용편 순서가 그대로 이어지도록).
 export async function getStaticPaths() {
   const posts = await getCollection('blog', ({ data }) => !data.draft);
-  return posts.map((post) => ({
-    params: { slug: post.id },
-    props: { post },
-  }));
+  return posts.map((post) => {
+    const series = posts
+      .filter((p) => p.data.category === post.data.category)
+      .sort((a, b) => a.data.publishedAt.valueOf() - b.data.publishedAt.valueOf());
+    const i = series.findIndex((p) => p.id === post.id);
+    return {
+      params: { slug: post.id },
+      props: {
+        post,
+        prev: series[i - 1] ?? null,
+        next: series[i + 1] ?? null,
+      },
+    };
+  });
 }
 
-const { post } = Astro.props;
-const { Content } = await render(post);
+const { post, prev, next } = Astro.props;
+const { Content, headings } = await render(post);
+
+// 목차는 h2만 사용. 항목이 너무 적으면 오히려 방해되므로 3개 이상일 때만 노출
+const toc = headings.filter((h) => h.depth === 2);
 
 const dateFmt = new Intl.DateTimeFormat('ko-KR', { dateStyle: 'long' });
 
@@ -60,6 +75,21 @@ const schema = {
       {post.data.updatedAt && ` · 수정 ${dateFmt.format(post.data.updatedAt)}`}
     </p>
 
+    {
+      toc.length >= 3 && (
+        <nav class="toc" aria-label="목차">
+          <p class="toc-head">목차</p>
+          <ol>
+            {toc.map((h) => (
+              <li>
+                <a href={`#${h.slug}`}>{h.text}</a>
+              </li>
+            ))}
+          </ol>
+        </nav>
+      )
+    }
+
     <Content />
   </article>
 
@@ -75,6 +105,25 @@ const schema = {
           ))}
         </ul>
       </aside>
+    )
+  }
+
+  {
+    (prev || next) && (
+      <nav class="post-nav" aria-label="이전 글 다음 글">
+        {prev && (
+          <a class="post-nav-link" href={`/blog/${prev.id}`}>
+            <span class="post-nav-label">← 이전 글</span>
+            <span class="post-nav-title">{prev.data.title}</span>
+          </a>
+        )}
+        {next && (
+          <a class="post-nav-link is-next" href={`/blog/${next.id}`}>
+            <span class="post-nav-label">다음 글 →</span>
+            <span class="post-nav-title">{next.data.title}</span>
+          </a>
+        )}
+      </nav>
     )
   }
 </Layout>
