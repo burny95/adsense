@@ -17,6 +17,7 @@ interface Props {
   wide?: boolean; // 도구 페이지처럼 넓은 본문이 필요할 때
   ogType?: string; // 기본 website, 글은 article
   schema?: object | object[]; // 페이지별 JSON-LD (도구=SoftwareApplication, 글=Article 등)
+  noindex?: boolean; // 이 페이지만 색인에서 제외 (404 등)
 }
 
 const {
@@ -25,7 +26,11 @@ const {
   wide = false,
   ogType = 'website',
   schema,
+  noindex = false,
 } = Astro.props;
+
+// 사이트 전체 차단(SITE_LIVE=false)이 우선하고, 그다음 페이지별 noindex
+const robots = !SITE_LIVE ? 'noindex, nofollow' : noindex ? 'noindex' : null;
 
 // 페이지 제목: 개별 제목이 있으면 "제목 | 사이트명", 없으면 사이트명만
 const pageTitle = title ? `${title} | ${SITE_NAME}` : SITE_NAME;
@@ -87,8 +92,8 @@ const year = new Date().getFullYear();
     <meta name="description" content={description} />
     <link rel="canonical" href={canonicalURL} />
 
-    {/* 완성 전까지 검색엔진 색인 차단 (consts.ts의 SITE_LIVE) */}
-    {!SITE_LIVE && <meta name="robots" content="noindex, nofollow" />}
+    {/* 색인 차단: 사이트 전체(consts.ts의 SITE_LIVE) 또는 페이지별 noindex */}
+    {robots && <meta name="robots" content={robots} />}
 
     {/* 검색엔진 소유확인 */}
     {
