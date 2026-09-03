@@ -8,6 +8,8 @@
 
   // Worker 스크립트 없이 정적 자산만 배포
   "assets": {
-    "directory": "./dist"
+    "directory": "./dist",
+    // 없는 경로는 Astro가 만든 404.html을 404 상태로 서빙
+    "not_found_handling": "404-page"
   }
 }
