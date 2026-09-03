@@ -2,7 +2,7 @@
 title: box-shadow 실전 — 겹쳐 쌓기와 고도 시스템, 다크 모드 대응
 description: 그림자 한 겹이 가짜처럼 보이는 이유와 2~3겹으로 쌓는 레시피, 고도 단계를 CSS 변수로 정리하는 법, 다크 모드에서 그림자가 사라질 때의 대안을 정리합니다.
 category: css
-publishedAt: 2026-09-05
+publishedAt: 2026-09-01
 relatedTools:
   - box-shadow-generator
 draft: false

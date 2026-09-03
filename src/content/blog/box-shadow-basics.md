@@ -2,7 +2,7 @@
 title: box-shadow 기초 — 다섯 개 값이 각각 하는 일
 description: box-shadow의 X, Y, blur, spread, 색상이 각각 무엇을 바꾸는지 하나씩 분리해서 보고, 그림자 색을 회색이 아니라 반투명 검정으로 써야 하는 이유를 정리합니다.
 category: css
-publishedAt: 2026-09-04
+publishedAt: 2026-08-31
 relatedTools:
   - box-shadow-generator
 draft: false
