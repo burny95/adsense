@@ -457,6 +457,7 @@ main {
 /* ---------- 도구 공통 UI ---------- */
 
 .tool-intro {
+  max-width: 68ch;
   color: var(--muted);
   margin-top: calc(-1 * var(--space-2));
   margin-bottom: var(--space-5);
@@ -804,8 +805,9 @@ textarea.control {
 /* ---------- 블로그 사이드바 ---------- */
 
 /* 사이드바(왼쪽) + 본문 2단.
-   DOM 순서는 본문이 먼저다 — 좁은 화면에서 본문→사이드바 순으로 쌓이고,
-   스크린리더도 본문을 먼저 읽는다. 좌우 배치는 grid-column으로만 바꾼다 */
+   DOM 순서는 본문 → 사이드바다. 좁은 화면에서 그대로 쌓이고, 탭과
+   스크린리더도 본문에 먼저 닿는다. 넓은 화면의 좌우 배치는
+   grid-column으로만 바꾼다 — 순서 조작을 이 한 곳에 몰아둔다 */
 .with-sidebar {
   display: grid;
   grid-template-columns: 15rem minmax(0, 1fr);
@@ -813,8 +815,14 @@ textarea.control {
   align-items: start;
 }
 .with-sidebar__main {
+  grid-column: 2;
+  grid-row: 1;
   /* 건너뛰기 링크의 착지점이라 포커스 링은 띄우지 않는다 */
   outline: none;
+}
+.with-sidebar__aside {
+  grid-column: 1;
+  grid-row: 1;
 }
 /* 글 읽는 페이지(wide가 아닌 쪽)는 본문만 읽기 좋은 폭으로 줄인다.
    바깥 컨테이너는 그대로라 헤더·사이드바 위치는 다른 페이지와 동일하다 */
@@ -835,12 +843,11 @@ textarea.control {
     grid-template-columns: minmax(0, 1fr);
     gap: var(--space-6);
   }
-  /* 1열에서는 링크 더미를 먼저 읽히게 두지 않고 본문을 위로 올린다 */
-  .with-sidebar__main {
-    grid-row: 1;
-  }
+  /* 1열에서는 배치 지정을 풀어 DOM 순서(본문 → 사이드바)를 그대로 따른다 */
+  .with-sidebar__main,
   .with-sidebar__aside {
-    grid-row: 2;
+    grid-column: auto;
+    grid-row: auto;
   }
   .with-sidebar__aside {
     position: static;

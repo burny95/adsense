@@ -55,6 +55,16 @@ export function resetForm(form: HTMLFormElement, defaults: Values) {
   replaceQuery('');
 }
 
+/**
+ * aria-invalid를 켜고 끈다.
+ * toggleAttribute는 값을 빈 문자열로 넣는데, ARIA는 빈 값을 false로 읽고
+ * CSS의 [aria-invalid='true']도 매칭되지 않는다. 값을 명시하거나 지운다.
+ */
+export function setInvalid(el: Element, invalid: boolean) {
+  if (invalid) el.setAttribute('aria-invalid', 'true');
+  else el.removeAttribute('aria-invalid');
+}
+
 /** 폼이 없는 도구(box-shadow 등)가 직접 주소를 쓸 때 사용 */
 export function replaceQuery(qs: string) {
   // 값을 만질 때마다 뒤로가기 기록이 쌓이지 않도록 replaceState를 쓴다

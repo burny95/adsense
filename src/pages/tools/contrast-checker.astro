@@ -85,6 +85,7 @@ import ToolPage from '../../layouts/ToolPage.astro';
     applyParams,
     syncParams,
     resetForm,
+    setInvalid,
   } from '../../scripts/tool-state';
 
   // WCAG 명도 대비 계산 (클라이언트에서만 실행)
@@ -169,8 +170,8 @@ import ToolPage from '../../layouts/ToolPage.astro';
     const bg = parseHex(bgText.value);
 
     // 어느 쪽 색이 잘못됐는지 그 입력에 표시한다
-    fgText.toggleAttribute('aria-invalid', !fg);
-    bgText.toggleAttribute('aria-invalid', !bg);
+    setInvalid(fgText, !fg);
+    setInvalid(bgText, !bg);
 
     if (!fg || !bg) {
       ratioValue.textContent = '색 형식 오류 — #RRGGBB로 입력하세요';

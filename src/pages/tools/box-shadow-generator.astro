@@ -19,6 +19,9 @@ import ToolPage from '../../layouts/ToolPage.astro';
         <div id="layers"></div>
         <p class="form-actions">
           <small>값을 바꾸면 주소도 함께 바뀝니다. 그 주소를 공유하면 같은 그림자로 열립니다.</small>
+          <small class="is-error" id="url-error" role="status" hidden>
+            링크의 값을 읽을 수 없어 기본값으로 시작합니다.
+          </small>
         </p>
       </div>
 
@@ -61,7 +64,7 @@ import ToolPage from '../../layouts/ToolPage.astro';
 </ToolPage>
 
 <script>
-  import { replaceQuery } from '../../scripts/tool-state';
+  import { replaceQuery, setInvalid } from '../../scripts/tool-state';
 
   // box-shadow 레이어 관리 및 CSS 생성 (클라이언트에서만 실행)
   interface Layer {
@@ -81,6 +84,7 @@ import ToolPage from '../../layouts/ToolPage.astro';
   const copyBtn = document.getElementById('copy') as HTMLButtonElement;
 
   const undoBtn = document.getElementById('undo') as HTMLButtonElement;
+  const urlError = document.getElementById('url-error') as HTMLElement;
   const resetBtn = document.getElementById('reset') as HTMLButtonElement;
 
   const DEFAULT_LAYERS: Layer[] = [
@@ -223,7 +227,7 @@ import ToolPage from '../../layouts/ToolPage.astro';
     } else if (k === 'colorText') {
       // 형식이 틀렸을 때 조용히 무시하면 입력값과 미리보기가 어긋난 채로 남는다
       const ok = /^#[0-9a-fA-F]{3}([0-9a-fA-F]{3})?$/.test(el.value);
-      el.toggleAttribute('aria-invalid', !ok);
+      setInvalid(el, !ok);
       const err = el.closest('.field')!.querySelector<HTMLElement>('.color-error');
       if (err) err.hidden = ok;
       if (ok) {
@@ -249,14 +253,7 @@ import ToolPage from '../../layouts/ToolPage.astro';
     if (!btn) return;
     snapshot(); // 실수로 지웠을 때 되돌릴 수 있도록
     layers.splice(Number(btn.dataset.i), 1);
-    // 공유 링크로 들어온 경우 주소의 그림자를 먼저 반영한다
-  const fromUrl = new URLSearchParams(location.search).get('l');
-  if (fromUrl) {
-    const parsed = decode(fromUrl);
-    if (parsed) layers = parsed;
-  }
-
-  render();
+    render();
   });
 
   addBtn.addEventListener('click', () => {
@@ -295,6 +292,16 @@ import ToolPage from '../../layouts/ToolPage.astro';
       );
     });
   });
+
+  // 공유 링크로 들어온 경우 주소의 그림자를 반영한다.
+  // 반드시 첫 render() 전에 한 번만 실행해야 한다 — 이후에 다시 읽으면
+  // 아직 갱신되지 않은 주소가 방금 만든 변경을 되돌린다.
+  const fromUrl = new URLSearchParams(location.search).get('l');
+  if (fromUrl) {
+    const parsed = decode(fromUrl);
+    if (parsed) layers = parsed;
+    else urlError.hidden = false; // 값이 깨졌으면 기본값으로 시작한다고 알린다
+  }
 
   render();
 </script>

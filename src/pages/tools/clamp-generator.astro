@@ -106,6 +106,7 @@ import ToolPage from '../../layouts/ToolPage.astro';
     applyParams,
     syncParams,
     resetForm,
+    setInvalid,
   } from '../../scripts/tool-state';
 
   const form = document.getElementById('clamp-form') as HTMLFormElement;
@@ -123,7 +124,7 @@ import ToolPage from '../../layouts/ToolPage.astro';
   function markFields(names: string[]) {
     ['minVw', 'maxVw', 'rootSize'].forEach((n) => {
       const el = form.elements.namedItem(n) as HTMLInputElement;
-      el.toggleAttribute('aria-invalid', names.includes(n));
+      setInvalid(el, names.includes(n));
     });
   }
 

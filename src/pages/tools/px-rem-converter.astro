@@ -86,6 +86,7 @@ const commonPx = [10, 12, 14, 16, 18, 20, 24, 28, 32, 40, 48, 64];
     applyParams,
     syncParams,
     resetForm,
+    setInvalid,
   } from '../../scripts/tool-state';
 
   // px ↔ rem 상호 변환 (클라이언트에서만 실행)
@@ -109,7 +110,7 @@ const commonPx = [10, 12, 14, 16, 18, 20, 24, 28, 32, 40, 48, 64];
     const n = Number(rootInput.value);
     const ok = n > 0;
     rootError.hidden = ok;
-    rootInput.toggleAttribute('aria-invalid', !ok);
+    setInvalid(rootInput, !ok);
     return ok ? n : 16;
   }
 

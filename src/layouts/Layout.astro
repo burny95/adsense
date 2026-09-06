@@ -172,13 +172,15 @@ const year = new Date().getFullYear();
         {
           sidebar ? (
             <div class="with-sidebar">
-              {/* 시각상 왼쪽이므로 DOM에서도 먼저 온다 — 탭 순서와 화면 순서를 일치시킨다 */}
-              <aside class="with-sidebar__aside" aria-label="사이트 메뉴">
-                <slot name="sidebar" />
-              </aside>
+              {/* 본문이 DOM에서 먼저 온다. 사이드바는 헤더 메뉴를 보조하는
+                  부가 내비게이션이라, 탭·스크린리더가 본문에 먼저 닿는 편이 낫다.
+                  화면상 왼쪽 배치는 CSS(grid-column)로만 처리한다 */}
               <div class="with-sidebar__main" id="content" tabindex="-1">
                 <slot />
               </div>
+              <aside class="with-sidebar__aside" aria-label="사이트 메뉴">
+                <slot name="sidebar" />
+              </aside>
             </div>
           ) : (
             <slot />
