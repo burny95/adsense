@@ -40,7 +40,7 @@ const userId = res.user_id;        // API는 snake_case
 
 그래서 변환의 핵심도 단어를 어떻게 쪼개느냐입니다. `getUserName`이든 `GET_USER_NAME`이든 `get-user-name`이든, 일단 이렇게 쪼개고 나면 나머지는 다시 이어 붙이기만 하면 됩니다.
 
-<div style="background:#fff;border:1px solid #e4e6ea;border-radius:10px;padding:1.5rem;font-family:system-ui,sans-serif;color:#111">
+<div style="background:#fff;color:#1c1e21;border:1px solid #e4e6ea;border-radius:10px;padding:1.5rem;font-family:system-ui,sans-serif;color:#111">
   <div style="font-family:ui-monospace,Menlo,monospace;font-size:15px;margin-bottom:14px">getUserName</div>
   <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
     <span style="background:#e7f0fb;color:#1c4f8f;border-radius:6px;padding:5px 11px;font-family:ui-monospace,Menlo,monospace;font-size:13px">get</span>

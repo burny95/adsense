@@ -99,13 +99,13 @@ html { font-size: 62.5%; }   /* 1rem = 10px */
 
 `h2`의 글자는 32px로 커졌는데 줄 높이는 상속받은 **24px 그대로**입니다. 줄 높이가 글자보다 작으니 두 줄이 되는 순간 글자가 겹칩니다.
 
-<div style="background:#fff;border:1px solid #e4e6ea;border-radius:10px;padding:1.25rem 1.5rem;display:flex;gap:1rem;flex-wrap:wrap;font-family:system-ui,sans-serif">
+<div style="background:#fff;color:#1c1e21;border:1px solid #e4e6ea;border-radius:10px;padding:1.25rem 1.5rem;display:flex;gap:1rem;flex-wrap:wrap;font-family:system-ui,sans-serif">
   <div style="flex:1 1 220px;border:1px solid #dfe2e8;border-radius:8px;padding:14px 16px">
     <div style="color:#c92a2a;font-size:11px;margin-bottom:8px">✗ line-height: 1.5rem</div>
     <div style="color:#111;font-size:32px;line-height:24px">두 줄이 되면 글자가 겹칩니다</div>
   </div>
   <div style="flex:1 1 220px;border:1px solid #dfe2e8;border-radius:8px;padding:14px 16px">
-    <div style="color:#2b8a3e;font-size:11px;margin-bottom:8px">✓ line-height: 1.5</div>
+    <div style="color:#1a7f37;font-size:11px;margin-bottom:8px">✓ line-height: 1.5</div>
     <div style="color:#111;font-size:32px;line-height:1.5">두 줄이 되어도 간격이 유지됩니다</div>
   </div>
 </div>

@@ -16,7 +16,7 @@ draft: false
 
 ### 1. 연한 회색 본문
 
-<div style="background:#fff;border:1px solid #e4e6ea;border-radius:10px;padding:1.25rem 1.5rem;line-height:1.9">
+<div style="background:#fff;color:#1c1e21;border:1px solid #e4e6ea;border-radius:10px;padding:1.25rem 1.5rem;line-height:1.9">
   <div style="color:#999999">✗ color: #999999 — 대비비 2.8 : 1, 흰 배경에서 흐릿함</div>
   <div style="color:#5f5f5f">✓ color: #5f5f5f — 대비비 약 6 : 1, 또렷함</div>
 </div>
@@ -25,7 +25,7 @@ draft: false
 
 ### 2. 컬러 버튼 위 흰 글자
 
-<div style="background:#fff;border:1px solid #e4e6ea;border-radius:10px;padding:1.25rem 1.5rem;display:flex;gap:.75rem;flex-wrap:wrap;align-items:center">
+<div style="background:#fff;color:#1c1e21;border:1px solid #e4e6ea;border-radius:10px;padding:1.25rem 1.5rem;display:flex;gap:.75rem;flex-wrap:wrap;align-items:center">
   <span style="background:#4a90d9;color:#fff;padding:.55rem 1rem;border-radius:6px">✗ 확인 · 3.3 : 1</span>
   <span style="background:#2670b8;color:#fff;padding:.55rem 1rem;border-radius:6px">✓ 확인 · 5 : 1</span>
 </div>
@@ -34,7 +34,7 @@ draft: false
 
 ### 3. 본문 속 링크 색
 
-<div style="background:#fff;border:1px solid #e4e6ea;border-radius:10px;padding:1.25rem 1.5rem;line-height:1.9;color:#3a3a3a">
+<div style="background:#fff;color:#1c1e21;border:1px solid #e4e6ea;border-radius:10px;padding:1.25rem 1.5rem;line-height:1.9;color:#3a3a3a">
   <div>본문 문장입니다. <span style="color:#7ba7d9">✗ 이 링크</span>는 흰 배경과 2.5 : 1이라 실패.</div>
   <div>본문 문장입니다. <span style="color:#1a5fb4;text-decoration:underline">✓ 이 링크</span>는 배경과 6 : 1이고 밑줄로 한 번 더 구분.</div>
 </div>

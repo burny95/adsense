@@ -126,7 +126,8 @@ const year = new Date().getFullYear();
     <!-- 애드센스 승인 후 여기에 구글이 제공한 광고 스크립트를 삽입 -->
   </head>
   <body>
-    <a class="skip-link" href="#main">본문 바로가기</a>
+    {/* 사이드바가 있으면 사이드바를 건너뛰고 본문으로 바로 간다 */}
+    <a class="skip-link" href={sidebar ? '#content' : '#main'}>본문 바로가기</a>
 
     <header class="site-header">
       <div class:list={['container', { wide, sidebar }]}>
@@ -171,12 +172,13 @@ const year = new Date().getFullYear();
         {
           sidebar ? (
             <div class="with-sidebar">
-              <div class="with-sidebar__main">
-                <slot />
-              </div>
-              <aside class="with-sidebar__aside" aria-label="블로그 메뉴">
+              {/* 시각상 왼쪽이므로 DOM에서도 먼저 온다 — 탭 순서와 화면 순서를 일치시킨다 */}
+              <aside class="with-sidebar__aside" aria-label="사이트 메뉴">
                 <slot name="sidebar" />
               </aside>
+              <div class="with-sidebar__main" id="content" tabindex="-1">
+                <slot />
+              </div>
             </div>
           ) : (
             <slot />
@@ -189,18 +191,23 @@ const year = new Date().getFullYear();
       <div class:list={['container', { wide, sidebar }]}>
         {/* 전체 도구·페이지 목록 (사이드바 대신 어느 페이지에서든 전체 접근) */}
         <nav class="footer-sitemap" aria-label="사이트맵">
-          <div class="footer-col">
-            <p class="footer-head"><a href="/tools">도구</a></p>
-            <ul>
-              {
-                TOOLS.map((tool) => (
-                  <li>
-                    <a href={`/tools/${tool.slug}`}>{tool.title}</a>
-                  </li>
-                ))
-              }
-            </ul>
-          </div>
+          {/* 사이드바가 있는 페이지에서는 같은 목록이 두 번 나오므로 생략 */}
+          {
+            !sidebar && (
+              <div class="footer-col">
+                <p class="footer-head">
+                  <a href="/tools">도구</a>
+                </p>
+                <ul>
+                  {TOOLS.map((tool) => (
+                    <li>
+                      <a href={`/tools/${tool.slug}`}>{tool.title}</a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )
+          }
           <div class="footer-col">
             <p class="footer-head">사이트</p>
             <ul>

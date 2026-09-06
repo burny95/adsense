@@ -24,7 +24,7 @@ import ToolPage from '../../layouts/ToolPage.astro';
   </form>
 
   <p class="ratio">
-    <span id="ratio-value">–</span><span class="ratio-label">대비비</span>
+    <span id="ratio-value" role="status">–</span><span class="ratio-label">대비비</span>
   </p>
 
   <table class="data-table">
@@ -155,8 +155,12 @@ import ToolPage from '../../layouts/ToolPage.astro';
     const fg = parseHex(fgText.value);
     const bg = parseHex(bgText.value);
 
+    // 어느 쪽 색이 잘못됐는지 그 입력에 표시한다
+    fgText.toggleAttribute('aria-invalid', !fg);
+    bgText.toggleAttribute('aria-invalid', !bg);
+
     if (!fg || !bg) {
-      ratioValue.textContent = '색 형식 오류';
+      ratioValue.textContent = '색 형식 오류 — #RRGGBB로 입력하세요';
       rows.forEach((r) => {
         const c = r.querySelector('.verdict')!;
         c.textContent = '';

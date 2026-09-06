@@ -52,7 +52,7 @@ clamp() 기초 글이라면 이렇게 채웁니다.
 
 이 정보로 검색결과에 표시되는 모양은 대략 이렇습니다.
 
-<div style="background:#fff;border:1px solid #e4e6ea;border-radius:10px;padding:1.25rem 1.5rem">
+<div style="background:#fff;color:#1c1e21;border:1px solid #e4e6ea;border-radius:10px;padding:1.25rem 1.5rem">
   <div style="color:#4d5156;font-size:.8rem">burnytools.com › blog › css-clamp-basics</div>
   <div style="color:#1a0dab;font-size:1.3rem;margin:.15rem 0 .25rem">CSS clamp() 기초 — 정의와 기본 사용법 | Burny Tools</div>
   <div style="color:#4d5156;font-size:.92rem;line-height:1.55">clamp()가 받는 세 값과 브라우저가 화면 너비에 따라 크기를 정하는 방식을 예제 하나로 정리합니다.</div>
@@ -96,7 +96,7 @@ clamp() 기초 글이라면 이렇게 채웁니다.
 
 메신저에 이 링크를 붙이면 이런 카드가 만들어집니다.
 
-<div style="background:#fff;border:1px solid #e4e6ea;border-radius:10px;padding:1.25rem 1.5rem">
+<div style="background:#fff;color:#1c1e21;border:1px solid #e4e6ea;border-radius:10px;padding:1.25rem 1.5rem">
   <div style="max-width:340px;border:1px solid #dfe2e8;border-radius:10px;overflow:hidden;font-family:sans-serif">
     <div style="background:linear-gradient(135deg,#f97316,#fbbf24);height:160px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:.8rem">og:image · 1200×630</div>
     <div style="padding:.75rem .9rem">

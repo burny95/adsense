@@ -31,7 +31,7 @@ draft: false
 
 한 겹으로는 이 둘을 동시에 표현할 수 없습니다. 흐림을 줄이면 접지만 남아 딱딱해지고, 흐림을 키우면 확산만 남아 물체가 떠 있는지 얼룩이 진 건지 알 수 없게 됩니다. 그래서 **성격이 다른 그림자를 겹쳐 쌓습니다.**
 
-<div style="background:#fff;border:1px solid #e4e6ea;border-radius:10px;padding:1.75rem 1.5rem;display:flex;gap:1.75rem;flex-wrap:wrap;justify-content:center;font-family:system-ui,sans-serif">
+<div style="background:#fff;color:#1c1e21;border:1px solid #e4e6ea;border-radius:10px;padding:1.75rem 1.5rem;display:flex;gap:1.75rem;flex-wrap:wrap;justify-content:center;font-family:system-ui,sans-serif">
   <div style="text-align:center"><div style="width:96px;height:70px;background:#fff;border-radius:10px;box-shadow:0 8px 20px -4px rgba(0,0,0,.18)"></div><div style="font-size:11px;color:#555;margin-top:12px">1겹</div></div>
   <div style="text-align:center"><div style="width:96px;height:70px;background:#fff;border-radius:10px;box-shadow:0 1px 2px rgba(0,0,0,.10),0 8px 24px -4px rgba(0,0,0,.14),0 16px 40px -8px rgba(0,0,0,.10)"></div><div style="font-size:11px;color:#555;margin-top:12px">3겹</div></div>
 </div>

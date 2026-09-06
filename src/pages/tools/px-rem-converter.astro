@@ -13,6 +13,9 @@ const commonPx = [10, 12, 14, 16, 18, 20, 24, 28, 32, 40, 48, 64];
         기준 폰트 크기 (px)
         <input class="control" type="number" name="root" value="16" min="1" step="1" />
         <small>보통 html 요소의 font-size (기본 16)</small>
+        <small class="is-error" id="root-error" hidden>
+          1 이상의 숫자가 아니어서 16px로 계산하고 있습니다.
+        </small>
       </label>
       <label class="field">
         px 값
@@ -86,8 +89,15 @@ const commonPx = [10, 12, 14, 16, 18, 20, 24, 28, 32, 40, 48, 64];
   // 소수점 정리: 최대 4자리, 뒤 0 제거
   const trim = (n: number) => parseFloat(n.toFixed(4)).toString();
 
+  const rootError = document.getElementById('root-error')!;
+
+  // 값이 유효하지 않으면 16으로 계산하되, 대체했다는 사실을 숨기지 않는다
   function root() {
-    return Number(rootInput.value) || 16;
+    const n = Number(rootInput.value);
+    const ok = n > 0;
+    rootError.hidden = ok;
+    rootInput.toggleAttribute('aria-invalid', !ok);
+    return ok ? n : 16;
   }
 
   function refreshTable() {

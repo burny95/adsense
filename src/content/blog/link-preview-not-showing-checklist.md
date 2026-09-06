@@ -23,18 +23,18 @@ draft: false
 
 가장 흔한 원인입니다. 크롤러는 페이지를 받아서 그 자리에서 `<head>`만 읽고 끝냅니다. 자바스크립트를 실행하지 않습니다.
 
-<div style="background:#fff;border:1px solid #e4e6ea;border-radius:10px;padding:1.1rem 1.4rem;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.8rem;line-height:1.9">
+<div style="background:#fff;color:#1c1e21;border:1px solid #e4e6ea;border-radius:10px;padding:1.1rem 1.4rem;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.8rem;line-height:1.9">
   <div style="color:#c92a2a">✗ 브라우저에서 JS 실행 후 삽입 — 크롤러엔 빈 &lt;head&gt;</div>
-  <div style="color:#2b8a3e">✓ 서버가 내려준 HTML에 이미 포함 — 크롤러가 바로 읽음</div>
+  <div style="color:#1a7f37">✓ 서버가 내려준 HTML에 이미 포함 — 크롤러가 바로 읽음</div>
 </div>
 
 React·Vue 같은 SPA에서 `react-helmet` 등으로 클라이언트에서만 태그를 넣으면, 브라우저에는 보여도 크롤러에는 빈 `<head>`입니다. SSR·SSG로 처음 HTML에 심거나, 메타 태그용 프리렌더가 필요합니다.
 
 ### 2. og:image가 절대 URL인가
 
-<div style="background:#fff;border:1px solid #e4e6ea;border-radius:10px;padding:1.1rem 1.4rem;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.8rem;line-height:1.9">
+<div style="background:#fff;color:#1c1e21;border:1px solid #e4e6ea;border-radius:10px;padding:1.1rem 1.4rem;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.8rem;line-height:1.9">
   <div style="color:#c92a2a">✗ &lt;meta property="og:image" content="/og.png"&gt;</div>
-  <div style="color:#2b8a3e">✓ &lt;meta property="og:image" content="https://example.com/og.png"&gt;</div>
+  <div style="color:#1a7f37">✓ &lt;meta property="og:image" content="https://example.com/og.png"&gt;</div>
 </div>
 
 상대 경로는 대부분의 플랫폼이 무시합니다. `https://`부터 전체 주소로 씁니다.
@@ -47,7 +47,7 @@ React·Vue 같은 SPA에서 `react-helmet` 등으로 클라이언트에서만 �
 
 이미지를 못 불러온 카드와 정상 카드:
 
-<div style="background:#fff;border:1px solid #e4e6ea;border-radius:10px;padding:1.25rem 1.5rem;display:flex;gap:1rem;flex-wrap:wrap;font-family:system-ui,sans-serif">
+<div style="background:#fff;color:#1c1e21;border:1px solid #e4e6ea;border-radius:10px;padding:1.25rem 1.5rem;display:flex;gap:1rem;flex-wrap:wrap;font-family:system-ui,sans-serif">
   <div style="width:230px;border:1px solid #dfe2e8;border-radius:10px;overflow:hidden">
     <div style="background:#f1f3f5;height:115px;display:flex;align-items:center;justify-content:center;color:#adb5bd;font-size:.76rem">✗ 이미지 못 불러옴</div>
     <div style="padding:.55rem .7rem">
@@ -75,7 +75,7 @@ React·Vue 같은 SPA에서 `react-helmet` 등으로 클라이언트에서만 �
 
 플랫폼은 한 번 읽은 og 정보를 일정 시간 저장해 둡니다. 태그를 고쳐도 바로 안 바뀝니다.
 
-<div style="background:#fff;border:1px solid #e4e6ea;border-radius:10px;padding:1.25rem 1.5rem;display:flex;gap:1rem;flex-wrap:wrap;font-family:system-ui,sans-serif">
+<div style="background:#fff;color:#1c1e21;border:1px solid #e4e6ea;border-radius:10px;padding:1.25rem 1.5rem;display:flex;gap:1rem;flex-wrap:wrap;font-family:system-ui,sans-serif">
   <div style="width:230px;border:1px solid #dfe2e8;border-radius:10px;padding:.6rem .75rem">
     <div style="color:#111;font-weight:600;font-size:.83rem">예전 제목 · 옛 이미지</div>
     <div style="color:#9aa0a6;font-size:.7rem;margin-top:.3rem">example.com · 캐시된 값</div>

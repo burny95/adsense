@@ -95,6 +95,9 @@ API_BASE_URL</textarea
         .map((line) => (line.trim() ? fn(tokenize(line)) : ''))
         .join('\n');
       block.querySelector('.result')!.textContent = out;
+      // 변환 결과가 없으면 복사할 것도 없다
+      const copy = block.querySelector<HTMLButtonElement>('.btn-copy');
+      if (copy) copy.disabled = out.trim() === '';
     });
   }
 

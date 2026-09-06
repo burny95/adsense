@@ -16,7 +16,7 @@ const sections = (Object.keys(CATEGORIES) as (keyof typeof CATEGORIES)[])
 ---
 
 <Layout title="도구" description="CSS clamp(), px ↔ rem, box-shadow, 색 대비(WCAG), OG 메타태그, 네이밍 컨벤션까지 브라우저에서 바로 쓰는 무료 프론트엔드 도구 6종. 설치도 로그인도 필요 없습니다." wide sidebar>
-  <SiteSidebar slot="sidebar" />
+  <SiteSidebar slot="sidebar" showTools={false} />
 
   <h1>도구</h1>
   <p class="tool-intro">필요한 값을 넣으면 바로 결과가 나오는 도구들입니다.</p>
@@ -26,7 +26,7 @@ const sections = (Object.keys(CATEGORIES) as (keyof typeof CATEGORIES)[])
   {
     sections.map((section) => (
       <section id={section.key}>
-        <p class="section-label">{section.label}</p>
+        <h2 class="section-label">{section.label}</h2>
         <div class="card-grid">
           {section.tools.map((tool) => (
             <a class="card" href={`/tools/${tool.slug}`}>

@@ -10,7 +10,7 @@ draft: false
 
 ## 같은 회색인데 왜 하나는 되고 하나는 안 되나
 
-<div style="background:#fff;border:1px solid #e4e6ea;border-radius:10px;padding:1.25rem 1.5rem">
+<div style="background:#fff;color:#1c1e21;border:1px solid #e4e6ea;border-radius:10px;padding:1.25rem 1.5rem">
   <p style="margin:0 0 .5rem;color:#999999;font-size:1.05rem">이 문장은 #999 — 흔히 쓰는 연한 회색입니다.</p>
   <p style="margin:0;color:#767676;font-size:1.05rem">이 문장은 #767676 — 조금 더 진한 회색입니다.</p>
 </div>
@@ -25,7 +25,7 @@ draft: false
 
 이 값은 **색상(빨강·파랑 같은 hue)이 아니라 밝기로만** 결정됩니다. 아래 두 줄을 보면 바로 감이 옵니다.
 
-<div style="background:#fff;border:1px solid #e4e6ea;border-radius:10px;padding:1.25rem 1.5rem">
+<div style="background:#fff;color:#1c1e21;border:1px solid #e4e6ea;border-radius:10px;padding:1.25rem 1.5rem">
   <div style="background:#d32f2f;color:#2e7d32;padding:.5rem .8rem;border-radius:6px;margin-bottom:.6rem">빨강 배경 + 초록 글자 — 대비비 약 1 : 1</div>
   <div style="background:#d32f2f;color:#ffffff;padding:.5rem .8rem;border-radius:6px">빨강 배경 + 흰 글자 — 대비비 약 5 : 1</div>
 </div>
@@ -76,7 +76,7 @@ draft: false
 
 `color` 값만 바꿔 가며 실제로 렌더링하면:
 
-<div style="background:#fff;border:1px solid #e4e6ea;border-radius:10px;padding:1.25rem 1.5rem;line-height:1.7">
+<div style="background:#fff;color:#1c1e21;border:1px solid #e4e6ea;border-radius:10px;padding:1.25rem 1.5rem;line-height:1.7">
   <div style="color:#999999">color: #999999 &nbsp;—&nbsp; 대비비 2.8 : 1 &nbsp;—&nbsp; AA 실패</div>
   <div style="color:#808080">color: #808080 &nbsp;—&nbsp; 대비비 3.9 : 1 &nbsp;—&nbsp; AA 실패</div>
   <div style="color:#767676">color: #767676 &nbsp;—&nbsp; 대비비 4.5 : 1 &nbsp;—&nbsp; AA 통과</div>

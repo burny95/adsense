@@ -8,11 +8,27 @@ import ToolPage from '../../layouts/ToolPage.astro';
     <div class="field-grid">
       <label class="field">
         최소 뷰포트 (px)
-        <input class="control" type="number" name="minVw" value="360" min="1" step="1" />
+        <input
+          class="control"
+          type="number"
+          name="minVw"
+          value="360"
+          min="1"
+          step="1"
+          aria-describedby="form-error"
+        />
       </label>
       <label class="field">
         최대 뷰포트 (px)
-        <input class="control" type="number" name="maxVw" value="1280" min="1" step="1" />
+        <input
+          class="control"
+          type="number"
+          name="maxVw"
+          value="1280"
+          min="1"
+          step="1"
+          aria-describedby="form-error"
+        />
       </label>
       <label class="field">
         최소 크기 (px)
@@ -24,9 +40,19 @@ import ToolPage from '../../layouts/ToolPage.astro';
       </label>
       <label class="field">
         기준 폰트 크기 (px)
-        <input class="control" type="number" name="rootSize" value="16" min="1" step="1" />
+        <input
+          class="control"
+          type="number"
+          name="rootSize"
+          value="16"
+          min="1"
+          step="1"
+          aria-describedby="form-error"
+        />
         <small>rem 변환 기준</small>
       </label>
+      {/* 잘못된 입력을 지적하는 자리. 결과 박스가 아니라 입력 바로 아래에 둔다 */}
+      <p class="field-error" id="form-error" role="alert" hidden></p>
     </div>
   </form>
 
@@ -36,7 +62,7 @@ import ToolPage from '../../layouts/ToolPage.astro';
       <button type="button" class="btn" id="copy">복사</button>
     </div>
     <code class="output-code" id="output">clamp(...)</code>
-    <p class="hint" id="hint"></p>
+    <p class="hint" id="hint" role="status"></p>
   </div>
 
   <div class="preview">
@@ -76,9 +102,38 @@ import ToolPage from '../../layouts/ToolPage.astro';
   const hint = document.getElementById('hint')!;
   const previewText = document.getElementById('preview-text')!;
   const copyBtn = document.getElementById('copy') as HTMLButtonElement;
+  const formError = document.getElementById('form-error')!;
 
   // 소수점 정리: 최대 4자리, 불필요한 0 제거
   const round = (n: number) => parseFloat(n.toFixed(4)).toString();
+
+  // 어느 입력이 문제인지 테두리로 표시
+  function markFields(names: string[]) {
+    ['minVw', 'maxVw', 'rootSize'].forEach((n) => {
+      const el = form.elements.namedItem(n) as HTMLInputElement;
+      el.toggleAttribute('aria-invalid', names.includes(n));
+    });
+  }
+
+  // 유효하지 않은 상태를 화면·보조기술·복사 버튼에 한꺼번에 반영한다.
+  // 복사 버튼을 살려두면 결과가 죽은 줄 모르고 플레이스홀더를 복사하게 된다.
+  function setInvalid(message: string, fields: string[]) {
+    formError.textContent = message;
+    formError.hidden = false;
+    output.textContent = 'clamp(...)';
+    output.setAttribute('data-invalid', '');
+    copyBtn.disabled = true;
+    hint.textContent = '';
+    markFields(fields);
+  }
+
+  function clearInvalid() {
+    formError.hidden = true;
+    formError.textContent = '';
+    output.removeAttribute('data-invalid');
+    copyBtn.disabled = false;
+    markFields([]);
+  }
 
   function compute() {
     const data = new FormData(form);
@@ -86,18 +141,26 @@ import ToolPage from '../../layouts/ToolPage.astro';
     const maxVw = Number(data.get('maxVw'));
     const minSize = Number(data.get('minSize'));
     const maxSize = Number(data.get('maxSize'));
-    const root = Number(data.get('rootSize')) || 16;
+    const root = Number(data.get('rootSize'));
 
+    // 기준값을 조용히 16으로 대체하면 화면의 숫자와 계산 결과가 어긋난다
+    if (!(root > 0)) {
+      setInvalid('기준 폰트 크기는 1px 이상이어야 합니다.', ['rootSize']);
+      return;
+    }
     if (!minVw || !maxVw || minVw === maxVw) {
-      hint.textContent = '뷰포트 값을 서로 다르게 입력하세요.';
-      output.textContent = 'clamp(...)';
+      setInvalid('뷰포트 값을 서로 다르게 입력하세요.', ['minVw', 'maxVw']);
       return;
     }
     if (minVw > maxVw) {
-      hint.textContent = '최소 뷰포트가 최대 뷰포트보다 큽니다. 값을 바꿔 입력하세요.';
-      output.textContent = 'clamp(...)';
+      setInvalid('최소 뷰포트가 최대 뷰포트보다 큽니다. 값을 바꿔 입력하세요.', [
+        'minVw',
+        'maxVw',
+      ]);
       return;
     }
+
+    clearInvalid();
     hint.textContent =
       minSize === maxSize ? '최소·최대 크기가 같으면 clamp가 의미 없습니다.' : '';
 

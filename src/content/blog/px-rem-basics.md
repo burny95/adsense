@@ -26,13 +26,13 @@ draft: false
 
 같은 카드를 px로 짰을 때와 rem으로 짰을 때, 그 사용자의 화면입니다.
 
-<div style="background:#fff;border:1px solid #e4e6ea;border-radius:10px;padding:1.25rem 1.5rem;display:flex;gap:1rem;flex-wrap:wrap;align-items:flex-start;font-family:system-ui,sans-serif">
+<div style="background:#fff;color:#1c1e21;border:1px solid #e4e6ea;border-radius:10px;padding:1.25rem 1.5rem;display:flex;gap:1rem;flex-wrap:wrap;align-items:flex-start;font-family:system-ui,sans-serif">
   <div style="flex:1 1 210px;border:1px solid #dfe2e8;border-radius:8px;padding:24px">
     <div style="color:#c92a2a;font-size:11px;margin-bottom:6px">✗ px 고정</div>
     <div style="color:#111;font-size:18px">설정을 20px로 바꿔도 그대로 18px</div>
   </div>
   <div style="flex:1 1 210px;border:1px solid #dfe2e8;border-radius:8px;padding:30px">
-    <div style="color:#2b8a3e;font-size:11px;margin-bottom:6px">✓ rem</div>
+    <div style="color:#1a7f37;font-size:11px;margin-bottom:6px">✓ rem</div>
     <div style="color:#111;font-size:22.5px">설정을 따라 22.5px로 커짐</div>
   </div>
 </div>
@@ -64,7 +64,7 @@ px로만 짠 사이트는 이 설정을 통째로 무시합니다. rem을 쓰는
 
 `em`은 기준이 자기 자신의 `font-size`입니다. 같은 `0.9em`이라도 부모가 무엇이냐에 따라 결과가 달라지고, 중첩되면 곱해집니다.
 
-<div style="background:#fff;border:1px solid #e4e6ea;border-radius:10px;padding:1.25rem 1.5rem;font-family:system-ui,sans-serif;color:#111">
+<div style="background:#fff;color:#1c1e21;border:1px solid #e4e6ea;border-radius:10px;padding:1.25rem 1.5rem;font-family:system-ui,sans-serif;color:#111">
   <div style="font-size:16px">1단계 — 16px</div>
   <div style="font-size:16px;padding-left:14px"><span style="font-size:.9em">2단계 · 0.9em → 14.4px</span>
     <div style="font-size:14.4px;padding-left:14px"><span style="font-size:.9em">3단계 · 0.9em → 13.0px</span>
