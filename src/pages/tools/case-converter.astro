@@ -22,6 +22,10 @@ getUserName
 API_BASE_URL</textarea
       >
     </label>
+    <div class="form-actions">
+      <button type="button" class="btn" id="reset">초기화</button>
+      <small>값을 바꾸면 주소도 함께 바뀝니다. 그 주소를 공유하면 같은 값으로 열립니다.</small>
+    </div>
   </form>
 
   <div class="case-results">
@@ -58,6 +62,13 @@ API_BASE_URL</textarea
 </ToolPage>
 
 <script>
+  import {
+    defaultsOf,
+    applyParams,
+    syncParams,
+    resetForm,
+  } from '../../scripts/tool-state';
+
   // 네이밍 표기법 변환 (클라이언트에서만 실행)
   const form = document.getElementById('case-form') as HTMLFormElement;
   const input = form.elements.namedItem('input') as HTMLTextAreaElement;
@@ -101,7 +112,22 @@ API_BASE_URL</textarea
     });
   }
 
-  form.addEventListener('input', convert);
+  const KEYS = ['input'];
+  const defaults = defaultsOf(form, KEYS);
+  const resetBtn = document.getElementById('reset') as HTMLButtonElement;
+
+  form.addEventListener('input', () => {
+    syncParams(form, KEYS, defaults);
+    convert();
+  });
+
+  resetBtn.addEventListener('click', () => {
+    resetForm(form, defaults);
+    convert();
+  });
+
+  // 공유 링크로 들어온 경우 주소의 값을 먼저 반영한다
+  applyParams(form, KEYS);
 
   document.querySelectorAll<HTMLButtonElement>('.btn-copy').forEach((btn) => {
     btn.addEventListener('click', async () => {

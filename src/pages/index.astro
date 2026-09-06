@@ -18,8 +18,11 @@ const recentPosts = (await getCollection('blog', ({ data }) => !data.draft))
 >
   <SiteSidebar slot="sidebar" showTools={false} />
 
-  <h1>{SITE_NAME}</h1>
-  <p class="tool-intro">{SITE_DESCRIPTION}</p>
+  <h1>웹 퍼블리셔를 위한 무료 프론트엔드 도구</h1>
+  <p class="tool-intro">
+    CSS clamp(), px ↔ rem, box-shadow, 색 대비(WCAG), OG 태그, 네이밍 컨벤션까지.
+    설치도 로그인도 없이 브라우저에서 바로 씁니다.
+  </p>
 
   <h2 class="section-label">도구</h2>
   <div class="card-grid">

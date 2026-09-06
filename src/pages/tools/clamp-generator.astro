@@ -54,6 +54,10 @@ import ToolPage from '../../layouts/ToolPage.astro';
       {/* 잘못된 입력을 지적하는 자리. 결과 박스가 아니라 입력 바로 아래에 둔다 */}
       <p class="field-error" id="form-error" role="alert" hidden></p>
     </div>
+    <div class="form-actions">
+      <button type="button" class="btn" id="reset">초기화</button>
+      <small>값을 바꾸면 주소도 함께 바뀝니다. 그 주소를 공유하면 같은 값으로 열립니다.</small>
+    </div>
   </form>
 
   <div class="output">
@@ -97,7 +101,15 @@ import ToolPage from '../../layouts/ToolPage.astro';
 
 <script>
   // clamp() 계산 및 화면 갱신 (클라이언트에서만 실행)
+  import {
+    defaultsOf,
+    applyParams,
+    syncParams,
+    resetForm,
+  } from '../../scripts/tool-state';
+
   const form = document.getElementById('clamp-form') as HTMLFormElement;
+  const KEYS = ['minVw', 'maxVw', 'minSize', 'maxSize', 'rootSize'];
   const output = document.getElementById('output')!;
   const hint = document.getElementById('hint')!;
   const previewText = document.getElementById('preview-text')!;
@@ -184,7 +196,21 @@ import ToolPage from '../../layouts/ToolPage.astro';
     (previewText as HTMLElement).style.fontSize = value;
   }
 
-  form.addEventListener('input', compute);
+  const defaults = defaultsOf(form, KEYS);
+  const resetBtn = document.getElementById('reset') as HTMLButtonElement;
+
+  form.addEventListener('input', () => {
+    syncParams(form, KEYS, defaults);
+    compute();
+  });
+
+  resetBtn.addEventListener('click', () => {
+    resetForm(form, defaults);
+    compute();
+  });
+
+  // 공유 링크로 들어온 경우 주소의 값을 먼저 반영한다
+  applyParams(form, KEYS);
 
   copyBtn.addEventListener('click', async () => {
     await navigator.clipboard.writeText(output.textContent ?? '');

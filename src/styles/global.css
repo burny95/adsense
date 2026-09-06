@@ -40,12 +40,12 @@
   --muted: #5c636e;
   --border: #e4e6ea;
   --border-strong: #cfd3da;
-  --accent: #3050e0;
-  --accent-hover: #2340c8;
+  --accent: #b4480a;
+  --accent-hover: #8f3907;
   --accent-contrast: #ffffff;
   --success: #1a7f37;
   --danger: #c62f2f;
-  --focus: #3050e0;
+  --focus: #b4480a;
 }
 
 /* 다크 팔레트 (아래 두 곳에서 동일하게 사용) */
@@ -60,12 +60,12 @@
     --muted: #9aa1ad;
     --border: #262a33;
     --border-strong: #363b45;
-    --accent: #6f8bff;
-    --accent-hover: #8399ff;
+    --accent: #ff9a4d;
+    --accent-hover: #ffb273;
     --accent-contrast: #0f1115;
     --success: #4ac36a;
     --danger: #ff6b6b;
-    --focus: #6f8bff;
+    --focus: #ff9a4d;
   }
 }
 
@@ -79,12 +79,12 @@
   --muted: #9aa1ad;
   --border: #262a33;
   --border-strong: #363b45;
-  --accent: #6f8bff;
-  --accent-hover: #8399ff;
+  --accent: #ff9a4d;
+  --accent-hover: #ffb273;
   --accent-contrast: #0f1115;
   --success: #4ac36a;
   --danger: #ff6b6b;
-  --focus: #6f8bff;
+  --focus: #ff9a4d;
 }
 
 * {
@@ -276,18 +276,6 @@ main {
 
 /* 토글 위치 전환: 데스크톱은 헤더, 좁은 화면은 푸터.
    (이 블록은 반드시 .theme-toggle 기본 규칙 뒤에 와야 override 됨) */
-.theme-toggle--footer {
-  display: none;
-}
-@media (max-width: 600px) {
-  .theme-toggle--header {
-    display: none;
-  }
-  .theme-toggle--footer {
-    display: inline-flex;
-  }
-}
-
 /* 아이콘 표시: 현재 적용된 테마 아이콘만 노출 */
 .theme-toggle .icon-moon {
   display: none;
@@ -405,6 +393,7 @@ main {
   border-color: var(--border-strong);
   transform: translateY(-2px);
 }
+.card h2,
 .card h3,
 .card h4 {
   margin: 0 0 var(--space-2);
@@ -505,7 +494,7 @@ main {
   background: var(--surface);
   color: var(--text);
   font: inherit;
-  min-height: 2.6rem; /* 모바일 탭 타겟 */
+  min-height: 2.75rem; /* 모바일 탭 타겟 44px */
 }
 textarea.control {
   min-height: 4rem;
@@ -518,7 +507,7 @@ textarea.control {
   justify-content: center;
   gap: var(--space-2);
   padding: 0.5rem 1rem;
-  min-height: 2.6rem;
+  min-height: 2.75rem;
   border: 1px solid var(--border-strong);
   border-radius: var(--radius-sm);
   background: var(--surface);
@@ -572,6 +561,19 @@ textarea.control {
   min-height: 1.2em;
   font-size: 0.83rem;
   color: var(--danger);
+}
+
+/* 초기화·실행취소 같은 폼 하단 동작 */
+.form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+}
+.form-actions small {
+  color: var(--muted);
+  font-size: 0.83rem;
 }
 
 /* 비활성 버튼 — 지금은 누를 수 없다는 것이 보이도록 */
@@ -642,7 +644,6 @@ textarea.control {
   margin: var(--space-5) 0;
   padding: var(--space-3) var(--space-4);
   border: 1px solid var(--border-strong);
-  border-left: 3px solid var(--accent);
   border-radius: var(--radius-sm);
   background: var(--bg-subtle);
   font-size: 0.92rem;
@@ -782,9 +783,20 @@ textarea.control {
   gap: var(--space-4);
 }
 
-/* 가로 스크롤 방지: 넓은 자식은 각자 overflow 처리 */
-body {
-  overflow-x: hidden;
+/* 사용자가 움직임 최소화를 켜 두었으면 전환과 들림 효과를 끈다 */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .card:hover,
+  .post-nav-link:hover {
+    transform: none;
+  }
 }
 
 /* ---------- 블로그 사이드바 ---------- */
@@ -817,7 +829,8 @@ body {
 /* 사이드바를 세로로 놓을 공간이 없어지면 본문 아래로 내린다 */
 @media (max-width: 900px) {
   .with-sidebar {
-    grid-template-columns: 1fr;
+    /* 1fr은 자식의 min-content 아래로 줄어들지 않아 좁은 화면에서 가로 넘침을 만든다 */
+    grid-template-columns: minmax(0, 1fr);
     gap: var(--space-6);
   }
   /* 1열에서는 링크 더미를 먼저 읽히게 두지 않고 본문을 위로 올린다 */

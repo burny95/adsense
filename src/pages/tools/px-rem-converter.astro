@@ -26,6 +26,10 @@ const commonPx = [10, 12, 14, 16, 18, 20, 24, 28, 32, 40, 48, 64];
         <input class="control" type="number" name="rem" value="1.5" step="0.01" />
       </label>
     </div>
+    <div class="form-actions">
+      <button type="button" class="btn" id="reset">초기화</button>
+      <small>값을 바꾸면 주소도 함께 바뀝니다. 그 주소를 공유하면 같은 값으로 열립니다.</small>
+    </div>
   </form>
 
   <div class="output">
@@ -77,6 +81,13 @@ const commonPx = [10, 12, 14, 16, 18, 20, 24, 28, 32, 40, 48, 64];
 </ToolPage>
 
 <script>
+  import {
+    defaultsOf,
+    applyParams,
+    syncParams,
+    resetForm,
+  } from '../../scripts/tool-state';
+
   // px ↔ rem 상호 변환 (클라이언트에서만 실행)
   const form = document.getElementById('conv-form') as HTMLFormElement;
   const rootInput = form.elements.namedItem('root') as HTMLInputElement;
@@ -90,6 +101,8 @@ const commonPx = [10, 12, 14, 16, 18, 20, 24, 28, 32, 40, 48, 64];
   const trim = (n: number) => parseFloat(n.toFixed(4)).toString();
 
   const rootError = document.getElementById('root-error')!;
+  const resetBtn = document.getElementById('reset') as HTMLButtonElement;
+  const KEYS = ['root', 'px'];
 
   // 값이 유효하지 않으면 16으로 계산하되, 대체했다는 사실을 숨기지 않는다
   function root() {
@@ -140,6 +153,22 @@ const commonPx = [10, 12, 14, 16, 18, 20, 24, 28, 32, 40, 48, 64];
     refreshTable();
     setResult();
   });
+
+  const defaults = defaultsOf(form, ['root', 'px', 'rem']);
+
+  // 값이 바뀔 때마다 주소에 반영 (rem은 px에서 계산되므로 주소에 담지 않는다)
+  form.addEventListener('input', () => syncParams(form, KEYS, defaults));
+
+  resetBtn.addEventListener('click', () => {
+    resetForm(form, defaults);
+    refreshTable();
+    setResult();
+  });
+
+  // 공유 링크로 들어온 경우 주소의 값을 반영하고 rem을 다시 계산한다
+  if (applyParams(form, KEYS) && pxInput.value.trim() !== '') {
+    remInput.value = trim(Number(pxInput.value) / root());
+  }
 
   refreshTable();
   setResult();

@@ -150,7 +150,7 @@ const year = new Date().getFullYear();
     </header>
 
     <script is:inline>
-      // 이벤트 위임: 헤더·푸터 어느 토글 버튼을 눌러도 동작 (푸터는 이 시점에 아직 미파싱)
+      // 이벤트 위임: 토글 버튼이 어디에 있든 동작한다
       document.addEventListener('click', function (e) {
         if (!e.target.closest('.theme-toggle')) return;
         var root = document.documentElement;
@@ -221,7 +221,6 @@ const year = new Date().getFullYear();
         </nav>
         <div class="footer-bottom">
           <span>© {year} {SITE_NAME}</span>
-          <ThemeToggle class="theme-toggle--footer" />
         </div>
       </div>
     </footer>

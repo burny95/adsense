@@ -50,6 +50,10 @@ import ToolPage from '../../layouts/ToolPage.astro';
         <input class="control" type="text" name="locale" value="ko_KR" />
       </label>
     </div>
+    <div class="form-actions">
+      <button type="button" class="btn" id="reset">초기화</button>
+      <small>값을 바꾸면 주소도 함께 바뀝니다. 그 주소를 공유하면 같은 값으로 열립니다.</small>
+    </div>
   </form>
 
   <div class="output">
@@ -95,6 +99,13 @@ import ToolPage from '../../layouts/ToolPage.astro';
 </ToolPage>
 
 <script>
+  import {
+    defaultsOf,
+    applyParams,
+    syncParams,
+    resetForm,
+  } from '../../scripts/tool-state';
+
   // OG/meta 태그 문자열 생성 (클라이언트에서만 실행)
   const form = document.getElementById('og-form') as HTMLFormElement;
   const output = document.getElementById('output')!;
@@ -178,7 +189,22 @@ import ToolPage from '../../layouts/ToolPage.astro';
     }
   }
 
-  form.addEventListener('input', build);
+  const KEYS = ['title', 'description', 'url', 'image', 'siteName', 'type', 'twitterCard', 'locale'];
+  const defaults = defaultsOf(form, KEYS);
+  const resetBtn = document.getElementById('reset') as HTMLButtonElement;
+
+  form.addEventListener('input', () => {
+    syncParams(form, KEYS, defaults);
+    build();
+  });
+
+  resetBtn.addEventListener('click', () => {
+    resetForm(form, defaults);
+    build();
+  });
+
+  // 공유 링크로 들어온 경우 주소의 값을 먼저 반영한다
+  applyParams(form, KEYS);
 
   copyBtn.addEventListener('click', async () => {
     await navigator.clipboard.writeText(output.textContent ?? '');
