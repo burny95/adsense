@@ -18,6 +18,7 @@ interface Props {
   ogType?: string; // 기본 website, 글은 article
   schema?: object | object[]; // 페이지별 JSON-LD (도구=SoftwareApplication, 글=Article 등)
   noindex?: boolean; // 이 페이지만 색인에서 제외 (404 등)
+  sidebar?: boolean; // 본문 오른쪽에 사이드바 슬롯을 붙일지 (블로그)
 }
 
 const {
@@ -27,6 +28,7 @@ const {
   ogType = 'website',
   schema,
   noindex = false,
+  sidebar = false,
 } = Astro.props;
 
 // 사이트 전체 차단(SITE_LIVE=false)이 우선하고, 그다음 페이지별 noindex
@@ -127,7 +129,7 @@ const year = new Date().getFullYear();
     <a class="skip-link" href="#main">본문 바로가기</a>
 
     <header class="site-header">
-      <div class:list={['container', { wide }]}>
+      <div class:list={['container', { wide, sidebar }]}>
         <a class="site-title" href="/">{SITE_NAME}</a>
         <nav aria-label="주요 메뉴">
           {
@@ -165,13 +167,26 @@ const year = new Date().getFullYear();
     </script>
 
     <main id="main">
-      <div class:list={['container', { wide }]}>
-        <slot />
+      <div class:list={['container', { wide, sidebar }]}>
+        {
+          sidebar ? (
+            <div class="with-sidebar">
+              <div class="with-sidebar__main">
+                <slot />
+              </div>
+              <aside class="with-sidebar__aside" aria-label="블로그 메뉴">
+                <slot name="sidebar" />
+              </aside>
+            </div>
+          ) : (
+            <slot />
+          )
+        }
       </div>
     </main>
 
     <footer class="site-footer">
-      <div class:list={['container', { wide }]}>
+      <div class:list={['container', { wide, sidebar }]}>
         {/* 전체 도구·페이지 목록 (사이드바 대신 어느 페이지에서든 전체 접근) */}
         <nav class="footer-sitemap" aria-label="사이트맵">
           <div class="footer-col">

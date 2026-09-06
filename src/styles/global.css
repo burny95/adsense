@@ -7,6 +7,7 @@
   /* 레이아웃 폭 */
   --w-text: 46rem; /* 읽기 본문 (블로그) */
   --w-wide: 58rem; /* 도구 페이지 */
+  --w-sidebar: 80rem; /* 사이드바가 붙는 페이지 (홈·도구·블로그 공통) */
 
   /* 간격 스케일 */
   --space-1: 0.25rem;
@@ -155,6 +156,9 @@ img {
 }
 .container.wide {
   max-width: var(--w-wide);
+}
+.container.sidebar {
+  max-width: var(--w-sidebar);
 }
 
 @media (max-width: 480px) {
@@ -364,27 +368,6 @@ main {
   gap: var(--space-3);
   padding-top: var(--space-4);
   border-top: 1px solid var(--border);
-}
-
-/* 카테고리 바로가기 칩 (도구·블로그 목록 상단) */
-.cat-nav {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-2);
-  margin: 0 0 var(--space-5);
-}
-.cat-nav a {
-  font-size: 0.85rem;
-  color: var(--muted);
-  text-decoration: none;
-  padding: var(--space-1) var(--space-3);
-  border: 1px solid var(--border);
-  border-radius: 999px;
-}
-.cat-nav a:hover {
-  color: var(--text);
-  background: var(--bg-subtle);
-  border-color: var(--border-strong);
 }
 
 /* 앵커로 이동 시 sticky 헤더에 가리지 않도록 */
@@ -775,4 +758,124 @@ textarea.control {
 /* 가로 스크롤 방지: 넓은 자식은 각자 overflow 처리 */
 body {
   overflow-x: hidden;
+}
+
+/* ---------- 블로그 사이드바 ---------- */
+
+/* 사이드바(왼쪽) + 본문 2단.
+   DOM 순서는 본문이 먼저다 — 좁은 화면에서 본문→사이드바 순으로 쌓이고,
+   스크린리더도 본문을 먼저 읽는다. 좌우 배치는 grid-column으로만 바꾼다 */
+.with-sidebar {
+  display: grid;
+  grid-template-columns: 15rem minmax(0, 1fr);
+  gap: var(--space-7);
+  align-items: start;
+}
+.with-sidebar__main {
+  grid-column: 2;
+  grid-row: 1;
+}
+/* 글 읽는 페이지(wide가 아닌 쪽)는 본문만 읽기 좋은 폭으로 줄인다.
+   바깥 컨테이너는 그대로라 헤더·사이드바 위치는 다른 페이지와 동일하다 */
+.container.sidebar:not(.wide) .with-sidebar__main {
+  max-width: var(--w-text);
+}
+.with-sidebar__aside {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+/* 긴 글을 읽는 동안 사이드바가 따라오도록 고정 (top은 sticky 헤더 높이만큼).
+   항목이 늘어 화면 높이를 넘기면 고정된 채로 아래가 잘리므로,
+   사이드바 안에서만 스크롤되도록 높이를 제한한다 */
+.with-sidebar__aside {
+  position: sticky;
+  top: 5rem;
+  max-height: calc(100dvh - 6rem);
+  overflow-y: auto;
+}
+
+/* 사이드바를 세로로 놓을 공간이 없어지면 본문 아래로 내린다 */
+@media (max-width: 900px) {
+  .with-sidebar {
+    grid-template-columns: 1fr;
+    gap: var(--space-6);
+  }
+  /* 1열로 접히면 배치 지정을 풀어 DOM 순서(본문 → 사이드바)를 따르게 한다 */
+  .with-sidebar__main,
+  .with-sidebar__aside {
+    grid-column: auto;
+    grid-row: auto;
+  }
+  .with-sidebar__aside {
+    position: static;
+    max-height: none;
+    overflow: visible;
+    padding-top: var(--space-6);
+    border-top: 1px solid var(--border);
+  }
+}
+
+.site-side {
+  font-size: 0.9rem;
+}
+
+/* 블록 사이 구분선 (마지막 블록 뒤에는 넣지 않음) */
+.side-block + .side-block {
+  margin-top: var(--space-5);
+  padding-top: var(--space-5);
+  border-top: 1px solid var(--border);
+}
+
+.side-head {
+  margin: 0 0 var(--space-3);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.side-head a {
+  color: inherit;
+  text-decoration: none;
+}
+.side-head a:hover {
+  color: var(--accent);
+}
+
+.side-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.side-list li + li {
+  margin-top: var(--space-1);
+}
+.side-list a {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  margin-inline: calc(var(--space-3) * -1); /* 배경만 넓히고 글자는 제자리에 */
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  text-decoration: none;
+  line-height: 1.4;
+}
+.side-list a:hover {
+  background: var(--bg-subtle);
+  color: var(--accent);
+}
+
+/* 현재 보고 있는 글·카테고리 표시 */
+.side-list a[aria-current] {
+  background: var(--bg-subtle);
+  font-weight: 600;
+}
+
+/* 카테고리별 글 수 */
+.side-count {
+  flex: none;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
 }

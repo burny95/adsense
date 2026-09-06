@@ -2,7 +2,7 @@
 // 블로그 글 목록 (카테고리별 섹션 + 상단 바로가기)
 import { getCollection } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
-import CategoryNav from '../../components/CategoryNav.astro';
+import SiteSidebar from '../../components/SiteSidebar.astro';
 import { CATEGORIES } from '../../consts';
 
 // 발행된 글만, 최신순 정렬
@@ -22,13 +22,13 @@ const sections = (Object.keys(CATEGORIES) as (keyof typeof CATEGORIES)[])
   .filter((s) => s.posts.length > 0);
 ---
 
-<Layout title="블로그" description="clamp(), rem 단위, box-shadow, 색 대비, OG 태그 같은 CSS·마크업 주제를 예제와 함께 정리한 글 모음. 각 글은 바로 써 볼 수 있는 도구와 연결됩니다." wide>
+<Layout title="블로그" description="clamp(), rem 단위, box-shadow, 색 대비, OG 태그 같은 CSS·마크업 주제를 예제와 함께 정리한 글 모음. 각 글은 바로 써 볼 수 있는 도구와 연결됩니다." sidebar>
+  <SiteSidebar slot="sidebar" />
+
   <h1>블로그</h1>
   <p class="tool-intro">도구를 제대로 쓰기 위한 배경지식과 실무 팁.</p>
 
   {posts.length === 0 && <p>첫 번째 글을 준비 중입니다.</p>}
-
-  {sections.length > 1 && <CategoryNav sections={sections} />}
 
   {
     sections.map((section) => (

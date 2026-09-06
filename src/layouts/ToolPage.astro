@@ -2,6 +2,7 @@
 // 도구 페이지 공통 래퍼: 빵부스러기 + 제목 + 설명 + 관련 글 + JSON-LD
 import Layout from './Layout.astro';
 import Breadcrumb from '../components/Breadcrumb.astro';
+import SiteSidebar from '../components/SiteSidebar.astro';
 import { getCollection } from 'astro:content';
 import { getTool, toolSchema } from '../tools';
 
@@ -19,7 +20,9 @@ const related = (await getCollection('blog', ({ data }) => !data.draft)).filter(
 const schema = toolSchema(tool, Astro.site!.toString());
 ---
 
-<Layout title={tool.title} description={tool.description} wide schema={schema}>
+<Layout title={tool.title} description={tool.description} wide sidebar schema={schema}>
+  <SiteSidebar slot="sidebar" activeTool={slug} />
+
   <Breadcrumb
     items={[
       { label: '홈', href: '/' },
