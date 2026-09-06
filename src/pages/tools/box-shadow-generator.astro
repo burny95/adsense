@@ -366,6 +366,45 @@ import ToolPage from '../../layouts/ToolPage.astro';
     position: sticky;
     top: 5rem;
   }
+
+  /* 1열(모바일)에서는 미리보기가 화면 위에 고정되는 바가 된다.
+     .preview는 점선 테두리만 있고 배경이 없어서, 그대로 두면 본문이
+     미리보기 뒤로 비쳐 지나간다. 불투명하게 채우고 본문 위로 올린다.
+     세로로 차지하는 높이도 절반 가까이 줄인다 */
+  @media (max-width: 59.99rem) {
+    .shadow-preview {
+      top: 3.75rem; /* sticky 헤더 바로 아래 */
+      z-index: 5;
+      background: var(--bg);
+      border-style: solid;
+      border-color: var(--border);
+      padding: var(--space-3) var(--space-4) var(--space-4);
+      /* 라벨과 배경 전환 버튼을 한 줄에 놓아 세로 공간을 아낀다 */
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--space-2);
+    }
+    .shadow-preview .preview-label {
+      order: 1;
+      flex: 1;
+      margin: 0;
+    }
+    .shadow-preview .preview-toggle {
+      order: 2;
+      margin: 0;
+    }
+    .shadow-preview .preview-stage {
+      order: 3;
+      flex: 1 0 100%;
+      min-height: 132px;
+      padding: var(--space-4);
+    }
+    .shadow-preview #shadow-box {
+      width: 76px;
+      height: 76px;
+    }
+  }
   /* 그림자 가시성을 위해 미리보기 배경은 테마와 무관하게 직접 지정 */
   .preview-stage {
     display: flex;

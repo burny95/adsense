@@ -25,3 +25,6 @@ pnpm-debug.log*
 
 # wrangler 로컬 상태
 .wrangler/
+
+# impeccable 로컬 디텍터 캐시 (리포트는 추적)
+.impeccable/hook.cache.json
