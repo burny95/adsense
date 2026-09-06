@@ -31,15 +31,17 @@
     ui-monospace, SFMono-Regular, 'SF Mono', 'Cascadia Mono', Menlo, Consolas,
     monospace;
 
-  /* 색 — 기본값은 라이트 팔레트 */
+  /* 색 — 기본값은 라이트 팔레트.
+     바탕은 순백 대신 아주 옅은 웜 뉴트럴. 눈부심을 줄이고
+     카드(--surface: 흰색)가 바탕 위로 살짝 떠 보이게 한다 */
   color-scheme: light;
-  --bg: #ffffff;
-  --bg-subtle: #f6f7f9;
+  --bg: #faf9f7;
+  --bg-subtle: #f2f0ec;
   --surface: #ffffff;
   --text: #1c1e21;
   --muted: #5c636e;
-  --border: #e4e6ea;
-  --border-strong: #cfd3da;
+  --border: #e7e4de;
+  --border-strong: #d4cfc6;
   --accent: #b4480a;
   --accent-hover: #8f3907;
   --accent-contrast: #ffffff;
