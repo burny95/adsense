@@ -35,6 +35,7 @@ export const NAV_LINKS: NavLink[] = [
 
 // 도구·글 공통 카테고리 (목록 페이지에서 섹션 구분에 사용)
 export const CATEGORIES = {
+  practice: '실무자의 팁',
   css: 'CSS',
   color: '색상',
   image: '이미지',
