@@ -123,6 +123,21 @@ const year = new Date().getFullYear();
       set:html={JSON.stringify(schemaList.length === 1 ? schemaList[0] : schemaList)}
     />
 
+    <!-- Google Analytics (gtag.js) -->
+    <script
+      is:inline
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=G-ZBFW2L3T6L"></script>
+    <script is:inline>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag('js', new Date());
+
+      gtag('config', 'G-ZBFW2L3T6L');
+    </script>
+
     <!-- 애드센스 승인 후 여기에 구글이 제공한 광고 스크립트를 삽입 -->
   </head>
   <body>
