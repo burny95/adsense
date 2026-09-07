@@ -130,7 +130,9 @@ import ToolPage from '../../layouts/ToolPage.astro';
 
   // 유효하지 않은 상태를 화면·보조기술·복사 버튼에 한꺼번에 반영한다.
   // 복사 버튼을 살려두면 결과가 죽은 줄 모르고 플레이스홀더를 복사하게 된다.
-  function setInvalid(message: string, fields: string[]) {
+  // 이름은 공용 헬퍼 setInvalid(el, 여부)와 겹치면 안 된다 — 겹치면
+  // markFields의 호출이 이 함수로 가면서 폼이 통째로 무효 상태로 굳는다.
+  function showInvalid(message: string, fields: string[]) {
     formError.textContent = message;
     formError.hidden = false;
     output.textContent = 'clamp(...)';
@@ -158,15 +160,15 @@ import ToolPage from '../../layouts/ToolPage.astro';
 
     // 기준값을 조용히 16으로 대체하면 화면의 숫자와 계산 결과가 어긋난다
     if (!(root > 0)) {
-      setInvalid('기준 폰트 크기는 1px 이상이어야 합니다.', ['rootSize']);
+      showInvalid('기준 폰트 크기는 1px 이상이어야 합니다.', ['rootSize']);
       return;
     }
     if (!minVw || !maxVw || minVw === maxVw) {
-      setInvalid('뷰포트 값을 서로 다르게 입력하세요.', ['minVw', 'maxVw']);
+      showInvalid('뷰포트 값을 서로 다르게 입력하세요.', ['minVw', 'maxVw']);
       return;
     }
     if (minVw > maxVw) {
-      setInvalid('최소 뷰포트가 최대 뷰포트보다 큽니다. 값을 바꿔 입력하세요.', [
+      showInvalid('최소 뷰포트가 최대 뷰포트보다 큽니다. 값을 바꿔 입력하세요.', [
         'minVw',
         'maxVw',
       ]);
