@@ -47,6 +47,27 @@ export const TOOLS: Tool[] = [
     category: 'css',
   },
   {
+    slug: 'color-converter',
+    title: '색 변환기 (HEX · RGB · HSL · OKLCH)',
+    description:
+      '색 하나를 넣으면 HEX, RGB, HSL, OKLCH 표기로 한 번에 바꿔 줍니다. 어느 형식으로 붙여넣어도 알아서 인식합니다.',
+    category: 'color',
+  },
+  {
+    slug: 'gradient-generator',
+    title: 'CSS 그라디언트 생성기',
+    description:
+      '색 정지점을 넣고 각도·유형을 조절해 linear·radial·conic 그라디언트를 만듭니다. 미리보기를 보며 CSS를 복사할 수 있습니다.',
+    category: 'css',
+  },
+  {
+    slug: 'image-converter',
+    title: '이미지 포맷 변환기 (PNG · JPG · WebP)',
+    description:
+      'PNG, JPG, WebP 사이를 브라우저 안에서 바꿉니다. 파일이 서버로 올라가지 않아 사진을 그대로 두고 변환할 수 있습니다.',
+    category: 'image',
+  },
+  {
     slug: 'case-converter',
     title: '네이밍 컨벤션 변환기',
     description:

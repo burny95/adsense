@@ -1,0 +1,442 @@
+---
+// 색 변환기 — HEX / RGB / HSL / OKLCH 상호 변환
+import ToolPage from '../../layouts/ToolPage.astro';
+
+// 결과로 보여줄 표기법 (data-format 값이 스크립트의 키와 짝을 이룬다)
+const FORMATS = [
+  { key: 'hex', label: 'HEX' },
+  { key: 'rgb', label: 'RGB' },
+  { key: 'hsl', label: 'HSL' },
+  { key: 'oklch', label: 'OKLCH' },
+];
+---
+
+<ToolPage slug="color-converter">
+  <form id="color-form" class="panel">
+    <label class="field">
+      색 값
+      <span class="color-row">
+        <input type="color" name="pick" value="#3b82f6" aria-label="색 선택" />
+        <input
+          class="control"
+          type="text"
+          name="value"
+          value="#3b82f6"
+          spellcheck="false"
+          autocomplete="off"
+          aria-describedby="format-hint"
+        />
+      </span>
+      <small id="format-hint">
+        <code>#3b82f6</code>, <code>rgb(59 130 246)</code>,
+        <code>hsl(217 91% 60%)</code>, <code>oklch(62.3% 0.188 260)</code> 모두 인식합니다.
+      </small>
+      <small class="is-error" id="parse-error" hidden>
+        색으로 읽을 수 없는 값입니다. 마지막으로 인식한 색을 그대로 두었습니다.
+      </small>
+    </label>
+    <div class="form-actions">
+      <button type="button" class="btn" id="reset">초기화</button>
+      <small>값을 바꾸면 주소도 함께 바뀝니다. 그 주소를 공유하면 같은 값으로 열립니다.</small>
+    </div>
+  </form>
+
+  <div class="swatch-big" id="swatch" aria-hidden="true"></div>
+
+  <div class="convert-list">
+    {
+      FORMATS.map((f) => (
+        <div class="convert-row" data-format={f.key}>
+          <span class="convert-label">{f.label}</span>
+          <code class="convert-value" />
+          <button type="button" class="btn btn-copy" aria-label={`${f.label} 값 복사`}>
+            복사
+          </button>
+        </div>
+      ))
+    }
+  </div>
+
+  <section class="prose">
+    <h2>사용법</h2>
+    <p>
+      위 칸에 색을 넣으면 네 가지 표기법으로 한 번에 바꿔 줍니다. <strong>어떤
+      형식으로 붙여넣어도 알아서 인식합니다.</strong> 디자인 도구에서 복사한
+      <code>#3b82f6</code>, 개발자도구에서 복사한 <code>rgb(59, 130, 246)</code>,
+      CSS에 적혀 있던 <code>hsl(217 91% 60%)</code>을 그대로 넣으면 됩니다.
+      색상 선택기로 직접 고를 수도 있습니다.
+    </p>
+    <p>
+      각 표기법 옆의 복사 버튼을 누르면 CSS에 바로 붙여넣을 수 있는 형태로
+      복사됩니다. 값을 바꾸면 주소가 함께 바뀌므로, 그 주소를 그대로 공유하면
+      상대방도 같은 색을 보게 됩니다.
+    </p>
+    <p>
+      <strong>OKLCH</strong>는 비교적 최근에 브라우저에 들어온 표기법입니다.
+      <code>L</code>은 밝기(0~100%), <code>C</code>는 채도, <code>H</code>는
+      색상 각도입니다. 아래에서 이 표기법이 왜 생겼는지 설명합니다.
+    </p>
+  </section>
+
+  <section class="prose">
+    <h2>실제 응용</h2>
+
+    <h3>표기법마다 잘하는 일이 다르다</h3>
+    <p>
+      네 가지는 같은 색을 다르게 적는 방법일 뿐이지만, 손으로 값을 만질 때의
+      편의가 크게 다릅니다.
+    </p>
+    <table class="data-table">
+      <thead>
+        <tr><th>표기법</th><th>잘하는 일</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>HEX</code></td>
+          <td>주고받기. 가장 짧고 어디서나 통합니다. 대신 숫자만 보고 어떤 색인지 알기 어렵습니다</td>
+        </tr>
+        <tr>
+          <td><code>RGB</code></td>
+          <td>투명도를 섞을 때(<code>rgb(0 0 0 / 0.5)</code>), 그리고 코드에서 색을 계산할 때</td>
+        </tr>
+        <tr>
+          <td><code>HSL</code></td>
+          <td>같은 색조로 명도만 다른 색을 만들 때. 세 값의 의미가 직관적입니다</td>
+        </tr>
+        <tr>
+          <td><code>OKLCH</code></td>
+          <td>여러 색의 밝기를 실제로 같게 맞출 때. 색상을 바꿔도 밝기가 흔들리지 않습니다</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>HSL로 색을 밝게 하면 왜 탁해지나</h3>
+    <p>
+      실무에서 자주 겪는 문제입니다. 브랜드 색을 정해 두고 밝은 변형을 만들려고
+      <code>HSL</code>의 <code>L</code>만 올렸는데, 어떤 색은 멀쩡하고 어떤 색은
+      뿌옇게 뜹니다.
+    </p>
+    <p>
+      <code>HSL</code>의 <code>L</code>은 <strong>사람이 느끼는 밝기가 아니라
+      계산상의 중간값</strong>이기 때문입니다. 같은 <code>L: 50%</code>라도
+      노랑은 눈부시게 밝고 파랑은 어둡습니다. 그래서 여러 색을 같은 <code>L</code>로
+      맞춰 팔레트를 만들면 색마다 밝기가 제각각으로 보입니다.
+    </p>
+    <p>
+      <code>OKLCH</code>의 <code>L</code>은 사람의 지각에 맞춰 설계된 값입니다.
+      위 변환기에 순수 노랑(<code>#ffff00</code>)과 순수 파랑(<code>#0000ff</code>)을
+      넣어 보세요. HSL에서는 둘 다 <code>L: 50%</code>지만, OKLCH에서는 노랑이
+      약 97%, 파랑이 약 45%로 나옵니다. <strong>실제로 보이는 차이가 숫자에
+      그대로 담깁니다.</strong>
+    </p>
+
+    <h3>팔레트를 만들 때</h3>
+    <p>
+      브랜드 색 하나에서 단계별 팔레트(50~900 같은)를 만들 일이 많습니다.
+      <code>OKLCH</code>로 옮겨 놓고 <strong><code>L</code>만 일정 간격으로
+      바꾸면</strong> 밝기가 고르게 나뉜 팔레트가 나옵니다. 색상(<code>H</code>)과
+      채도(<code>C</code>)는 그대로 두면 됩니다.
+    </p>
+    <pre><code>{`:root {
+  /* H와 C는 고정, L만 단계별로 */
+  --brand-100: oklch(92% 0.05 260);
+  --brand-300: oklch(78% 0.11 260);
+  --brand-500: oklch(62% 0.19 260);  /* 기준색 */
+  --brand-700: oklch(48% 0.16 260);
+  --brand-900: oklch(32% 0.10 260);
+}`}</code></pre>
+    <p>
+      어두운 쪽에서 <code>C</code>를 조금 낮춘 이유는, 밝기가 낮아지면 표현할 수
+      있는 채도의 한계도 함께 낮아지기 때문입니다. 값을 그대로 두면 화면에
+      표현할 수 없는 색이 되어 브라우저가 임의로 잘라냅니다.
+    </p>
+
+    <h3>변환해도 색이 그대로인지 확인하는 법</h3>
+    <p>
+      표기법을 바꾸면 반올림 때문에 값이 미세하게 달라질 수 있습니다.
+      이 도구는 <strong>왕복 변환이 원래 값으로 돌아오는지</strong>를 기준으로
+      만들었습니다. HEX에서 OKLCH로 갔다가 다시 HEX로 돌아왔을 때 같은 코드가
+      나오는지 실제 색 여러 개로 확인했습니다.
+    </p>
+    <p>
+      다만 <code>OKLCH</code>는 화면이 표현할 수 있는 범위(sRGB)보다 넓은 색을
+      적을 수 있습니다. <code>C</code> 값을 크게 올리면 화면에 없는 색이 되고,
+      그때는 가장 가까운 표현 가능한 색으로 잘립니다. 이 도구도 같은 방식으로
+      잘라서 보여줍니다.
+    </p>
+  </section>
+</ToolPage>
+
+<script>
+  import {
+    defaultsOf,
+    applyParams,
+    syncParams,
+    resetForm,
+    setInvalid,
+  } from '../../scripts/tool-state';
+
+  type RGB = [number, number, number];
+
+  const form = document.getElementById('color-form') as HTMLFormElement;
+  const textInput = form.elements.namedItem('value') as HTMLInputElement;
+  const pickInput = form.elements.namedItem('pick') as HTMLInputElement;
+  const swatch = document.getElementById('swatch')!;
+  const parseError = document.getElementById('parse-error')!;
+  const rows = document.querySelectorAll<HTMLElement>('.convert-row');
+
+  const clamp = (v: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, v));
+  const round = (n: number, d = 0) => {
+    const p = 10 ** d;
+    return Math.round(n * p) / p;
+  };
+
+  // ---------- 파싱: 어느 표기법으로 들어와도 RGB로 모은다 ----------
+  function parseColor(input: string): RGB | null {
+    const s = input.trim().toLowerCase();
+
+    const hex = s.match(/^#?([0-9a-f]{3}|[0-9a-f]{6})$/);
+    if (hex) {
+      let h = hex[1];
+      if (h.length === 3) h = h.split('').map((c) => c + c).join('');
+      return [
+        parseInt(h.slice(0, 2), 16),
+        parseInt(h.slice(2, 4), 16),
+        parseInt(h.slice(4, 6), 16),
+      ];
+    }
+
+    // 쉼표·공백·슬래시를 모두 구분자로 본다 (rgb(1,2,3)과 rgb(1 2 3) 둘 다 통용됨)
+    const rgb = s.match(/^rgba?\(([^)]+)\)$/);
+    if (rgb) {
+      const n = rgb[1].split(/[\s,/]+/).filter(Boolean).map(Number);
+      if (n.length >= 3 && n.slice(0, 3).every(Number.isFinite))
+        return n.slice(0, 3).map((v) => clamp(Math.round(v), 0, 255)) as RGB;
+    }
+
+    const hsl = s.match(/^hsla?\(([^)]+)\)$/);
+    if (hsl) {
+      const p = hsl[1].split(/[\s,/]+/).filter(Boolean);
+      const h = parseFloat(p[0]);
+      const sat = parseFloat(p[1]);
+      const li = parseFloat(p[2]);
+      if ([h, sat, li].every(Number.isFinite)) return hslToRgb(h, sat, li);
+    }
+
+    const oklch = s.match(/^oklch\(([^)]+)\)$/);
+    if (oklch) {
+      const p = oklch[1].split(/[\s,/]+/).filter(Boolean);
+      let L = parseFloat(p[0]);
+      if (p[0].includes('%')) L /= 100;
+      const C = parseFloat(p[1]);
+      const H = parseFloat(p[2]);
+      if ([L, C, H].every(Number.isFinite)) return oklchToRgb(L, C, H);
+    }
+
+    return null;
+  }
+
+  // ---------- HSL ----------
+  function rgbToHsl([r, g, b]: RGB): [number, number, number] {
+    r /= 255;
+    g /= 255;
+    b /= 255;
+    const max = Math.max(r, g, b);
+    const min = Math.min(r, g, b);
+    const l = (max + min) / 2;
+    const d = max - min;
+    let h = 0;
+    let s = 0;
+    if (d !== 0) {
+      s = d / (1 - Math.abs(2 * l - 1));
+      if (max === r) h = ((g - b) / d) % 6;
+      else if (max === g) h = (b - r) / d + 2;
+      else h = (r - g) / d + 4;
+      h *= 60;
+      if (h < 0) h += 360;
+    }
+    return [h, s * 100, l * 100];
+  }
+
+  function hslToRgb(h: number, s: number, l: number): RGB {
+    h = ((h % 360) + 360) % 360;
+    s = clamp(s, 0, 100) / 100;
+    l = clamp(l, 0, 100) / 100;
+    const c = (1 - Math.abs(2 * l - 1)) * s;
+    const x = c * (1 - Math.abs(((h / 60) % 2) - 1));
+    const m = l - c / 2;
+    let t: number[];
+    if (h < 60) t = [c, x, 0];
+    else if (h < 120) t = [x, c, 0];
+    else if (h < 180) t = [0, c, x];
+    else if (h < 240) t = [0, x, c];
+    else if (h < 300) t = [x, 0, c];
+    else t = [c, 0, x];
+    return t.map((v) => Math.round((v + m) * 255)) as RGB;
+  }
+
+  // ---------- OKLCH (Björn Ottosson의 Oklab) ----------
+  // sRGB는 감마가 걸린 값이라, 색을 섞거나 밝기를 재려면 선형 값으로 되돌려야 한다
+  const toLinear = (c: number) =>
+    c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
+  const toGamma = (c: number) =>
+    c <= 0.0031308 ? 12.92 * c : 1.055 * c ** (1 / 2.4) - 0.055;
+
+  function rgbToOklch([r8, g8, b8]: RGB): [number, number, number] {
+    const r = toLinear(r8 / 255);
+    const g = toLinear(g8 / 255);
+    const b = toLinear(b8 / 255);
+    const l = 0.4122214708 * r + 0.5363325363 * g + 0.0514459929 * b;
+    const m = 0.2119034982 * r + 0.6806995451 * g + 0.1073969566 * b;
+    const s = 0.0883024619 * r + 0.2817188376 * g + 0.6299787005 * b;
+    const l_ = Math.cbrt(l);
+    const m_ = Math.cbrt(m);
+    const s_ = Math.cbrt(s);
+    const L = 0.2104542553 * l_ + 0.793617785 * m_ - 0.0040720468 * s_;
+    const A = 1.9779984951 * l_ - 2.428592205 * m_ + 0.4505937099 * s_;
+    const B = 0.0259040371 * l_ + 0.7827717662 * m_ - 0.808675766 * s_;
+    const C = Math.sqrt(A * A + B * B);
+    let H = (Math.atan2(B, A) * 180) / Math.PI;
+    if (H < 0) H += 360;
+    // 무채색은 각도가 의미 없다 (미세한 계산 오차로 엉뚱한 값이 나오는 것을 막는다)
+    return [L, C, C < 1e-6 ? 0 : H];
+  }
+
+  function oklchToRgb(L: number, C: number, H: number): RGB {
+    const hr = (H * Math.PI) / 180;
+    const A = C * Math.cos(hr);
+    const B = C * Math.sin(hr);
+    const l_ = L + 0.3963377774 * A + 0.2158037573 * B;
+    const m_ = L - 0.1055613458 * A - 0.0638541728 * B;
+    const s_ = L - 0.0894841775 * A - 1.291485548 * B;
+    const l = l_ ** 3;
+    const m = m_ ** 3;
+    const s = s_ ** 3;
+    const r = 4.0767416621 * l - 3.3077115913 * m + 0.2309699292 * s;
+    const g = -1.2684380046 * l + 2.6097574011 * m - 0.3413193965 * s;
+    const b = -0.0041960863 * l - 0.7034186147 * m + 1.707614701 * s;
+    // 화면이 표현할 수 없는 색은 가장 가까운 값으로 자른다
+    return [r, g, b].map((v) => clamp(Math.round(toGamma(v) * 255), 0, 255)) as RGB;
+  }
+
+  // ---------- 출력 ----------
+  const toHex = ([r, g, b]: RGB) =>
+    '#' + [r, g, b].map((n) => n.toString(16).padStart(2, '0')).join('');
+
+  function formatAll(rgb: RGB): Record<string, string> {
+    const [h, s, l] = rgbToHsl(rgb);
+    const [L, C, H] = rgbToOklch(rgb);
+    return {
+      hex: toHex(rgb),
+      rgb: `rgb(${rgb[0]} ${rgb[1]} ${rgb[2]})`,
+      hsl: `hsl(${round(h)} ${round(s)}% ${round(l)}%)`,
+      oklch: `oklch(${round(L * 100, 1)}% ${round(C, 3)} ${round(H, 1)})`,
+    };
+  }
+
+  // 마지막으로 성공한 색. 입력이 깨져도 화면이 빈 상태가 되지 않게 유지한다
+  let lastRgb: RGB = [59, 130, 246];
+
+  function render(rgb: RGB) {
+    const out = formatAll(rgb);
+    rows.forEach((row) => {
+      const key = row.dataset.format!;
+      row.querySelector('.convert-value')!.textContent = out[key];
+    });
+    swatch.style.background = out.hex;
+    // 색상 선택기는 6자리 hex만 받는다
+    pickInput.value = out.hex;
+  }
+
+  function update() {
+    const rgb = parseColor(textInput.value);
+    const bad = rgb === null && textInput.value.trim() !== '';
+    parseError.hidden = !bad;
+    setInvalid(textInput, bad);
+    if (rgb) {
+      lastRgb = rgb;
+      render(rgb);
+    }
+  }
+
+  const KEYS = ['value'];
+  const defaults = defaultsOf(form, KEYS);
+  const resetBtn = document.getElementById('reset') as HTMLButtonElement;
+
+  textInput.addEventListener('input', () => {
+    syncParams(form, KEYS, defaults);
+    update();
+  });
+
+  // 색상 선택기로 고르면 텍스트 칸도 그 값으로 맞춘다
+  pickInput.addEventListener('input', () => {
+    textInput.value = pickInput.value;
+    syncParams(form, KEYS, defaults);
+    update();
+  });
+
+  resetBtn.addEventListener('click', () => {
+    resetForm(form, defaults);
+    update();
+  });
+
+  // 공유 링크로 들어온 경우 주소의 값을 먼저 반영한다
+  applyParams(form, KEYS);
+  update();
+
+  document.querySelectorAll<HTMLButtonElement>('.btn-copy').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      const value = btn.parentElement!.querySelector('.convert-value')!.textContent ?? '';
+      await navigator.clipboard.writeText(value);
+      btn.textContent = '복사됨';
+      setTimeout(() => (btn.textContent = '복사'), 1500);
+    });
+  });
+</script>
+
+<style>
+  /* 현재 색을 크게 보여 주는 견본. 코드값만으로는 색을 가늠할 수 없다 */
+  .swatch-big {
+    height: 5rem;
+    margin-bottom: var(--space-5);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+  }
+
+  .convert-list {
+    display: grid;
+    gap: var(--space-2);
+    margin-bottom: var(--space-7);
+  }
+  .convert-row {
+    display: grid;
+    /* 값 칸에 minmax(0, 1fr) — 긴 값이 들어와도 가로로 넘치지 않는다 */
+    grid-template-columns: 4.5rem minmax(0, 1fr) auto;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-3) var(--space-4);
+    background: var(--bg-subtle);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+  }
+  .convert-label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+  }
+  .convert-value {
+    font-size: 0.95rem;
+    overflow-wrap: anywhere;
+  }
+
+  /* 좁은 화면에서는 라벨을 값 위로 올린다 (한 줄에 셋을 넣으면 값이 뭉개진다) */
+  @media (max-width: 480px) {
+    .convert-row {
+      grid-template-columns: minmax(0, 1fr) auto;
+    }
+    .convert-label {
+      grid-column: 1 / -1;
+    }
+  }
+</style>

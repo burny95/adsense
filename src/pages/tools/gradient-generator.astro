@@ -1,0 +1,465 @@
+---
+// CSS 그라디언트 생성기 (linear / radial / conic, 정지점 여러 개)
+import ToolPage from '../../layouts/ToolPage.astro';
+---
+
+<ToolPage slug="gradient-generator">
+  <div class="grad-layout">
+    <div>
+      <div class="panel grad-settings">
+        <div class="field-grid">
+          <label class="field">
+            유형
+            <select class="control" id="grad-type">
+              <option value="linear">linear — 직선 방향</option>
+              <option value="radial">radial — 가운데에서 퍼짐</option>
+              <option value="conic">conic — 원을 따라 돎</option>
+            </select>
+          </label>
+          <label class="field" id="angle-field">
+            각도 (<span id="angle-label">135</span>deg)
+            <input class="control" type="range" id="grad-angle" min="0" max="360" step="1" value="135" />
+          </label>
+          <label class="field field-inline">
+            <input type="checkbox" id="grad-repeat" /> 반복(repeating)
+          </label>
+        </div>
+      </div>
+
+      <div class="layer-controls">
+        <div class="layer-head">
+          <span class="section-label" style="margin:0;border:0;padding:0">색 정지점</span>
+          <span class="layer-actions">
+            <button type="button" class="btn" id="undo" disabled>실행취소</button>
+            <button type="button" class="btn" id="reset">초기화</button>
+            <button type="button" class="btn" id="add-stop">+ 정지점 추가</button>
+          </span>
+        </div>
+        <div id="stops"></div>
+        <p class="form-actions">
+          <small>값을 바꾸면 주소도 함께 바뀝니다. 그 주소를 공유하면 같은 그라디언트로 열립니다.</small>
+          <small class="is-error" id="url-error" role="status" hidden>
+            링크의 값을 읽을 수 없어 기본값으로 시작합니다.
+          </small>
+        </p>
+      </div>
+
+      <div class="output">
+        <div class="output-head">
+          <span>결과</span>
+          <button type="button" class="btn" id="copy">복사</button>
+        </div>
+        <code class="output-code" id="output"></code>
+      </div>
+    </div>
+
+    <div class="preview grad-preview">
+      <span class="preview-label">미리보기</span>
+      <div class="grad-stage" id="stage"></div>
+    </div>
+  </div>
+
+  <section class="prose">
+    <h2>사용법</h2>
+    <p>
+      <strong>유형</strong>을 고르고 색 정지점을 넣으면 CSS가 만들어집니다.
+      <code>linear</code>는 정해진 방향으로 곧게, <code>radial</code>은 가운데에서
+      바깥으로, <code>conic</code>은 시곗바늘처럼 원을 따라 색이 돕니다.
+      각도는 <code>linear</code>와 <code>conic</code>에서만 쓰입니다.
+    </p>
+    <p>
+      각 정지점의 <strong>위치</strong>는 0~100% 사이의 값입니다. 비워 두면
+      브라우저가 정지점들을 고르게 나눠 배치합니다. 위치를 직접 지정하면 색이
+      바뀌는 지점을 정확히 잡을 수 있고, <strong>두 정지점을 같은 위치에
+      두면 그라디언트가 아니라 딱 잘린 경계</strong>가 됩니다.
+    </p>
+    <p>
+      <strong>반복</strong>을 켜면 <code>repeating-</code>이 붙어 마지막 정지점
+      다음에 같은 무늬가 계속 이어집니다. 줄무늬나 패턴을 만들 때 씁니다.
+      이때는 마지막 정지점의 위치를 100%보다 작게 둬야 반복이 눈에 보입니다.
+    </p>
+  </section>
+
+  <section class="prose">
+    <h2>실제 응용</h2>
+
+    <h3>두 색을 바로 이으면 가운데가 탁해진다</h3>
+    <p>
+      그라디언트를 만들었는데 중간에 회색빛 띠가 생기는 일이 있습니다. 특히
+      보색에 가까운 두 색(파랑↔노랑, 빨강↔초록)을 이을 때 두드러집니다.
+      브라우저가 두 색 사이를 <strong>RGB 값 그대로 직선으로 섞기</strong>
+      때문인데, 그 경로가 채도가 낮은 지대를 지나갑니다.
+    </p>
+    <p>
+      해결은 <strong>가운데에 정지점을 하나 더 넣는 것</strong>입니다. 두 색의
+      중간쯤에서 채도가 살아 있는 색을 골라 50% 위치에 두면 탁한 구간이
+      사라집니다. 위 도구에서 정지점을 추가해 가운데 색을 조절해 보세요.
+    </p>
+
+    <h3>배경에 얹는 그라디언트는 투명도로 만든다</h3>
+    <p>
+      카드나 히어로 위에 그라디언트를 덮을 때, 색을 직접 지정하면 배경색이
+      바뀔 때마다 그라디언트도 새로 만들어야 합니다. <strong>같은 색의 투명도만
+      바꾸는 방식</strong>이 더 오래갑니다.
+    </p>
+    <pre><code>{`/* 이미지 위에 글자를 얹을 때 아래쪽만 어둡게 */
+.hero::after {
+  background: linear-gradient(
+    180deg,
+    rgb(0 0 0 / 0) 0%,
+    rgb(0 0 0 / 0.7) 100%
+  );
+}`}</code></pre>
+    <p>
+      이렇게 두면 배경 이미지가 무엇이든 글자가 읽히고, 다크 모드에서 색을
+      다시 정할 필요도 없습니다.
+    </p>
+
+    <h3>투명으로 사라지게 할 때는 transparent를 쓰지 않는다</h3>
+    <p>
+      놓치기 쉬운 부분입니다. <code>transparent</code>는 사실
+      <strong>투명한 검정</strong>(<code>rgba(0, 0, 0, 0)</code>)입니다. 그래서
+      흰색에서 <code>transparent</code>로 가는 그라디언트를 만들면 중간이
+      회색으로 뜹니다. 검정 쪽으로 섞이면서 지나가기 때문입니다.
+    </p>
+    <pre><code>{`/* ✗ 중간이 탁한 회색이 된다 */
+linear-gradient(90deg, #fff, transparent)
+
+/* ✓ 같은 색의 투명한 버전으로 끝낸다 */
+linear-gradient(90deg, rgb(255 255 255 / 1), rgb(255 255 255 / 0))`}</code></pre>
+
+    <h3>줄무늬와 패턴</h3>
+    <p>
+      정지점 두 개를 같은 위치에 두면 경계가 딱 떨어집니다. 여기에
+      <strong>반복</strong>을 켜면 줄무늬가 됩니다. 이미지 없이 배경 패턴을
+      만들 수 있어 로딩 자리표시자나 공사 중 표시에 씁니다.
+    </p>
+    <pre><code>{`/* 45도 줄무늬 */
+background: repeating-linear-gradient(
+  45deg,
+  #e7e4de 0px, #e7e4de 10px,
+  #faf9f7 10px, #faf9f7 20px
+);`}</code></pre>
+    <p>
+      <code>conic</code>으로 같은 걸 하면 파이 차트나 색상환이 나옵니다.
+      각도를 정지점 위치로 쓰면 되고, <code>border-radius: 50%</code>를 함께
+      주면 원이 됩니다.
+    </p>
+
+    <h3>성능: 애니메이션에는 쓰지 않는다</h3>
+    <p>
+      <code>background</code>는 GPU가 아니라 CPU가 매 프레임 다시 칠하는
+      속성입니다. 그라디언트를 <code>transition</code>으로 움직이면 화면이
+      끊깁니다. 움직임이 필요하면 <strong>그라디언트를 크게 그려 두고
+      <code>background-position</code>이나 <code>transform</code>으로
+      옮기는 편</strong>이 훨씬 부드럽습니다.
+    </p>
+    <p>
+      큰 영역에 정지점이 많은 그라디언트를 여러 겹 쌓는 것도 비용이 큽니다.
+      배경 전체를 덮는 그라디언트라면 정지점 서넛으로 충분합니다.
+    </p>
+  </section>
+</ToolPage>
+
+<script>
+  import { replaceQuery } from '../../scripts/tool-state';
+
+  type Stop = { color: string; pos: number | null };
+  type Type = 'linear' | 'radial' | 'conic';
+
+  const stopsEl = document.getElementById('stops')!;
+  const output = document.getElementById('output')!;
+  const stage = document.getElementById('stage')!;
+  const typeSel = document.getElementById('grad-type') as HTMLSelectElement;
+  const angleInput = document.getElementById('grad-angle') as HTMLInputElement;
+  const angleLabel = document.getElementById('angle-label')!;
+  const angleField = document.getElementById('angle-field')!;
+  const repeatInput = document.getElementById('grad-repeat') as HTMLInputElement;
+  const addBtn = document.getElementById('add-stop') as HTMLButtonElement;
+  const copyBtn = document.getElementById('copy') as HTMLButtonElement;
+  const undoBtn = document.getElementById('undo') as HTMLButtonElement;
+  const resetBtn = document.getElementById('reset') as HTMLButtonElement;
+  const urlError = document.getElementById('url-error') as HTMLElement;
+
+  const DEFAULT_STOPS: Stop[] = [
+    { color: '#b4480a', pos: 0 },
+    { color: '#f5b301', pos: 100 },
+  ];
+  const DEFAULT_TYPE: Type = 'linear';
+  const DEFAULT_ANGLE = 135;
+
+  const clone = (s: Stop[]) => s.map((x) => ({ ...x }));
+
+  let stops: Stop[] = clone(DEFAULT_STOPS);
+  let type: Type = DEFAULT_TYPE;
+  let angle = DEFAULT_ANGLE;
+  let repeating = false;
+
+  // 정지점을 지우거나 되돌릴 수 있도록 직전 상태를 쌓아 둔다
+  const undoStack: { stops: Stop[]; type: Type; angle: number; repeating: boolean }[] = [];
+  function snapshot() {
+    undoStack.push({ stops: clone(stops), type, angle, repeating });
+    if (undoStack.length > 20) undoStack.shift();
+    undoBtn.disabled = false;
+  }
+
+  // ---------- 주소 공유 ----------
+  function encode(): string {
+    const s = stops
+      .map((x) => x.color.replace('#', '') + (x.pos === null ? '' : ':' + x.pos))
+      .join(',');
+    return [type, angle, repeating ? 1 : 0, s].join('|');
+  }
+
+  function decode(raw: string) {
+    const parts = raw.split('|');
+    if (parts.length !== 4) return null;
+    const [t, a, r, s] = parts;
+    if (!['linear', 'radial', 'conic'].includes(t)) return null;
+    const ang = Number(a);
+    if (!Number.isFinite(ang)) return null;
+
+    const out: Stop[] = [];
+    for (const item of s.split(',')) {
+      const [c, p] = item.split(':');
+      if (!/^[0-9a-fA-F]{3}$|^[0-9a-fA-F]{6}$/.test(c)) return null;
+      let pos: number | null = null;
+      if (p !== undefined) {
+        const n = Number(p);
+        if (!Number.isFinite(n)) return null;
+        pos = Math.min(100, Math.max(0, n));
+      }
+      out.push({ color: '#' + c, pos });
+    }
+    if (out.length < 2) return null;
+    return { stops: out, type: t as Type, angle: ang, repeating: r === '1' };
+  }
+
+  function syncUrl() {
+    const v = encode();
+    const isDefault =
+      v ===
+      [DEFAULT_TYPE, DEFAULT_ANGLE, 0, DEFAULT_STOPS.map((x) => x.color.replace('#', '') + ':' + x.pos).join(',')].join('|');
+    replaceQuery(isDefault ? '' : new URLSearchParams({ g: v }).toString());
+  }
+
+  // ---------- CSS 문자열 ----------
+  function stopsCss(): string {
+    return stops
+      .map((s) => (s.pos === null ? s.color : `${s.color} ${s.pos}%`))
+      .join(', ');
+  }
+
+  function gradientCss(): string {
+    const prefix = repeating ? 'repeating-' : '';
+    if (type === 'linear') return `${prefix}linear-gradient(${angle}deg, ${stopsCss()})`;
+    // radial은 각도를 쓰지 않는다 — 가운데에서 바깥으로 퍼지는 모양이라 방향이 없다
+    if (type === 'radial') return `${prefix}radial-gradient(circle, ${stopsCss()})`;
+    return `${prefix}conic-gradient(from ${angle}deg, ${stopsCss()})`;
+  }
+
+  // ---------- 그리기 ----------
+  function render() {
+    stopsEl.innerHTML = '';
+    stops.forEach((stop, i) => {
+      const wrap = document.createElement('div');
+      wrap.className = 'panel stop-row';
+      wrap.innerHTML = `
+        <div class="layer-row-head">
+          <strong>정지점 ${i + 1}</strong>
+          <button type="button" class="btn btn-remove" data-i="${i}" ${stops.length <= 2 ? 'disabled' : ''}>삭제</button>
+        </div>
+        <div class="field-grid">
+          <label class="field">색상
+            <span class="color-row">
+              <input type="color" data-i="${i}" data-k="color" value="${stop.color}" aria-label="정지점 ${i + 1} 색상">
+              <input class="control" type="text" data-i="${i}" data-k="colorText" value="${stop.color}" spellcheck="false" aria-describedby="stop-err-${i}">
+            </span>
+            <small class="color-error is-error" id="stop-err-${i}" hidden>#RRGGBB 형식으로 입력하세요.</small>
+          </label>
+          <label class="field">위치 (%)
+            <input class="control" type="number" data-i="${i}" data-k="pos" min="0" max="100" step="1" value="${stop.pos ?? ''}" placeholder="자동">
+            <small>비우면 고르게 배치됩니다</small>
+          </label>
+        </div>
+      `;
+      stopsEl.appendChild(wrap);
+    });
+
+    refreshOutput();
+  }
+
+  function refreshOutput() {
+    const css = gradientCss();
+    output.textContent = `background: ${css};`;
+    stage.style.background = css;
+    angleLabel.textContent = String(angle);
+    // radial에는 각도가 없으므로 그 칸을 숨긴다
+    angleField.hidden = type === 'radial';
+  }
+
+  // ---------- 입력 처리 ----------
+  // 정지점 UI는 다시 그려지므로 개별 요소가 아니라 컨테이너에 한 번만 건다
+  stopsEl.addEventListener('input', (e) => {
+    const el = e.target as HTMLInputElement;
+    const i = Number(el.dataset.i);
+    const k = el.dataset.k;
+    if (!k || Number.isNaN(i)) return;
+
+    if (k === 'color') {
+      stops[i].color = el.value;
+      const text = stopsEl.querySelector<HTMLInputElement>(`[data-i="${i}"][data-k="colorText"]`);
+      if (text) text.value = el.value;
+    } else if (k === 'colorText') {
+      const okHex = /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(el.value.trim());
+      const err = document.getElementById(`stop-err-${i}`);
+      if (err) err.hidden = okHex;
+      el.setAttribute('aria-invalid', okHex ? 'false' : 'true');
+      if (!okHex) return;
+      stops[i].color = el.value.trim();
+      const pick = stopsEl.querySelector<HTMLInputElement>(`[data-i="${i}"][data-k="color"]`);
+      if (pick) pick.value = stops[i].color;
+    } else if (k === 'pos') {
+      // 빈 칸은 "브라우저가 알아서"라는 뜻이라 null로 둔다
+      const raw = el.value.trim();
+      stops[i].pos = raw === '' ? null : Math.min(100, Math.max(0, Number(raw)));
+    }
+
+    refreshOutput();
+    syncUrl();
+  });
+
+  stopsEl.addEventListener('click', (e) => {
+    const btn = (e.target as HTMLElement).closest<HTMLButtonElement>('.btn-remove');
+    if (!btn) return;
+    // 정지점이 둘 미만이면 그라디언트가 성립하지 않는다
+    if (stops.length <= 2) return;
+    snapshot();
+    stops.splice(Number(btn.dataset.i), 1);
+    render();
+    syncUrl();
+  });
+
+  addBtn.addEventListener('click', () => {
+    snapshot();
+    // 마지막 색을 복제해 넣는다 — 빈 값보다 조절하기 쉽다
+    const last = stops[stops.length - 1];
+    stops.push({ color: last.color, pos: null });
+    render();
+    syncUrl();
+  });
+
+  typeSel.addEventListener('change', () => {
+    snapshot();
+    type = typeSel.value as Type;
+    refreshOutput();
+    syncUrl();
+  });
+
+  angleInput.addEventListener('input', () => {
+    angle = Number(angleInput.value);
+    refreshOutput();
+    syncUrl();
+  });
+
+  repeatInput.addEventListener('change', () => {
+    snapshot();
+    repeating = repeatInput.checked;
+    refreshOutput();
+    syncUrl();
+  });
+
+  undoBtn.addEventListener('click', () => {
+    const prev = undoStack.pop();
+    if (!prev) return;
+    stops = prev.stops;
+    type = prev.type;
+    angle = prev.angle;
+    repeating = prev.repeating;
+    typeSel.value = type;
+    angleInput.value = String(angle);
+    repeatInput.checked = repeating;
+    undoBtn.disabled = undoStack.length === 0;
+    render();
+    syncUrl();
+  });
+
+  resetBtn.addEventListener('click', () => {
+    snapshot();
+    stops = clone(DEFAULT_STOPS);
+    type = DEFAULT_TYPE;
+    angle = DEFAULT_ANGLE;
+    repeating = false;
+    typeSel.value = type;
+    angleInput.value = String(angle);
+    repeatInput.checked = false;
+    render();
+    replaceQuery('');
+  });
+
+  copyBtn.addEventListener('click', async () => {
+    await navigator.clipboard.writeText(output.textContent ?? '');
+    copyBtn.textContent = '복사됨';
+    setTimeout(() => (copyBtn.textContent = '복사'), 1500);
+  });
+
+  // 공유 링크로 들어온 경우 주소의 값을 먼저 반영한다
+  const q = new URLSearchParams(location.search).get('g');
+  if (q) {
+    const parsed = decode(q);
+    if (parsed) {
+      stops = parsed.stops;
+      type = parsed.type;
+      angle = parsed.angle;
+      repeating = parsed.repeating;
+      typeSel.value = type;
+      angleInput.value = String(angle);
+      repeatInput.checked = repeating;
+    } else {
+      // 링크가 깨졌다는 사실을 숨기지 않는다
+      urlError.hidden = false;
+    }
+  }
+
+  render();
+</script>
+
+<style>
+  .grad-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 16rem;
+    gap: var(--space-6);
+    align-items: start;
+    margin-bottom: var(--space-7);
+  }
+  .grad-settings {
+    margin-bottom: var(--space-5);
+  }
+  .grad-preview {
+    position: sticky;
+    top: 5rem;
+  }
+  /* 미리보기는 정사각에 가깝게 — conic·radial은 가로로 길면 모양이 뭉개진다 */
+  .grad-stage {
+    aspect-ratio: 1;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+  }
+  .stop-row + .stop-row {
+    margin-top: var(--space-3);
+  }
+
+  /* 좁은 화면: 미리보기를 위로 올리고 높이를 줄인다 */
+  @media (max-width: 720px) {
+    .grad-layout {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .grad-preview {
+      position: static;
+      order: -1;
+    }
+    .grad-stage {
+      aspect-ratio: 16 / 7;
+    }
+  }
+</style>

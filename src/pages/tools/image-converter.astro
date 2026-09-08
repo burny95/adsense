@@ -1,0 +1,386 @@
+---
+// 이미지 포맷 변환기 — 브라우저 안에서만 처리한다 (파일이 서버로 가지 않음)
+import ToolPage from '../../layouts/ToolPage.astro';
+---
+
+<ToolPage slug="image-converter">
+  <div class="panel">
+    {/* label로 감싸면 클릭·키보드 모두 파일 선택이 열린다 */}
+    <label class="drop-zone" id="drop">
+      <input type="file" id="file-input" accept="image/*" multiple hidden />
+      <strong>이미지를 끌어다 놓거나 눌러서 선택하세요</strong>
+      <small>PNG · JPG · WebP · GIF · BMP · SVG · 여러 장 한꺼번에</small>
+      <small class="drop-note">
+        파일은 이 브라우저 안에서만 처리됩니다. 어디로도 전송되지 않습니다.
+      </small>
+    </label>
+
+    <div class="field-grid convert-opts">
+      <label class="field">
+        저장 형식
+        <select class="control" id="target">
+          <option value="image/webp">WebP</option>
+          <option value="image/jpeg">JPG</option>
+          <option value="image/png">PNG</option>
+        </select>
+      </label>
+      <label class="field" id="quality-field">
+        품질 (<span id="quality-label">80</span>%)
+        <input class="control" type="range" id="quality" min="10" max="100" step="1" value="80" />
+        <small>낮출수록 용량이 줄고 화질이 떨어집니다</small>
+      </label>
+      <label class="field">
+        가로 크기 제한 (px)
+        <input class="control" type="number" id="max-width" min="0" step="10" placeholder="원본 유지" />
+        <small>비우면 크기를 바꾸지 않습니다</small>
+      </label>
+    </div>
+
+    <p class="form-actions">
+      <button type="button" class="btn" id="clear" disabled>목록 비우기</button>
+      <small class="is-error" id="file-error" role="status" hidden></small>
+    </p>
+  </div>
+
+  <div id="results" class="result-list"></div>
+
+  <section class="prose">
+    <h2>사용법</h2>
+    <p>
+      이미지를 끌어다 놓거나 눌러서 고르면 <strong>선택한 형식으로 바꿔
+      줍니다.</strong> 여러 장을 한꺼번에 넣어도 됩니다. 변환이 끝나면 원본과
+      바뀐 파일의 용량이 나란히 표시되고, 각각 내려받을 수 있습니다.
+    </p>
+    <p>
+      <strong>품질</strong>은 JPG와 WebP에서만 쓰입니다. PNG는 손실 없이
+      저장하는 형식이라 품질 값이 의미가 없어 자동으로 숨겨집니다.
+      <strong>가로 크기 제한</strong>을 넣으면 그 폭에 맞춰 줄입니다. 세로는
+      비율에 맞게 따라갑니다. 원본보다 큰 값을 넣어도 확대하지는 않습니다.
+    </p>
+    <p>
+      <strong>파일은 어디로도 올라가지 않습니다.</strong> 브라우저 안에서
+      변환이 끝나므로 인터넷 연결이 끊겨도 동작하고, 사진이 서버에 남을 걱정도
+      없습니다. 온라인 변환 사이트 대부분이 파일을 업로드받는 것과 다른 점입니다.
+    </p>
+  </section>
+
+  <section class="prose">
+    <h2>실제 응용</h2>
+
+    <h3>웹에 올릴 이미지는 대개 WebP</h3>
+    <p>
+      같은 화질에서 <strong>JPG보다 25~35% 정도 작습니다.</strong> 모든 최신
+      브라우저가 지원하므로 웹 페이지에 쓸 사진은 WebP로 두는 편이 무난합니다.
+      투명 배경도 지원해서 PNG를 대체할 수도 있습니다.
+    </p>
+    <p>
+      예외는 있습니다. <strong>이메일에 넣는 이미지</strong>는 오래된 메일
+      클라이언트를 고려해 JPG가 안전하고, <strong>다른 사람에게 파일로 전달할
+      때</strong>도 상대 환경을 모르면 JPG가 낫습니다.
+    </p>
+
+    <h3>PNG로 둬야 하는 것</h3>
+    <p>
+      PNG는 <strong>한 픽셀도 손상되지 않는</strong> 형식입니다. 다음은 JPG나
+      WebP로 바꾸면 눈에 띄게 나빠집니다.
+    </p>
+    <ul>
+      <li><strong>글자가 들어간 이미지</strong> — 스크린샷, 도표, UI 캡처. 글자 가장자리가 뭉개지고 색 번짐이 생깁니다</li>
+      <li><strong>선이 뚜렷한 그림</strong> — 아이콘, 로고, 일러스트. 경계에 얼룩이 낍니다</li>
+      <li><strong>색 수가 적은 이미지</strong> — 오히려 PNG가 더 작습니다</li>
+    </ul>
+    <p>
+      반대로 <strong>사진은 PNG로 두면 용량만 커집니다.</strong> 사진을 PNG로
+      저장하면 JPG의 5~10배가 되는 일이 흔합니다.
+    </p>
+
+    <h3>품질은 몇으로 두나</h3>
+    <p>
+      <strong>75~85 사이</strong>가 실용적인 구간입니다. 90을 넘기면 용량은
+      급격히 느는데 눈에 보이는 차이는 거의 없고, 60 아래로 내리면 하늘이나
+      피부처럼 색이 완만하게 변하는 부분에서 얼룩이 보이기 시작합니다.
+    </p>
+    <p>
+      확실한 방법은 <strong>직접 비교하는 것</strong>입니다. 같은 이미지를 80과
+      65로 각각 변환해 용량 차이를 보고, 실제 표시될 크기에서 화질이 견딜 만한지
+      확인하세요. 화면에 작게 들어가는 썸네일이라면 60도 충분한 경우가 많습니다.
+    </p>
+
+    <h3>크기부터 줄이는 게 품질을 낮추는 것보다 낫다</h3>
+    <p>
+      실무에서 가장 큰 낭비는 <strong>4000px짜리 사진을 그대로 올려 놓고
+      화면에서는 800px로 줄여 보여주는 것</strong>입니다. 사용자는 쓰지도 않을
+      화소를 내려받습니다.
+    </p>
+    <p>
+      이럴 때는 품질을 깎기 전에 <strong>가로 크기부터 실제 표시 크기에
+      맞추세요.</strong> 4000px을 1600px으로 줄이면 그것만으로 용량이 10분의 1
+      아래로 떨어지고, 화질 손상은 눈에 띄지 않습니다. 고해상도 화면을 고려해
+      표시 크기의 2배 정도로 잡으면 넉넉합니다.
+    </p>
+
+    <h3>이 도구가 못 하는 것</h3>
+    <p>
+      브라우저가 읽을 수 있는 형식만 다룹니다. 한계를 알고 쓰는 편이 낫습니다.
+    </p>
+    <ul>
+      <li>
+        <strong>HEIC(아이폰 사진)는 읽지 못합니다.</strong> 사파리를 빼면
+        브라우저가 이 형식을 지원하지 않습니다. 아이폰에서 <strong>설정 →
+        카메라 → 포맷 → 높은 호환성</strong>으로 바꾸면 JPG로 촬영됩니다.
+      </li>
+      <li>
+        <strong>애니메이션 GIF는 첫 장면만</strong> 변환됩니다. 움직임을
+        유지하려면 다른 도구가 필요합니다.
+      </li>
+      <li>
+        <strong>AVIF 저장은 넣지 않았습니다.</strong> 브라우저마다 저장 지원이
+        달라서, 되는 것처럼 보이다가 PNG가 나오는 일이 생깁니다.
+      </li>
+      <li>
+        아주 큰 이미지(1억 화소 이상)는 브라우저 메모리 한계에 걸릴 수 있습니다.
+      </li>
+    </ul>
+  </section>
+</ToolPage>
+
+<script>
+  const dropZone = document.getElementById('drop')!;
+  const fileInput = document.getElementById('file-input') as HTMLInputElement;
+  const targetSel = document.getElementById('target') as HTMLSelectElement;
+  const qualityInput = document.getElementById('quality') as HTMLInputElement;
+  const qualityLabel = document.getElementById('quality-label')!;
+  const qualityField = document.getElementById('quality-field')!;
+  const maxWidthInput = document.getElementById('max-width') as HTMLInputElement;
+  const resultsEl = document.getElementById('results')!;
+  const clearBtn = document.getElementById('clear') as HTMLButtonElement;
+  const fileError = document.getElementById('file-error') as HTMLElement;
+
+  const EXT: Record<string, string> = {
+    'image/webp': 'webp',
+    'image/jpeg': 'jpg',
+    'image/png': 'png',
+  };
+
+  // 만들어 둔 blob URL을 기억했다가 목록을 비울 때 함께 해제한다.
+  // 놓아두면 탭이 닫힐 때까지 메모리에 남는다.
+  const objectUrls: string[] = [];
+
+  function formatBytes(n: number): string {
+    if (n < 1024) return n + ' B';
+    if (n < 1024 * 1024) return (n / 1024).toFixed(1) + ' KB';
+    return (n / (1024 * 1024)).toFixed(2) + ' MB';
+  }
+
+  // 원본 이름은 그대로 두고 확장자만 바꾼다
+  function renameExt(name: string, ext: string): string {
+    return name.replace(/\.[^.]+$/, '') + '.' + ext;
+  }
+
+  function showError(msg: string) {
+    fileError.textContent = msg;
+    fileError.hidden = false;
+  }
+
+  async function convert(file: File) {
+    const type = targetSel.value;
+    // PNG는 무손실이라 품질 인자를 무시한다
+    const quality = type === 'image/png' ? undefined : Number(qualityInput.value) / 100;
+    const maxW = Number(maxWidthInput.value) || 0;
+
+    // createImageBitmap이 디코딩까지 해 준다. 못 읽는 형식(HEIC 등)은 여기서 예외가 난다
+    let bitmap: ImageBitmap;
+    try {
+      bitmap = await createImageBitmap(file);
+    } catch {
+      return { error: '이 브라우저가 읽지 못하는 형식입니다.' };
+    }
+
+    // 원본보다 크게 늘리지는 않는다 — 화질은 그대로인데 용량만 는다
+    const scale = maxW > 0 && bitmap.width > maxW ? maxW / bitmap.width : 1;
+    const w = Math.round(bitmap.width * scale);
+    const h = Math.round(bitmap.height * scale);
+
+    const canvas = document.createElement('canvas');
+    canvas.width = w;
+    canvas.height = h;
+    const ctx = canvas.getContext('2d')!;
+
+    // JPG는 투명을 표현하지 못한다. 흰색을 깔지 않으면 투명한 부분이 검게 나온다
+    if (type === 'image/jpeg') {
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, w, h);
+    }
+    ctx.drawImage(bitmap, 0, 0, w, h);
+    bitmap.close();
+
+    const blob = await new Promise<Blob | null>((resolve) =>
+      canvas.toBlob(resolve, type, quality),
+    );
+    if (!blob) return { error: '변환에 실패했습니다.' };
+
+    // 브라우저가 그 형식으로 저장하지 못하면 조용히 PNG를 돌려준다.
+    // 실제로 나온 형식을 확인해서 사용자에게 사실대로 알린다.
+    const actual = blob.type;
+    return { blob, w, h, actual };
+  }
+
+  async function handleFiles(files: FileList | File[]) {
+    fileError.hidden = true;
+    const list = Array.from(files).filter((f) => f.type.startsWith('image/'));
+    if (!list.length) {
+      showError('이미지 파일이 아닙니다.');
+      return;
+    }
+
+    for (const file of list) {
+      const card = document.createElement('div');
+      card.className = 'result-card';
+      card.innerHTML = `
+        <div class="result-name">${file.name}</div>
+        <div class="result-body"><small>변환 중…</small></div>
+      `;
+      resultsEl.appendChild(card);
+      clearBtn.disabled = false;
+
+      const out = await convert(file);
+      const body = card.querySelector('.result-body')!;
+
+      if ('error' in out) {
+        body.innerHTML = `<small class="is-error">${out.error}</small>`;
+        continue;
+      }
+
+      const url = URL.createObjectURL(out.blob);
+      objectUrls.push(url);
+      const ext = EXT[out.actual] ?? 'png';
+      const saved = file.size - out.blob.size;
+      const pct = file.size > 0 ? Math.round((saved / file.size) * 100) : 0;
+
+      // 요청한 형식과 실제 결과가 다르면 그 사실을 표시한다
+      const mismatch =
+        out.actual !== targetSel.value
+          ? `<small class="is-error">이 브라우저가 ${EXT[targetSel.value]?.toUpperCase()} 저장을 지원하지 않아 ${ext.toUpperCase()}로 저장했습니다.</small>`
+          : '';
+
+      body.innerHTML = `
+        <img class="result-thumb" src="${url}" alt="">
+        <div class="result-meta">
+          <span>${out.w} × ${out.h}px</span>
+          <span>${formatBytes(file.size)} → <strong>${formatBytes(out.blob.size)}</strong>
+            <span class="${saved > 0 ? 'is-pass' : 'is-fail'}">${saved > 0 ? '−' : '+'}${Math.abs(pct)}%</span>
+          </span>
+          ${mismatch}
+        </div>
+        <a class="btn" href="${url}" download="${renameExt(file.name, ext)}">내려받기</a>
+      `;
+    }
+  }
+
+  // ---------- 입력 ----------
+  fileInput.addEventListener('change', () => {
+    if (fileInput.files) handleFiles(fileInput.files);
+    // 같은 파일을 다시 골라도 change가 나도록 비운다
+    fileInput.value = '';
+  });
+
+  dropZone.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    dropZone.classList.add('is-over');
+  });
+  dropZone.addEventListener('dragleave', () => dropZone.classList.remove('is-over'));
+  dropZone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    dropZone.classList.remove('is-over');
+    if (e.dataTransfer?.files) handleFiles(e.dataTransfer.files);
+  });
+
+  targetSel.addEventListener('change', () => {
+    // PNG는 품질 조절이 의미 없다
+    qualityField.hidden = targetSel.value === 'image/png';
+  });
+
+  qualityInput.addEventListener('input', () => {
+    qualityLabel.textContent = qualityInput.value;
+  });
+
+  clearBtn.addEventListener('click', () => {
+    resultsEl.innerHTML = '';
+    // 목록을 지울 때 blob URL도 함께 해제한다
+    objectUrls.forEach((u) => URL.revokeObjectURL(u));
+    objectUrls.length = 0;
+    clearBtn.disabled = true;
+    fileError.hidden = true;
+  });
+</script>
+
+<style>
+  .drop-zone {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-7) var(--space-5);
+    text-align: center;
+    border: 2px dashed var(--border-strong);
+    border-radius: var(--radius-md);
+    background: var(--bg-subtle);
+    cursor: pointer;
+  }
+  .drop-zone:hover,
+  .drop-zone.is-over {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+  .drop-zone small {
+    color: var(--muted);
+  }
+  .drop-note {
+    margin-top: var(--space-2);
+  }
+
+  .convert-opts {
+    margin-top: var(--space-5);
+  }
+
+  .result-list {
+    display: grid;
+    gap: var(--space-3);
+    margin-bottom: var(--space-7);
+  }
+  .result-card {
+    padding: var(--space-4);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    background: var(--surface);
+  }
+  .result-name {
+    margin-bottom: var(--space-3);
+    font-weight: 600;
+    overflow-wrap: anywhere;
+  }
+  .result-body {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    flex-wrap: wrap;
+  }
+  .result-thumb {
+    width: 5rem;
+    height: 5rem;
+    object-fit: contain;
+    background: var(--bg-subtle);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+  }
+  .result-meta {
+    /* minmax(0, …)이 아니라 flex라 min-width로 줄어듦을 허용한다 */
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    min-width: 0;
+    flex: 1 1 10rem;
+    font-size: 0.9rem;
+    color: var(--muted);
+  }
+</style>
