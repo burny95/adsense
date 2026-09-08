@@ -30,10 +30,50 @@ import ToolPage from '../../layouts/ToolPage.astro';
         <small>낮출수록 용량이 줄고 화질이 떨어집니다</small>
       </label>
       <label class="field">
-        가로 크기 제한 (px)
-        <input class="control" type="number" id="max-width" min="0" step="10" placeholder="원본 유지" />
-        <small>비우면 크기를 바꾸지 않습니다</small>
+        크기 조절
+        <select class="control" id="resize-mode">
+          <option value="none">크기 변경 안 함</option>
+          <option value="width">폭 맞춤 — 가로만 지정, 세로는 비율대로</option>
+          <option value="fit">비율 유지 — 지정 크기 안에 맞춤</option>
+          <option value="pad">여백 붙이기 — 지정 크기에 맞추고 남는 곳은 여백</option>
+          <option value="crop">여백 자르기 — 지정 크기를 채우고 넘치는 부분 잘라냄</option>
+          <option value="stretch">꽉차게 늘리기 — 비율 무시</option>
+        </select>
       </label>
+      <label class="field" id="w-field" hidden>
+        가로 (px)
+        <input class="control" type="number" id="out-w" min="1" step="10" value="1200" />
+      </label>
+      <label class="field" id="h-field" hidden>
+        세로 (px)
+        <input class="control" type="number" id="out-h" min="1" step="10" value="800" />
+      </label>
+      <label class="field">
+        회전
+        <select class="control" id="rotate">
+          <option value="0">회전 없음</option>
+          <option value="90">90° 시계 방향</option>
+          <option value="180">180°</option>
+          <option value="270">90° 반시계 방향</option>
+        </select>
+      </label>
+      <label class="field field-inline">
+        <input type="checkbox" id="flip-h" /> 좌우 반전
+      </label>
+    </div>
+
+    <div class="preview-box" id="preview-box" hidden>
+      <div class="preview-head">
+        <span class="preview-label">미리보기</span>
+        <span class="preview-note" id="preview-note"></span>
+      </div>
+      {/* 격자무늬는 투명한 부분을 드러내기 위한 것. 이미지 배경이 아니다 */}
+      <div class="preview-stage">
+        {/* 원본 크기를 나타내는 점선 테두리. 결과가 얼마나 줄었는지 견줄 기준 */}
+        <div class="preview-orig" id="preview-orig"></div>
+        <canvas id="preview-canvas"></canvas>
+      </div>
+      <p class="preview-size" id="preview-size" role="status"></p>
     </div>
 
     <p class="form-actions">
@@ -63,8 +103,33 @@ import ToolPage from '../../layouts/ToolPage.astro';
     <p>
       <strong>품질</strong>은 JPG와 WebP에서만 쓰입니다. PNG는 손실 없이
       저장하는 형식이라 품질 값이 의미가 없어 자동으로 숨겨집니다.
-      <strong>가로 크기 제한</strong>을 넣으면 그 폭에 맞춰 줄입니다. 세로는
-      비율에 맞게 따라갑니다. 원본보다 큰 값을 넣어도 확대하지는 않습니다.
+    </p>
+    <p>
+      <strong>크기 조절</strong>은 여섯 가지 중에 고릅니다. 무엇을 고르느냐에
+      따라 가로·세로 값이 어떻게 쓰이는지가 달라집니다.
+    </p>
+    <table class="data-table">
+      <thead>
+        <tr><th>모드</th><th>결과</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>크기 변경 안 함</td><td>원본 크기 그대로</td></tr>
+        <tr><td>폭 맞춤</td><td>가로만 지정한 값에 맞추고 세로는 비율대로. 세로 칸은 쓰이지 않습니다</td></tr>
+        <tr><td>비율 유지</td><td>지정한 가로×세로 <strong>안에</strong> 들어가게 축소. 결과가 지정값보다 작을 수 있습니다</td></tr>
+        <tr><td>여백 붙이기</td><td>결과가 정확히 지정한 크기. 비율이 안 맞는 부분은 여백으로 채웁니다</td></tr>
+        <tr><td>여백 자르기</td><td>결과가 정확히 지정한 크기. 넘치는 부분은 가운데를 기준으로 잘라냅니다</td></tr>
+        <tr><td>꽉차게 늘리기</td><td>비율을 무시하고 지정한 크기로 늘립니다. 그림이 찌그러집니다</td></tr>
+      </tbody>
+    </table>
+    <p>
+      <strong>폭 맞춤</strong>과 <strong>비율 유지</strong>는 원본보다 크게
+      늘리지 않습니다. 확대해도 화질은 그대로인데 용량만 늘기 때문입니다.
+      나머지 모드는 지정한 크기를 정확히 맞춰야 하므로 필요하면 확대합니다.
+    </p>
+    <p>
+      <strong>회전</strong>과 <strong>좌우 반전</strong>은 크기 조절보다 먼저
+      적용됩니다. 세로 사진을 눕히고 "폭 맞춤 800"을 지정하면, 눕힌 뒤의 가로가
+      800이 됩니다.
     </p>
     <p>
       <strong>파일은 어디로도 올라가지 않습니다.</strong> 브라우저 안에서
@@ -160,7 +225,18 @@ import ToolPage from '../../layouts/ToolPage.astro';
   const qualityInput = document.getElementById('quality') as HTMLInputElement;
   const qualityLabel = document.getElementById('quality-label')!;
   const qualityField = document.getElementById('quality-field')!;
-  const maxWidthInput = document.getElementById('max-width') as HTMLInputElement;
+  const modeSel = document.getElementById('resize-mode') as HTMLSelectElement;
+  const outW = document.getElementById('out-w') as HTMLInputElement;
+  const outH = document.getElementById('out-h') as HTMLInputElement;
+  const wField = document.getElementById('w-field') as HTMLElement;
+  const hField = document.getElementById('h-field') as HTMLElement;
+  const rotateSel = document.getElementById('rotate') as HTMLSelectElement;
+  const flipInput = document.getElementById('flip-h') as HTMLInputElement;
+  const previewBox = document.getElementById('preview-box') as HTMLElement;
+  const previewCanvas = document.getElementById('preview-canvas') as HTMLCanvasElement;
+  const previewOrig = document.getElementById('preview-orig') as HTMLElement;
+  const previewSize = document.getElementById('preview-size') as HTMLElement;
+  const previewNote = document.getElementById('preview-note') as HTMLElement;
   const resultsEl = document.getElementById('results')!;
   const clearBtn = document.getElementById('clear') as HTMLButtonElement;
   const convertBtn = document.getElementById('convert') as HTMLButtonElement;
@@ -193,11 +269,108 @@ import ToolPage from '../../layouts/ToolPage.astro';
     fileError.hidden = false;
   }
 
+  // 회전을 반영한 논리 크기. 90·270도는 가로세로가 뒤바뀐다
+  function rotatedSize(w: number, h: number, rot: number) {
+    return rot === 90 || rot === 270 ? { w: h, h: w } : { w, h };
+  }
+
+  // 크기 조절 모드에 따라 캔버스 크기와 그리기 영역을 정한다.
+  //   cw, ch         : 최종 캔버스 크기
+  //   sx, sy, sw, sh : 원본에서 가져올 영역 (여백 자르기에서 쓰인다)
+  //   dx, dy, dw, dh : 캔버스에 그릴 영역 (여백 붙이기에서 쓰인다)
+  function computeDraw(mode: string, srcW: number, srcH: number, tw: number, th: number) {
+    const full = { sx: 0, sy: 0, sw: srcW, sh: srcH };
+
+    if (mode === 'width') {
+      // 가로만 맞추고 세로는 비율대로. 원본보다 크게 늘리지는 않는다
+      const scale = Math.min(tw / srcW, 1);
+      const cw = Math.max(1, Math.round(srcW * scale));
+      const ch = Math.max(1, Math.round(srcH * scale));
+      return { cw, ch, ...full, dx: 0, dy: 0, dw: cw, dh: ch };
+    }
+
+    if (mode === 'fit') {
+      // 지정한 상자 안에 들어가도록 축소. 결과는 지정값보다 작을 수 있다
+      const scale = Math.min(tw / srcW, th / srcH, 1);
+      const cw = Math.max(1, Math.round(srcW * scale));
+      const ch = Math.max(1, Math.round(srcH * scale));
+      return { cw, ch, ...full, dx: 0, dy: 0, dw: cw, dh: ch };
+    }
+
+    if (mode === 'pad') {
+      // 캔버스는 지정 크기 그대로. 이미지는 비율을 지키며 안에 넣고 남는 곳은 여백
+      const scale = Math.min(tw / srcW, th / srcH);
+      const dw = Math.max(1, Math.round(srcW * scale));
+      const dh = Math.max(1, Math.round(srcH * scale));
+      return {
+        cw: tw, ch: th, ...full,
+        dx: Math.round((tw - dw) / 2), dy: Math.round((th - dh) / 2), dw, dh,
+      };
+    }
+
+    if (mode === 'crop') {
+      // 지정 크기를 꽉 채우도록 원본에서 가운데를 잘라 온다
+      const srcRatio = srcW / srcH;
+      const dstRatio = tw / th;
+      let sw = srcW;
+      let sh = srcH;
+      let sx = 0;
+      let sy = 0;
+      if (srcRatio > dstRatio) {
+        // 원본이 더 옆으로 길다 → 좌우를 잘라낸다
+        sw = Math.round(srcH * dstRatio);
+        sx = Math.round((srcW - sw) / 2);
+      } else if (srcRatio < dstRatio) {
+        // 원본이 더 세로로 길다 → 위아래를 잘라낸다
+        sh = Math.round(srcW / dstRatio);
+        sy = Math.round((srcH - sh) / 2);
+      }
+      return { cw: tw, ch: th, sx, sy, sw, sh, dx: 0, dy: 0, dw: tw, dh: th };
+    }
+
+    // stretch — 비율을 무시하고 지정 크기에 맞춘다
+    return { cw: tw, ch: th, ...full, dx: 0, dy: 0, dw: tw, dh: th };
+  }
+
+  // 회전·반전을 적용한 캔버스를 만든다. 변환과 미리보기가 같은 함수를 쓴다.
+  function transformed(bitmap: ImageBitmap, rot: number, flip: boolean) {
+    if (rot === 0 && !flip) return bitmap as ImageBitmap | HTMLCanvasElement;
+    const rs = rotatedSize(bitmap.width, bitmap.height, rot);
+    const tc = document.createElement('canvas');
+    tc.width = rs.w;
+    tc.height = rs.h;
+    const tctx = tc.getContext('2d')!;
+    tctx.translate(rs.w / 2, rs.h / 2);
+    // 변환은 적은 순서의 역순으로 적용된다. 좌우 반전이 회전보다 뒤에
+    // 적혀야 "회전을 마친 그림의 좌우가 뒤집힌다"가 된다.
+    if (flip) tctx.scale(-1, 1);
+    tctx.rotate((rot * Math.PI) / 180);
+    tctx.drawImage(bitmap, -bitmap.width / 2, -bitmap.height / 2);
+    return tc;
+  }
+
+  // 현재 설정으로 결과가 어떤 크기가 되는지 계산한다 (미리보기와 변환이 공유)
+  function geometryOf(bitmap: ImageBitmap) {
+    const rot = Number(rotateSel.value);
+    const rotated = rot === 90 || rot === 270;
+    const srcW = rotated ? bitmap.height : bitmap.width;
+    const srcH = rotated ? bitmap.width : bitmap.height;
+    const mode = modeSel.value;
+    const tw = Math.max(1, Number(outW.value) || srcW);
+    const th = Math.max(1, Number(outH.value) || srcH);
+    const d =
+      mode === 'none'
+        ? { cw: srcW, ch: srcH, sx: 0, sy: 0, sw: srcW, sh: srcH, dx: 0, dy: 0, dw: srcW, dh: srcH }
+        : computeDraw(mode, srcW, srcH, tw, th);
+    return { srcW, srcH, d, rot, flip: flipInput.checked };
+  }
+
   async function convert(file: File) {
     const type = targetSel.value;
     // PNG는 무손실이라 품질 인자를 무시한다
     const quality = type === 'image/png' ? undefined : Number(qualityInput.value) / 100;
-    const maxW = Number(maxWidthInput.value) || 0;
+    const rot = Number(rotateSel.value);
+    const flip = flipInput.checked;
 
     // createImageBitmap이 디코딩까지 해 준다. 못 읽는 형식(HEIC 등)은 여기서 예외가 난다
     let bitmap: ImageBitmap;
@@ -207,23 +380,27 @@ import ToolPage from '../../layouts/ToolPage.astro';
       return { error: '이 브라우저가 읽지 못하는 형식입니다.' };
     }
 
-    // 원본보다 크게 늘리지는 않는다 — 화질은 그대로인데 용량만 는다
-    const scale = maxW > 0 && bitmap.width > maxW ? maxW / bitmap.width : 1;
-    const w = Math.round(bitmap.width * scale);
-    const h = Math.round(bitmap.height * scale);
+    // 회전·반전을 먼저 적용한 뒤 그 결과를 기준으로 크기를 계산한다.
+    // 세로 사진을 눕히고 "폭 800"을 지정했을 때 눕힌 뒤의 폭이 800이 되어야 한다.
+    const stage = transformed(bitmap, rot, flip);
+    const { d } = geometryOf(bitmap);
 
     const canvas = document.createElement('canvas');
-    canvas.width = w;
-    canvas.height = h;
+    canvas.width = d.cw;
+    canvas.height = d.ch;
     const ctx = canvas.getContext('2d')!;
 
-    // JPG는 투명을 표현하지 못한다. 흰색을 깔지 않으면 투명한 부분이 검게 나온다
+    // JPG는 투명을 표현하지 못한다. 흰색을 깔지 않으면 투명한 부분이 검게 나온다.
+    // 여백 붙이기에서 생기는 빈 공간도 이 색으로 채워진다.
     if (type === 'image/jpeg') {
       ctx.fillStyle = '#ffffff';
-      ctx.fillRect(0, 0, w, h);
+      ctx.fillRect(0, 0, d.cw, d.ch);
     }
-    ctx.drawImage(bitmap, 0, 0, w, h);
+    ctx.drawImage(stage, d.sx, d.sy, d.sw, d.sh, d.dx, d.dy, d.dw, d.dh);
     bitmap.close();
+
+    const w = d.cw;
+    const h = d.ch;
 
     const blob = await new Promise<Blob | null>((resolve) =>
       canvas.toBlob(resolve, type, quality),
@@ -238,7 +415,7 @@ import ToolPage from '../../layouts/ToolPage.astro';
 
   // 고른 파일을 담아 두고, 변환 버튼을 누를 때 한꺼번에 처리한다.
   // 넣자마자 변환하면 설정을 바꿀 때마다 다시 변환해야 한다.
-  const queue: { file: File; card: HTMLElement; thumbUrl: string }[] = [];
+  const queue: { file: File; card: HTMLElement }[] = [];
 
   function addFiles(files: FileList | File[]) {
     fileError.hidden = true;
@@ -249,16 +426,12 @@ import ToolPage from '../../layouts/ToolPage.astro';
     }
 
     for (const file of list) {
-      // 변환 전에도 어떤 파일인지 보이도록 원본으로 썸네일을 만든다
-      const thumbUrl = URL.createObjectURL(file);
-      objectUrls.push(thumbUrl);
-
+      // 미리보기는 변환 결과로만 보여준다. 변환 전에는 파일 정보만.
       const card = document.createElement('div');
       card.className = 'result-card';
       card.innerHTML = `
         <div class="result-name">${file.name}</div>
         <div class="result-body">
-          <img class="result-thumb" src="${thumbUrl}" alt="">
           <div class="result-meta">
             <span>${formatBytes(file.size)}</span>
             <small>변환 대기 중</small>
@@ -266,16 +439,91 @@ import ToolPage from '../../layouts/ToolPage.astro';
         </div>
       `;
       resultsEl.appendChild(card);
-      queue.push({ file, card, thumbUrl });
+      queue.push({ file, card });
     }
 
     convertBtn.disabled = false;
     clearBtn.disabled = false;
     setHint(`${queue.length}개 대기 중. 설정을 맞춘 뒤 변환을 누르세요.`);
+
+    // 미리보기는 첫 번째 파일로만 만든다
+    if (!previewBitmap) setPreviewFrom(queue[0].file);
+    else if (queue.length > 1) previewNote.textContent = `첫 번째 파일 기준 · ${queue[0].file.name}`;
   }
 
   function setHint(text: string) {
     convertHint.textContent = text;
+  }
+
+  // ---------- 미리보기 ----------
+  // 첫 번째 파일만 그린다. 설정을 바꿀 때마다 다시 그려 결과를 즉시 보여 준다.
+  let previewBitmap: ImageBitmap | null = null;
+
+  // 미리보기 상자의 안쪽 크기. 원본과 결과가 모두 이 안에 들어가도록 축소해 보여 준다
+  const BOX_W = 320;
+  const BOX_H = 200;
+  // 캔버스에 실제로 그릴 픽셀의 상한. 큰 사진을 원본 크기로 그리면 메모리가 낭비된다
+  const RENDER_CAP = 640;
+
+  function renderPreview() {
+    if (!previewBitmap) return;
+    const { srcW, srcH, d, rot, flip } = geometryOf(previewBitmap);
+
+    // 1) 캔버스에 그릴 픽셀 수를 제한한다
+    const renderScale = Math.min(1, RENDER_CAP / Math.max(d.cw, d.ch));
+    const rw = Math.max(1, Math.round(d.cw * renderScale));
+    const rh = Math.max(1, Math.round(d.ch * renderScale));
+
+    previewCanvas.width = rw;
+    previewCanvas.height = rh;
+    const ctx = previewCanvas.getContext('2d')!;
+    ctx.clearRect(0, 0, rw, rh);
+
+    // JPG로 내보낼 때는 투명이 흰색이 되므로 미리보기도 그렇게 보여 준다
+    if (targetSel.value === 'image/jpeg') {
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, rw, rh);
+    }
+
+    const stage = transformed(previewBitmap, rot, flip);
+    ctx.drawImage(
+      stage,
+      d.sx, d.sy, d.sw, d.sh,
+      d.dx * renderScale, d.dy * renderScale,
+      d.dw * renderScale, d.dh * renderScale,
+    );
+
+    // 2) 화면에 보일 크기. 원본과 결과 중 큰 쪽을 상자에 맞추면
+    //    둘의 크기 차이가 눈에 그대로 드러난다
+    const baseW = Math.max(srcW, d.cw);
+    const baseH = Math.max(srcH, d.ch);
+    const displayScale = Math.min(BOX_W / baseW, BOX_H / baseH);
+
+    previewCanvas.style.width = `${Math.max(1, d.cw * displayScale)}px`;
+    previewCanvas.style.height = `${Math.max(1, d.ch * displayScale)}px`;
+    previewOrig.style.width = `${Math.max(1, srcW * displayScale)}px`;
+    previewOrig.style.height = `${Math.max(1, srcH * displayScale)}px`;
+
+    // 3) 숫자로도 알려 준다
+    const same = d.cw === srcW && d.ch === srcH;
+    const pct = Math.round((d.cw / srcW) * 100);
+    previewSize.textContent = same
+      ? `${srcW} × ${srcH}px (원본 그대로)`
+      : `${srcW} × ${srcH}px → ${d.cw} × ${d.ch}px (가로 기준 ${pct}%)`;
+  }
+
+  async function setPreviewFrom(file: File) {
+    previewBitmap?.close();
+    previewBitmap = null;
+    try {
+      previewBitmap = await createImageBitmap(file);
+    } catch {
+      previewBox.hidden = true;
+      return;
+    }
+    previewBox.hidden = false;
+    previewNote.textContent = queue.length > 1 ? `첫 번째 파일 기준 · ${file.name}` : file.name;
+    renderPreview();
   }
 
   async function convertAll() {
@@ -288,20 +536,14 @@ import ToolPage from '../../layouts/ToolPage.astro';
 
     let done = 0;
     for (const item of queue) {
-      const { file, card, thumbUrl } = item;
+      const { file, card } = item;
       const body = card.querySelector('.result-body')!;
-      body.innerHTML = `
-        <img class="result-thumb" src="${thumbUrl}" alt="">
-        <div class="result-meta"><small>변환 중…</small></div>
-      `;
+      body.innerHTML = '<div class="result-meta"><small>변환 중…</small></div>';
 
       const out = await convert(file);
 
       if ('error' in out) {
-        body.innerHTML = `
-          <img class="result-thumb" src="${thumbUrl}" alt="">
-          <div class="result-meta"><small class="is-error">${out.error}</small></div>
-        `;
+        body.innerHTML = `<div class="result-meta"><small class="is-error">${out.error}</small></div>`;
         continue;
       }
 
@@ -360,7 +602,28 @@ import ToolPage from '../../layouts/ToolPage.astro';
   targetSel.addEventListener('change', () => {
     // PNG는 품질 조절이 의미 없다
     qualityField.hidden = targetSel.value === 'image/png';
+    // JPG는 투명을 흰색으로 바꾸므로 미리보기도 달라진다
+    renderPreview();
   });
+
+  // 모드마다 필요한 칸이 다르다. 쓰이지 않는 칸을 남겨 두면 값을 넣고
+  // 왜 반영되지 않는지 헤매게 된다
+  function syncSizeFields() {
+    const mode = modeSel.value;
+    wField.hidden = mode === 'none';
+    hField.hidden = mode === 'none' || mode === 'width';
+  }
+  modeSel.addEventListener('change', () => {
+    syncSizeFields();
+    renderPreview();
+  });
+  syncSizeFields();
+
+  // 크기·회전·반전은 바꾸는 즉시 미리보기에 반영한다
+  outW.addEventListener('input', renderPreview);
+  outH.addEventListener('input', renderPreview);
+  rotateSel.addEventListener('change', renderPreview);
+  flipInput.addEventListener('change', renderPreview);
 
   qualityInput.addEventListener('input', () => {
     qualityLabel.textContent = qualityInput.value;
@@ -375,6 +638,9 @@ import ToolPage from '../../layouts/ToolPage.astro';
     clearBtn.disabled = true;
     convertBtn.disabled = true;
     fileError.hidden = true;
+    previewBitmap?.close();
+    previewBitmap = null;
+    previewBox.hidden = true;
     setHint('이미지를 넣고 설정을 맞춘 뒤 변환을 누르세요.');
   });
 </script>
@@ -406,6 +672,71 @@ import ToolPage from '../../layouts/ToolPage.astro';
 
   .convert-opts {
     margin-top: var(--space-5);
+  }
+
+  /* ---------- 미리보기 ---------- */
+  .preview-box {
+    margin-top: var(--space-5);
+  }
+  .preview-head {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-3);
+    margin-bottom: var(--space-2);
+  }
+  .preview-label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+  }
+  .preview-note {
+    font-size: 0.85rem;
+    color: var(--muted);
+    overflow-wrap: anywhere;
+  }
+  /* 격자무늬 — 이미지의 투명한 부분을 드러내기 위한 바탕.
+     네 방향 대각선 그러데이션을 엇갈리게 깔면 체크무늬가 된다 */
+  .preview-stage {
+    position: relative;
+    display: grid;
+    place-items: center;
+    min-height: 13rem;
+    padding: var(--space-4);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    background-color: var(--surface);
+    background-image:
+      linear-gradient(45deg, var(--bg-subtle) 25%, transparent 25%),
+      linear-gradient(-45deg, var(--bg-subtle) 25%, transparent 25%),
+      linear-gradient(45deg, transparent 75%, var(--bg-subtle) 75%),
+      linear-gradient(-45deg, transparent 75%, var(--bg-subtle) 75%);
+    background-size: 16px 16px;
+    background-position:
+      0 0,
+      0 8px,
+      8px -8px,
+      -8px 0;
+  }
+  /* 원본 크기를 나타내는 점선. 결과 캔버스와 같은 자리에 겹쳐 두어
+     얼마나 줄었는지(또는 늘었는지) 바로 보이게 한다 */
+  .preview-orig {
+    position: absolute;
+    border: 1px dashed var(--border-strong);
+    pointer-events: none;
+  }
+  #preview-canvas {
+    position: relative;
+    display: block;
+    /* 축소해 보여줄 때 원본의 픽셀 느낌이 남도록 부드럽게 */
+    image-rendering: auto;
+    box-shadow: 0 0 0 1px var(--border);
+  }
+  .preview-size {
+    margin: var(--space-2) 0 0;
+    font-size: 0.9rem;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
   }
 
   .result-list {
