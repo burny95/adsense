@@ -181,6 +181,10 @@ background: repeating-linear-gradient(
   const resetBtn = document.getElementById('reset') as HTMLButtonElement;
   const urlError = document.getElementById('url-error') as HTMLElement;
 
+  // 정지점 상한. 이보다 많으면 색이 서로 뭉개져 알아보기 어렵고,
+  // 공유 링크도 길어진다. 실제 디자인에서 열 개를 넘길 일은 드물다.
+  const MAX_STOPS = 10;
+
   const DEFAULT_STOPS: Stop[] = [
     { color: '#b4480a', pos: 0 },
     { color: '#f5b301', pos: 100 },
@@ -231,7 +235,8 @@ background: repeating-linear-gradient(
       }
       out.push({ color: '#' + c, pos });
     }
-    if (out.length < 2) return null;
+    // 손으로 고친 링크로 상한을 넘겨 들어오는 것도 막는다
+    if (out.length < 2 || out.length > MAX_STOPS) return null;
     return { stops: out, type: t as Type, angle: ang, repeating: r === '1' };
   }
 
@@ -290,6 +295,11 @@ background: repeating-linear-gradient(
   }
 
   function refreshOutput() {
+    // 상한에 닿으면 버튼을 잠근다. 눌러도 아무 일이 없으면 고장으로 보인다
+    const full = stops.length >= MAX_STOPS;
+    addBtn.disabled = full;
+    addBtn.textContent = full ? `정지점 최대 ${MAX_STOPS}개` : '+ 정지점 추가';
+
     const css = gradientCss();
     output.textContent = `background: ${css};`;
     stage.style.background = css;
@@ -341,6 +351,7 @@ background: repeating-linear-gradient(
   });
 
   addBtn.addEventListener('click', () => {
+    if (stops.length >= MAX_STOPS) return;
     snapshot();
     // 마지막 색을 복제해 넣는다 — 빈 값보다 조절하기 쉽다
     const last = stops[stops.length - 1];
