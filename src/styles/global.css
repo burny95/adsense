@@ -820,27 +820,54 @@ textarea.control {
     position: static;
     max-height: none;
     overflow-y: visible;
+    /* 1단에서는 목차가 본문 바로 위에 온다. 레일만으로는 본문과 구분이
+       약해서 이때만 상자로 감싼다 */
+    padding: var(--space-4) var(--space-5);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    background: var(--bg-subtle);
   }
 }
 
-.toc {
-  padding: var(--space-4) var(--space-5);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  background: var(--bg-subtle);
-  font-size: 0.92rem;
-}
+/* 목차는 상자가 아니라 왼쪽 레일로 세운다. 본문 옆에 계속 떠 있는 요소라
+   면적을 차지하는 배경·테두리가 없는 편이 본문을 방해하지 않는다. */
 .toc-head {
-  margin: 0 0 var(--space-2);
+  margin: 0 0 var(--space-3);
+  font-size: 0.78rem;
   font-weight: 600;
-}
-.toc ol {
-  margin: 0;
-  padding-left: 1.2em;
+  letter-spacing: 0.06em;
   color: var(--muted);
 }
-.toc li + li {
-  margin-top: var(--space-1);
+.toc-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  /* 항목 전체를 관통하는 연한 세로선 */
+  border-left: 2px solid var(--border);
+}
+.toc-link {
+  display: block;
+  /* 자기 왼쪽 선을 레일 위에 겹쳐 놓는다. 활성일 때 그 조각만 색이 바뀐다 */
+  margin-left: -2px;
+  border-left: 2px solid transparent;
+  padding: var(--space-2) 0 var(--space-2) var(--space-4);
+  font-size: 0.88rem;
+  line-height: 1.45;
+  color: var(--muted);
+  text-decoration: none;
+  transition:
+    color 0.15s,
+    border-color 0.15s;
+}
+.toc-link:hover {
+  color: var(--text);
+  border-left-color: var(--border-strong);
+}
+/* 지금 읽고 있는 절 (스크롤에 따라 스크립트가 옮긴다) */
+.toc-link[aria-current='location'] {
+  color: var(--accent);
+  border-left-color: var(--accent);
+  font-weight: 600;
 }
 
 /* 이전·다음 글 (본문 하단) */
