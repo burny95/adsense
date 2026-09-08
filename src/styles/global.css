@@ -652,13 +652,60 @@ textarea.control {
   font-size: 0.92rem;
 }
 
+/* 관련 글 / 관련 도구 상자.
+   도구 페이지와 블로그 글이 같은 마크업을 쓰므로 스타일도 여기 한 곳에 둔다. */
 .related {
   margin-top: var(--space-7);
-  padding-top: var(--space-4);
-  border-top: 1px solid var(--border);
+  padding: var(--space-5);
+  background: var(--bg-subtle);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
 }
 .related h2 {
-  font-size: 1.1rem;
+  margin: 0 0 var(--space-4);
+  font-size: 1rem;
+  color: var(--muted);
+}
+.related ul {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+/* 링크 전체가 클릭 영역이 되도록 블록으로 편다 (모바일 탭 목표 확보) */
+.related a {
+  display: block;
+  padding: var(--space-3) var(--space-4);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: inherit;
+  text-decoration: none;
+}
+.related a:hover {
+  border-color: var(--accent);
+}
+.related-title {
+  display: block;
+  font-weight: 600;
+  color: var(--accent);
+}
+/* 화살표로 이동할 수 있는 링크임을 드러낸다 */
+.related-title::after {
+  content: ' →';
+  color: var(--muted);
+}
+.related a:hover .related-title,
+.related a:hover .related-title::after {
+  color: var(--accent-hover);
+}
+.related-desc {
+  display: block;
+  margin-top: var(--space-1);
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--muted);
 }
 
 /* ---------- 본문 글(블로그) ---------- */
@@ -707,6 +754,19 @@ textarea.control {
   border: 1px solid var(--border);
   padding: var(--space-2) var(--space-3);
   text-align: left;
+}
+/* 제목 바로 아래 붙는 설명문은 .prose 안에서도 제목에 붙어 있어야 한다.
+   그냥 두면 .prose > * + * 의 margin-top이 .tool-intro의 음수 마진을 덮는다. */
+.prose > .tool-intro {
+  margin-top: calc(-1 * var(--space-2));
+}
+/* .data-table은 .prose 안에서도 자기 모양(아래 선만)을 지킨다.
+   위의 .prose th/td가 CSS에서 더 뒤에 있어 그냥 두면 격자 표로 덮인다. */
+.prose .data-table th,
+.prose .data-table td {
+  border: 0;
+  border-bottom: 1px solid var(--border);
+  padding: var(--space-3) var(--space-2);
 }
 .prose img {
   border-radius: var(--radius-sm);

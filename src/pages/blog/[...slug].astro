@@ -100,11 +100,14 @@ const schema = {
   {
     relatedTools.length > 0 && (
       <aside class="related">
-        <h2>관련 도구</h2>
+        <h2>이 글과 함께 쓰는 도구</h2>
         <ul>
           {relatedTools.map((t) => (
             <li>
-              <a href={`/tools/${t.slug}`}>{t.title}</a> — {t.description}
+              <a href={`/tools/${t.slug}`}>
+                <span class="related-title">{t.title}</span>
+                <span class="related-desc">{t.description}</span>
+              </a>
             </li>
           ))}
         </ul>

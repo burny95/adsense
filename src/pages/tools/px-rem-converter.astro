@@ -37,7 +37,7 @@ const commonPx = [10, 12, 14, 16, 18, 20, 24, 28, 32, 40, 48, 64];
     <code class="output-code" id="result"></code>
   </div>
 
-  <section>
+  <section class="prose">
     <h2>자주 쓰는 값 대조표</h2>
     <p class="tool-intro">
       현재 기준 폰트 크기(<span id="root-label">16</span>px) 기준입니다.
@@ -59,7 +59,7 @@ const commonPx = [10, 12, 14, 16, 18, 20, 24, 28, 32, 40, 48, 64];
     </table>
   </section>
 
-  <section>
+  <section class="prose">
     <h2>사용법</h2>
     <p>
       세 칸 중 하나에 값을 입력하면 나머지가 자동으로 계산됩니다.
@@ -77,6 +77,86 @@ const commonPx = [10, 12, 14, 16, 18, 20, 24, 28, 32, 40, 48, 64];
       잡았다면 위 "기준 폰트 크기"를 10으로 바꾸세요. 그러면
       <code>1rem = 10px</code>로 계산됩니다.
     </p>
+  </section>
+
+  <section class="prose">
+    <h2>실제 응용</h2>
+
+    <h3>전부 rem으로 바꾸는 게 답이 아니다</h3>
+    <p>
+      "px 대신 rem"이라는 말을 그대로 적용해 모든 값을 바꾸면 오히려 어색해집니다.
+      기준은 하나입니다. <strong>사용자가 글자 크기를 키웠을 때 같이 커져야
+      자연스러운 값인가?</strong>
+    </p>
+    <table class="data-table">
+      <thead>
+        <tr><th>단위</th><th>쓰는 곳</th><th>이유</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>rem</code></td>
+          <td>font-size, padding, margin, gap, 컨테이너 최대 너비, line-height 관련 여백</td>
+          <td>글자가 커지면 글자를 담는 공간도 같이 넓어져야 합니다</td>
+        </tr>
+        <tr>
+          <td><code>px</code></td>
+          <td>border, box-shadow의 오프셋·blur, border-radius, 1px 구분선</td>
+          <td>글자를 키웠다고 테두리가 3px로 두꺼워지면 이상합니다</td>
+        </tr>
+      </tbody>
+    </table>
+    <p>
+      <code>border-radius</code>는 경우에 따라 다릅니다. 버튼처럼 크기가 글자를
+      따라 커지는 요소라면 <code>rem</code>이 어울리고, 아바타나 아이콘처럼 크기가
+      고정된 요소라면 <code>px</code>가 맞습니다.
+    </p>
+
+    <h3>미디어쿼리의 rem은 html의 font-size를 보지 않는다</h3>
+    <p>
+      알아두면 헷갈릴 일이 없어지는 부분입니다. 미디어쿼리 안의
+      <code>rem</code>은 <strong>여러분이 <code>html</code>에 지정한 font-size가
+      아니라, 브라우저 기본 글자 크기</strong>를 기준으로 계산됩니다.
+    </p>
+    <p>
+      그래서 <code>html {`{ font-size: 62.5% }`}</code>로 1rem을 10px로 만들어
+      뒀더라도, <code>@media (min-width: 48rem)</code>은 480px이 아니라
+      <strong>768px</strong>입니다. 이 규칙을 모르면 중단점이 예상과 전혀 다른
+      지점에서 걸려 한참 헤매게 됩니다. 미디어쿼리에서는 계산이 어긋날 여지가
+      없도록 <code>px</code>를 쓰거나, 쓰더라도 항상 16px 기준으로 환산하세요.
+    </p>
+
+    <h3>62.5% 기법은 대가가 있다</h3>
+    <p>
+      <code>html {`{ font-size: 62.5% }`}</code>로 <code>1rem = 10px</code>을 만드는
+      기법은 계산이 편해서 널리 쓰이지만, 알고 쓸 만한 부작용이 둘 있습니다.
+    </p>
+    <ul>
+      <li>
+        <strong>외부 라이브러리의 CSS가 함께 작아집니다.</strong> 라이브러리는 대개
+        1rem을 16px로 가정하고 만들어져 있어서, 가져다 쓰면 전체가 62.5% 크기로
+        나옵니다. 컴포넌트 하나하나 크기를 다시 잡아야 합니다.
+      </li>
+      <li>
+        <strong>사용자 설정의 효과가 줄어듭니다.</strong> 브라우저 기본 글자 크기를
+        20px로 키운 사용자에게도 62.5%가 곱해져 12.5px가 기준이 됩니다.
+        rem을 쓰는 원래 목적이 접근성인데, 그 효과를 스스로 깎는 셈입니다.
+      </li>
+    </ul>
+    <p>
+      기본 16px를 유지하고 변환은 이 도구에 맡기는 편을 권합니다. 어차피 값은
+      CSS 변수로 몇 개만 정해 두고 재사용하게 됩니다.
+    </p>
+
+    <h3>시안이 px로 왔을 때의 순서</h3>
+    <p>
+      디자인 시안의 모든 숫자를 하나씩 변환하려 들면 시간만 오래 걸립니다.
+      순서를 정해 두면 훨씬 빠릅니다.
+    </p>
+    <ol>
+      <li>시안에서 반복되는 값을 먼저 추립니다. 대개 여백은 4·8·12·16·24·32px, 글자는 12·14·16·20·24px 정도로 수렴합니다.</li>
+      <li>그 값들만 위 대조표로 rem으로 바꿔 CSS 변수로 정의합니다.</li>
+      <li>이후에는 변수만 씁니다. <code>13px</code>, <code>17px</code>처럼 어중간한 값이 시안에 있으면 대체로 실수이니 확인해 보세요.</li>
+    </ol>
   </section>
 </ToolPage>
 

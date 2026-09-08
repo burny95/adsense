@@ -39,11 +39,15 @@ const schema = toolSchema(tool, Astro.site!.toString());
   {
     related.length > 0 && (
       <aside class="related">
-        <h2>관련 글</h2>
+        <h2>이 도구와 함께 읽을 글</h2>
         <ul>
           {related.map((p) => (
             <li>
-              <a href={`/blog/${p.id}`}>{p.data.title}</a>
+              {/* 링크 전체를 누를 수 있게 감싼다 — 제목만 링크면 모바일에서 목표가 너무 작다 */}
+              <a href={`/blog/${p.id}`}>
+                <span class="related-title">{p.data.title}</span>
+                <span class="related-desc">{p.data.description}</span>
+              </a>
             </li>
           ))}
         </ul>

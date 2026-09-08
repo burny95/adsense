@@ -76,7 +76,7 @@ import ToolPage from '../../layouts/ToolPage.astro';
     </p>
   </div>
 
-  <section>
+  <section class="prose">
     <h2>사용법</h2>
     <p>
       네 개의 값을 정합니다. <strong>최소 뷰포트</strong>와 <strong>최대 뷰포트</strong>는
@@ -95,6 +95,78 @@ import ToolPage from '../../layouts/ToolPage.astro';
     <p>
       최소·최대 크기가 같으면 변화가 없으니 두 값은 다르게 두세요. 최소 뷰포트가
       최대 뷰포트보다 크면 계산이 뒤집히므로 입력 순서도 확인하시고요.
+    </p>
+  </section>
+
+  <section class="prose">
+    <h2>실제 응용</h2>
+
+    <h3>값 하나가 아니라 스케일로 쓴다</h3>
+    <p>
+      필요할 때마다 <code>clamp()</code>를 새로 만들면 페이지마다 크기가 조금씩
+      어긋납니다. 이 도구는 <strong>값 하나를 뽑는 데가 아니라 스케일을 짜는 데</strong>
+      쓰는 편이 낫습니다. 본문·소제목·제목 서너 개를 먼저 만들어 변수로 묶어 두고,
+      이후에는 변수만 가져다 쓰는 방식입니다.
+    </p>
+    <pre><code>{`:root {
+  --text-body: clamp(1rem, 0.9511rem + 0.2174vw, 1.125rem);     /* 16 → 18 */
+  --text-lead: clamp(1.125rem, 0.9783rem + 0.6522vw, 1.5rem);   /* 18 → 24 */
+  --text-h2:   clamp(1.5rem, 1.1087rem + 1.7391vw, 2.5rem);     /* 24 → 40 */
+  --text-h1:   clamp(2rem, 1.2174rem + 3.4783vw, 4rem);         /* 32 → 64 */
+}`}</code></pre>
+    <p>
+      네 줄 모두 최소 뷰포트 360px, 최대 뷰포트 1280px로 맞춘 값입니다. 기준 화면을
+      통일해야 화면 폭이 바뀔 때 글자들이 <strong>같은 속도로 함께</strong> 커집니다.
+      제목만 1920px 기준으로 만들면 중간 화면에서 제목만 유독 작아 보입니다.
+    </p>
+
+    <h3>최대 뷰포트를 1920으로 잡지 않는다</h3>
+    <p>
+      흔한 실수입니다. 최대 뷰포트를 1920px로 두면 그 크기에 도달하는 화면이 거의
+      없어서, 실제로는 <strong>최대 크기를 구경도 못 합니다.</strong>
+      360px에서 16px, 1920px에서 24px로 설정했을 때 실제 크기는 이렇습니다.
+    </p>
+    <table class="data-table">
+      <thead>
+        <tr><th>화면 폭</th><th>최대 1920 기준</th><th>최대 1280 기준</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>1280px</td><td>20.7px</td><td>24px</td></tr>
+        <tr><td>1440px</td><td>21.5px</td><td>24px</td></tr>
+        <tr><td>1512px (14인치 맥북)</td><td>21.9px</td><td>24px</td></tr>
+        <tr><td>1920px</td><td>24px</td><td>24px</td></tr>
+      </tbody>
+    </table>
+    <p>
+      노트북 대부분이 1280~1512px 사이입니다. 최대 뷰포트는
+      <strong>1280~1440px</strong> 정도로 두고, 그보다 넓은 화면에서는 크기가 더
+      늘지 않게 고정하는 편이 의도한 디자인에 가깝습니다.
+    </p>
+
+    <h3>글자 크기 말고도 쓸 곳이 많다</h3>
+    <p>
+      길이를 받는 속성이면 어디든 들어갑니다. 오히려 여백 쪽에서 효과가 더 큽니다.
+      모바일에서 답답하지 않고 데스크톱에서 허전하지 않은 여백은 중단점을 여러 개
+      두고 맞추기 번거로운데, <code>clamp()</code>면 한 줄로 끝납니다.
+    </p>
+    <table class="data-table">
+      <thead>
+        <tr><th>쓰는 곳</th><th>최소 → 최대</th><th>비고</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>섹션 상하 여백</td><td>48 → 96px</td><td>화면이 넓을수록 섹션 구분이 뚜렷해야 함</td></tr>
+        <tr><td>컨테이너 좌우 패딩</td><td>16 → 32px</td><td>모바일에서 글이 화면 끝에 붙는 것을 막음</td></tr>
+        <tr><td>카드 그리드 <code>gap</code></td><td>12 → 24px</td><td>좁을 때 촘촘하게, 넓을 때 여유 있게</td></tr>
+        <tr><td>히어로 제목</td><td>28 → 56px</td><td>변화 폭을 크게 줘도 어색하지 않은 자리</td></tr>
+      </tbody>
+    </table>
+
+    <h3>최소값은 읽을 수 있는 크기로</h3>
+    <p>
+      최소 크기를 12px 같은 값으로 내리면 좁은 화면에서 본문이 읽기 어려워집니다.
+      본문은 <strong>16px 아래로 내리지 않는 것</strong>을 기준으로 잡으세요.
+      보조 텍스트도 14px 정도가 하한입니다. 화면이 좁다고 글자까지 작아질 이유는
+      없습니다 — 좁은 화면일수록 오히려 눈에서 멀리 두고 보는 경우가 많습니다.
     </p>
   </section>
 </ToolPage>
