@@ -334,8 +334,19 @@ const FORMATS = [
     };
   }
 
+  // 입력이 어느 표기법으로 적혔는지 알아낸다.
+  // 색상 선택기로 색을 고를 때 쓰던 표기법을 그대로 유지하기 위한 것이다.
+  function detectFormat(input: string): string {
+    const s = input.trim().toLowerCase();
+    if (/^rgba?\(/.test(s)) return 'rgb';
+    if (/^hsla?\(/.test(s)) return 'hsl';
+    if (/^oklch\(/.test(s)) return 'oklch';
+    return 'hex';
+  }
+
   // 마지막으로 성공한 색. 입력이 깨져도 화면이 빈 상태가 되지 않게 유지한다
   let lastRgb: RGB = [59, 130, 246];
+  let lastFormat = 'hex';
 
   function render(rgb: RGB) {
     const out = formatAll(rgb);
@@ -355,6 +366,7 @@ const FORMATS = [
     setInvalid(textInput, bad);
     if (rgb) {
       lastRgb = rgb;
+      lastFormat = detectFormat(textInput.value);
       render(rgb);
     }
   }
@@ -368,9 +380,13 @@ const FORMATS = [
     update();
   });
 
-  // 색상 선택기로 고르면 텍스트 칸도 그 값으로 맞춘다
+  // 색상 선택기로 고르면 텍스트 칸도 맞춘다.
+  // 이때 쓰던 표기법을 유지한다 — 색상 선택기는 hex만 다루므로, 그 값을 그대로
+  // 넣으면 rgb로 입력해 둔 것이 색을 만질 때마다 hex로 바뀌어 버린다.
   pickInput.addEventListener('input', () => {
-    textInput.value = pickInput.value;
+    const rgb = parseColor(pickInput.value);
+    if (!rgb) return;
+    textInput.value = formatAll(rgb)[lastFormat];
     syncParams(form, KEYS, defaults);
     update();
   });
