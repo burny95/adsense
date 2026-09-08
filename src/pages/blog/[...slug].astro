@@ -171,11 +171,13 @@ const schema = {
       link?.setAttribute('aria-current', 'location');
       current = link;
 
-      // 목차 자체가 스크롤 중이면 활성 항목이 보이도록 따라간다
+      // 목차 자체가 스크롤 중이면 활성 항목이 보이도록 따라간다.
+      // 여기는 본문 이동이 아니라 목차 안에서의 미세 조정이라,
+      // html의 scroll-behavior: smooth를 따라가지 않게 auto로 못 박는다.
       if (link) {
         const box = link.closest('.toc');
         if (box && box.scrollHeight > box.clientHeight) {
-          link.scrollIntoView({ block: 'nearest' });
+          link.scrollIntoView({ block: 'nearest', behavior: 'auto' });
         }
       }
     }

@@ -95,6 +95,9 @@
 
 html {
   -webkit-text-size-adjust: 100%;
+  /* 목차·앵커 링크로 이동할 때 뚝 끊기지 않게.
+     움직임 최소화를 켠 사용자에게는 아래 prefers-reduced-motion 블록이 되돌린다 */
+  scroll-behavior: smooth;
 }
 
 body {
