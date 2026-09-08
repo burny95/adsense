@@ -15,6 +15,7 @@ interface Props {
   title?: string;
   description?: string;
   wide?: boolean; // 도구 페이지처럼 넓은 본문이 필요할 때
+  post?: boolean; // 글 페이지에서 오른쪽 목차가 들어갈 자리만큼 넓힐 때
   ogType?: string; // 기본 website, 글은 article
   schema?: object | object[]; // 페이지별 JSON-LD (도구=SoftwareApplication, 글=Article 등)
   noindex?: boolean; // 이 페이지만 색인에서 제외 (404 등)
@@ -24,6 +25,7 @@ const {
   title,
   description = SITE_DESCRIPTION,
   wide = false,
+  post = false,
   ogType = 'website',
   schema,
   noindex = false,
@@ -142,7 +144,7 @@ const year = new Date().getFullYear();
     <a class="skip-link" href="#main">본문 바로가기</a>
 
     <header class="site-header">
-      <div class:list={['container', { wide }]}>
+      <div class:list={['container', { wide, post }]}>
         <a class="site-title" href="/">{SITE_NAME}</a>
         <nav aria-label="주요 메뉴">
           {
@@ -180,13 +182,13 @@ const year = new Date().getFullYear();
     </script>
 
     <main id="main">
-      <div class:list={['container', { wide }]}>
+      <div class:list={['container', { wide, post }]}>
         <slot />
       </div>
     </main>
 
     <footer class="site-footer">
-      <div class:list={['container', { wide }]}>
+      <div class:list={['container', { wide, post }]}>
         {/* 전체 도구·페이지 목록 — 어느 페이지에서든 도구 전체에 닿는 유일한 통로 */}
         <nav class="footer-sitemap" aria-label="사이트맵">
           <div class="footer-col">

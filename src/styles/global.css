@@ -7,6 +7,7 @@
   /* 레이아웃 폭 */
   --w-text: 46rem; /* 읽기 본문 (블로그) */
   --w-wide: 58rem; /* 도구 페이지 */
+  --w-post: 64rem; /* 글 페이지 — 본문 46rem + 오른쪽 목차 15rem + 사이 여백 */
 
   /* 간격 스케일 */
   --space-1: 0.25rem;
@@ -157,6 +158,9 @@ img {
 }
 .container.wide {
   max-width: var(--w-wide);
+}
+.container.post {
+  max-width: var(--w-post);
 }
 
 @media (max-width: 480px) {
@@ -774,6 +778,51 @@ textarea.control {
 }
 
 /* 글 목차 (h2만, 본문 시작 전) */
+/* 글 페이지: 본문 + 오른쪽 목차 2단.
+   DOM 순서는 목차 → 본문이다. 좁은 화면에서 목차가 본문 위에 놓여
+   읽기 전에 구조를 훑을 수 있다. 넓은 화면의 좌우 배치는 grid-column으로만 바꾼다. */
+.post-layout.has-toc {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 15rem;
+  gap: var(--space-7);
+  align-items: start;
+}
+.post-layout.has-toc > .post-main {
+  grid-column: 1;
+  grid-row: 1;
+}
+.post-layout.has-toc > .toc {
+  grid-column: 2;
+  grid-row: 1;
+  /* 글을 읽는 동안 따라온다 (top은 sticky 헤더 높이만큼) */
+  position: sticky;
+  top: 5rem;
+  /* 항목이 많은 글에서 목차가 화면을 넘어가면 목차 안에서만 스크롤한다 */
+  max-height: calc(100vh - 7rem);
+  overflow-y: auto;
+}
+
+/* 목차를 옆에 둘 자리가 없어지면 본문 위로 되돌린다 */
+@media (max-width: 900px) {
+  .container.post {
+    max-width: var(--w-text);
+  }
+  .post-layout.has-toc {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-5);
+  }
+  .post-layout.has-toc > .post-main,
+  .post-layout.has-toc > .toc {
+    grid-column: auto;
+    grid-row: auto;
+  }
+  .post-layout.has-toc > .toc {
+    position: static;
+    max-height: none;
+    overflow-y: visible;
+  }
+}
+
 .toc {
   padding: var(--space-4) var(--space-5);
   border: 1px solid var(--border);

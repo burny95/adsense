@@ -33,6 +33,9 @@ const { Content, headings } = await render(post);
 // 목차는 h2만 사용. 항목이 너무 적으면 오히려 방해되므로 3개 이상일 때만 노출
 const toc = headings.filter((h) => h.depth === 2);
 
+// 목차가 3개 이상일 때만 오른쪽에 붙인다 (적으면 자리만 차지한다)
+const hasToc = toc.length >= 3;
+
 const dateFmt = new Intl.DateTimeFormat('ko-KR', { dateStyle: 'long' });
 
 // 이 글이 참조하는 관련 도구
@@ -58,6 +61,7 @@ const schema = {
   description={post.data.description}
   ogType="article"
   schema={schema}
+  post={hasToc}
 >
   <Breadcrumb
     items={[
@@ -67,16 +71,12 @@ const schema = {
     ]}
   />
 
-  <article class="prose">
-    <h1>{post.data.title}</h1>
-    <p class="post-meta">
-      <span class="badge">{CATEGORIES[post.data.category]}</span>
-      {dateFmt.format(post.data.publishedAt)}
-      {post.data.updatedAt && ` · 수정 ${dateFmt.format(post.data.updatedAt)}`}
-    </p>
-
+  <div class:list={['post-layout', { 'has-toc': hasToc }]}>
+    {/* 목차가 DOM에서 본문보다 앞이다. 좁은 화면에서 본문 위에 놓여
+        읽기 전에 구조를 훑을 수 있게 하려는 것. 넓은 화면의 오른쪽
+        배치는 CSS(grid-column)로만 바꾼다 */}
     {
-      toc.length >= 3 && (
+      hasToc && (
         <nav class="toc" aria-label="목차">
           <p class="toc-head">목차</p>
           <ol>
@@ -90,10 +90,19 @@ const schema = {
       )
     }
 
-    <Content />
-  </article>
+    <div class="post-main">
+      <article class="prose">
+        <h1>{post.data.title}</h1>
+        <p class="post-meta">
+          <span class="badge">{CATEGORIES[post.data.category]}</span>
+          {dateFmt.format(post.data.publishedAt)}
+          {post.data.updatedAt && ` · 수정 ${dateFmt.format(post.data.updatedAt)}`}
+        </p>
 
-  {
+        <Content />
+      </article>
+
+      {
     relatedTools.length > 0 && (
       <aside class="related">
         <h2>이 글과 함께 쓰는 도구</h2>
@@ -129,4 +138,6 @@ const schema = {
       </nav>
     )
   }
+    </div>
+  </div>
 </Layout>
