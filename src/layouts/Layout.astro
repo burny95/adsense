@@ -18,7 +18,6 @@ interface Props {
   ogType?: string; // 기본 website, 글은 article
   schema?: object | object[]; // 페이지별 JSON-LD (도구=SoftwareApplication, 글=Article 등)
   noindex?: boolean; // 이 페이지만 색인에서 제외 (404 등)
-  sidebar?: boolean; // 본문 오른쪽에 사이드바 슬롯을 붙일지 (블로그)
 }
 
 const {
@@ -28,7 +27,6 @@ const {
   ogType = 'website',
   schema,
   noindex = false,
-  sidebar = false,
 } = Astro.props;
 
 // 사이트 전체 차단(SITE_LIVE=false)이 우선하고, 그다음 페이지별 noindex
@@ -141,11 +139,10 @@ const year = new Date().getFullYear();
     <!-- 애드센스 승인 후 여기에 구글이 제공한 광고 스크립트를 삽입 -->
   </head>
   <body>
-    {/* 사이드바가 있으면 사이드바를 건너뛰고 본문으로 바로 간다 */}
-    <a class="skip-link" href={sidebar ? '#content' : '#main'}>본문 바로가기</a>
+    <a class="skip-link" href="#main">본문 바로가기</a>
 
     <header class="site-header">
-      <div class:list={['container', { wide, sidebar }]}>
+      <div class:list={['container', { wide }]}>
         <a class="site-title" href="/">{SITE_NAME}</a>
         <nav aria-label="주요 메뉴">
           {
@@ -183,48 +180,27 @@ const year = new Date().getFullYear();
     </script>
 
     <main id="main">
-      <div class:list={['container', { wide, sidebar }]}>
-        {
-          sidebar ? (
-            <div class="with-sidebar">
-              {/* 본문이 DOM에서 먼저 온다. 사이드바는 헤더 메뉴를 보조하는
-                  부가 내비게이션이라, 탭·스크린리더가 본문에 먼저 닿는 편이 낫다.
-                  화면상 왼쪽 배치는 CSS(grid-column)로만 처리한다 */}
-              <div class="with-sidebar__main" id="content" tabindex="-1">
-                <slot />
-              </div>
-              <aside class="with-sidebar__aside" aria-label="사이트 메뉴">
-                <slot name="sidebar" />
-              </aside>
-            </div>
-          ) : (
-            <slot />
-          )
-        }
+      <div class:list={['container', { wide }]}>
+        <slot />
       </div>
     </main>
 
     <footer class="site-footer">
-      <div class:list={['container', { wide, sidebar }]}>
-        {/* 전체 도구·페이지 목록 (사이드바 대신 어느 페이지에서든 전체 접근) */}
+      <div class:list={['container', { wide }]}>
+        {/* 전체 도구·페이지 목록 — 어느 페이지에서든 도구 전체에 닿는 유일한 통로 */}
         <nav class="footer-sitemap" aria-label="사이트맵">
-          {/* 사이드바가 있는 페이지에서는 같은 목록이 두 번 나오므로 생략 */}
-          {
-            !sidebar && (
-              <div class="footer-col">
-                <p class="footer-head">
-                  <a href="/tools">도구</a>
-                </p>
-                <ul>
-                  {TOOLS.map((tool) => (
-                    <li>
-                      <a href={`/tools/${tool.slug}`}>{tool.title}</a>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )
-          }
+          <div class="footer-col">
+            <p class="footer-head">
+              <a href="/tools">도구</a>
+            </p>
+            <ul>
+              {TOOLS.map((tool) => (
+                <li>
+                  <a href={`/tools/${tool.slug}`}>{tool.title}</a>
+                </li>
+              ))}
+            </ul>
+          </div>
           <div class="footer-col">
             <p class="footer-head">사이트</p>
             <ul>

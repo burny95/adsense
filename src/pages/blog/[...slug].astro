@@ -3,7 +3,6 @@
 import { getCollection, render } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import Breadcrumb from '../../components/Breadcrumb.astro';
-import SiteSidebar from '../../components/SiteSidebar.astro';
 import { CATEGORIES } from '../../consts';
 import { TOOLS } from '../../tools';
 
@@ -59,10 +58,7 @@ const schema = {
   description={post.data.description}
   ogType="article"
   schema={schema}
-  sidebar
 >
-  <SiteSidebar slot="sidebar" activeCategory={post.data.category} />
-
   <Breadcrumb
     items={[
       { label: '홈', href: '/' },
