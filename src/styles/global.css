@@ -480,6 +480,42 @@ main {
   gap: var(--space-4);
 }
 
+/* 입력칸을 한 줄에 하나씩 세로로 쌓는다.
+   위에서 아래로 훑으며 채우게 되어 값의 순서가 눈에 들어온다 */
+.field-grid.is-stacked {
+  /* 1fr은 최소값이 auto라 긴 select 옵션이 트랙을 밀어낸다. minmax(0,·)로 막는다 */
+  grid-template-columns: minmax(0, 1fr);
+}
+
+/* 왼쪽에 입력, 오른쪽에 결과·미리보기를 붙이는 2단 배치.
+   입력을 세로로 쌓으면 폼이 길어지므로 남는 가로 공간에 결과를 둔다 */
+.tool-layout {
+  display: grid;
+  /* 입력은 숫자·선택이라 좁아도 되고, 결과와 미리보기는 넓어야 읽힌다 */
+  grid-template-columns: minmax(0, 20rem) minmax(0, 1fr);
+  gap: var(--space-6);
+  align-items: start;
+  margin-bottom: var(--space-6);
+}
+/* 오른쪽 칸: 결과와 미리보기가 세로로 이어진다 */
+.tool-aside {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  min-width: 0;
+}
+/* 간격은 위 gap이 맡으므로 개별 여백을 지워 폼과 윗줄을 맞춘다 */
+.tool-aside > .output,
+.tool-aside > .preview {
+  margin: 0;
+}
+/* 좁은 화면에서는 한 줄에 하나씩 (결과가 입력 아래로 내려간다) */
+@media (max-width: 860px) {
+  .tool-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
 .field {
   display: flex;
   flex-direction: column;
@@ -491,6 +527,34 @@ main {
   font-weight: 400;
   color: var(--muted);
   font-size: 0.8rem;
+}
+
+/* 체크박스처럼 라벨과 컨트롤이 한 줄에 서야 하는 항목.
+   .field 뒤에 두어 세로 배치를 소스 순서로 덮는다 */
+.field-inline {
+  flex-direction: row;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+/* 색 선택기와 hex 입력칸을 나란히 놓는 줄 */
+.color-row {
+  display: flex;
+  gap: var(--space-2);
+}
+/* 입력의 기본 min-content(약 220px)가 칸보다 넓어 밖으로 삐져나온다.
+   flex 항목의 자동 최소 크기를 풀어 칸에 맞춰 줄어들게 한다 */
+.color-row .control {
+  min-width: 0;
+}
+.color-row input[type='color'] {
+  width: 44px;
+  min-width: 44px;
+  height: 2.6rem;
+  padding: 2px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
 }
 
 .control {

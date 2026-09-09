@@ -34,7 +34,12 @@ API_BASE_URL</textarea
         <div class="output" data-format={f.key}>
           <div class="output-head">
             <span>{f.label}</span>
-            <button type="button" class="btn btn-copy" data-format={f.key}>
+            <button
+              type="button"
+              class="btn btn-copy"
+              data-format={f.key}
+              aria-label={`${f.label} 결과 복사`}
+            >
               복사
             </button>
           </div>
@@ -117,16 +122,19 @@ profileImageUrl`}</code></pre>
       소문자로 내렸다가 다시 조립하기 때문에, <strong>연속된 대문자 약어는 원형이
       유지되지 않습니다.</strong>
     </p>
-    <table class="data-table">
-      <thead>
-        <tr><th>입력</th><th>kebab-case</th><th>다시 camelCase</th></tr>
-      </thead>
-      <tbody>
-        <tr><td><code>userID</code></td><td><code>user-id</code></td><td><code>userId</code></td></tr>
-        <tr><td><code>parseURLPath</code></td><td><code>parse-url-path</code></td><td><code>parseUrlPath</code></td></tr>
-        <tr><td><code>getHTTPResponseCode</code></td><td><code>get-http-response-code</code></td><td><code>getHttpResponseCode</code></td></tr>
-      </tbody>
-    </table>
+    {/* 약어 예시가 길어 390px 화면에서 표가 페이지를 밀어낸다. 표만 옆으로 넘긴다 */}
+    <div class="table-scroll">
+      <table class="data-table">
+        <thead>
+          <tr><th>입력</th><th>kebab-case</th><th>다시 camelCase</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>userID</code></td><td><code>user-id</code></td><td><code>userId</code></td></tr>
+          <tr><td><code>parseURLPath</code></td><td><code>parse-url-path</code></td><td><code>parseUrlPath</code></td></tr>
+          <tr><td><code>getHTTPResponseCode</code></td><td><code>get-http-response-code</code></td><td><code>getHttpResponseCode</code></td></tr>
+        </tbody>
+      </table>
+    </div>
     <p>
       이게 문제인지 아닌지는 팀 규칙에 달렸습니다. 구글 자바스크립트 스타일 가이드를
       비롯해 <strong>약어도 일반 단어처럼 쓰도록(<code>userId</code>) 정한 규칙이
@@ -222,10 +230,16 @@ profileImageUrl`}</code></pre>
   document.querySelectorAll<HTMLButtonElement>('.btn-copy').forEach((btn) => {
     btn.addEventListener('click', async () => {
       const block = btn.closest('.output')!;
-      await navigator.clipboard.writeText(
-        block.querySelector('.result')!.textContent ?? '',
-      );
-      btn.textContent = '복사됨';
+      // 권한이 없거나 브라우저가 막으면 거부된다. 조용히 실패하면 눌러도
+      // 아무 일이 없는 것처럼 보이므로 버튼에 결과를 적어 준다
+      try {
+        await navigator.clipboard.writeText(
+          block.querySelector('.result')!.textContent ?? '',
+        );
+        btn.textContent = '복사됨';
+      } catch {
+        btn.textContent = '복사 실패';
+      }
       setTimeout(() => (btn.textContent = '복사'), 1500);
     });
   });
@@ -234,6 +248,10 @@ profileImageUrl`}</code></pre>
 </script>
 
 <style>
+  /* 좁은 화면에서 표가 페이지 전체를 밀어내지 않도록 표만 옆으로 넘긴다 */
+  .table-scroll {
+    overflow-x: auto;
+  }
   .case-results {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));

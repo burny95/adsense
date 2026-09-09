@@ -6,8 +6,12 @@ import ToolPage from '../../layouts/ToolPage.astro';
 <ToolPage slug="gradient-generator">
   <div class="grad-layout">
     <div>
+      {/* 깨진 링크 안내는 설정 맨 위에 둔다. 아래쪽에 두면 화면 밖이라 아무도 못 본다 */}
+      <p class="is-error" id="url-error" role="status" hidden>
+        링크의 값을 읽을 수 없어 기본값으로 시작합니다.
+      </p>
       <div class="panel grad-settings">
-        <div class="field-grid">
+        <div class="field-grid is-stacked">
           <label class="field">
             유형
             <select class="control" id="grad-type">
@@ -17,7 +21,7 @@ import ToolPage from '../../layouts/ToolPage.astro';
             </select>
           </label>
           <label class="field" id="angle-field">
-            각도 (<span id="angle-label">135</span>deg)
+            <span>각도 (<span id="angle-label">135</span>deg)</span>
             <input class="control" type="range" id="grad-angle" min="0" max="360" step="1" value="135" />
           </label>
           <label class="field field-inline">
@@ -38,9 +42,6 @@ import ToolPage from '../../layouts/ToolPage.astro';
         <div id="stops"></div>
         <p class="form-actions">
           <small>값을 바꾸면 주소도 함께 바뀝니다. 그 주소를 공유하면 같은 그라디언트로 열립니다.</small>
-          <small class="is-error" id="url-error" role="status" hidden>
-            링크의 값을 읽을 수 없어 기본값으로 시작합니다.
-          </small>
         </p>
       </div>
 
@@ -274,11 +275,11 @@ background: repeating-linear-gradient(
           <strong>정지점 ${i + 1}</strong>
           <button type="button" class="btn btn-remove" data-i="${i}" ${stops.length <= 2 ? 'disabled' : ''}>삭제</button>
         </div>
-        <div class="field-grid">
+        <div class="field-grid is-stacked">
           <label class="field">색상
             <span class="color-row">
               <input type="color" data-i="${i}" data-k="color" value="${stop.color}" aria-label="정지점 ${i + 1} 색상">
-              <input class="control" type="text" data-i="${i}" data-k="colorText" value="${stop.color}" spellcheck="false" aria-describedby="stop-err-${i}">
+              <input class="control" type="text" data-i="${i}" data-k="colorText" value="${stop.color}" spellcheck="false" aria-label="정지점 ${i + 1} 색상 hex 값" aria-describedby="stop-err-${i}">
             </span>
             <small class="color-error is-error" id="stop-err-${i}" hidden>#RRGGBB 형식으로 입력하세요.</small>
           </label>
@@ -409,8 +410,14 @@ background: repeating-linear-gradient(
   });
 
   copyBtn.addEventListener('click', async () => {
-    await navigator.clipboard.writeText(output.textContent ?? '');
-    copyBtn.textContent = '복사됨';
+    // 권한이 없거나 브라우저가 막으면 거부된다. 조용히 실패하면 눌러도
+    // 아무 일이 없는 것처럼 보이므로 버튼에 결과를 적어 준다
+    try {
+      await navigator.clipboard.writeText(output.textContent ?? '');
+      copyBtn.textContent = '복사됨';
+    } catch {
+      copyBtn.textContent = '복사 실패';
+    }
     setTimeout(() => (copyBtn.textContent = '복사'), 1500);
   });
 
@@ -438,7 +445,8 @@ background: repeating-linear-gradient(
 <style>
   .grad-layout {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) 16rem;
+    /* 설정은 세로로 쌓이므로 좁아도 되고, 미리보기를 크게 준다 */
+    grid-template-columns: minmax(0, 20rem) minmax(0, 1fr);
     gap: var(--space-6);
     align-items: start;
     margin-bottom: var(--space-7);
@@ -449,6 +457,8 @@ background: repeating-linear-gradient(
   .grad-preview {
     position: sticky;
     top: 5rem;
+    /* 정사각형이라 폭을 다 쓰면 지나치게 커진다 */
+    max-width: 30rem;
   }
   /* 미리보기는 정사각에 가깝게 — conic·radial은 가로로 길면 모양이 뭉개진다 */
   .grad-stage {
@@ -456,7 +466,7 @@ background: repeating-linear-gradient(
     border: 1px solid var(--border);
     border-radius: var(--radius-md);
   }
-  .stop-row + .stop-row {
+  #stops :global(.stop-row + .stop-row) {
     margin-top: var(--space-3);
   }
 

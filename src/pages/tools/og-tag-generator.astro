@@ -275,8 +275,14 @@ import ToolPage from '../../layouts/ToolPage.astro';
   applyParams(form, KEYS);
 
   copyBtn.addEventListener('click', async () => {
-    await navigator.clipboard.writeText(output.textContent ?? '');
-    copyBtn.textContent = '복사됨';
+    // 권한이 없거나 브라우저가 막으면 거부된다. 조용히 실패하면 눌러도
+    // 아무 일이 없는 것처럼 보이므로 버튼에 결과를 적어 준다
+    try {
+      await navigator.clipboard.writeText(output.textContent ?? '');
+      copyBtn.textContent = '복사됨';
+    } catch {
+      copyBtn.textContent = '복사 실패';
+    }
     setTimeout(() => (copyBtn.textContent = '복사'), 1500);
   });
 

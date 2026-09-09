@@ -4,76 +4,81 @@ import ToolPage from '../../layouts/ToolPage.astro';
 ---
 
 <ToolPage slug="clamp-generator">
-  <form id="clamp-form" class="panel">
-    <div class="field-grid">
-      <label class="field">
-        최소 뷰포트 (px)
-        <input
-          class="control"
-          type="number"
-          name="minVw"
-          value="360"
-          min="1"
-          step="1"
-          aria-describedby="form-error"
-        />
-      </label>
-      <label class="field">
-        최대 뷰포트 (px)
-        <input
-          class="control"
-          type="number"
-          name="maxVw"
-          value="1280"
-          min="1"
-          step="1"
-          aria-describedby="form-error"
-        />
-      </label>
-      <label class="field">
-        최소 크기 (px)
-        <input class="control" type="number" name="minSize" value="16" min="0" step="0.1" />
-      </label>
-      <label class="field">
-        최대 크기 (px)
-        <input class="control" type="number" name="maxSize" value="24" min="0" step="0.1" />
-      </label>
-      <label class="field">
-        기준 폰트 크기 (px)
-        <input
-          class="control"
-          type="number"
-          name="rootSize"
-          value="16"
-          min="1"
-          step="1"
-          aria-describedby="form-error"
-        />
-        <small>rem 변환 기준</small>
-      </label>
-      {/* 잘못된 입력을 지적하는 자리. 결과 박스가 아니라 입력 바로 아래에 둔다 */}
-      <p class="field-error" id="form-error" role="alert" hidden></p>
-    </div>
-    <div class="form-actions">
-      <button type="button" class="btn" id="reset">초기화</button>
-      <small>값을 바꾸면 주소도 함께 바뀝니다. 그 주소를 공유하면 같은 값으로 열립니다.</small>
-    </div>
-  </form>
+  <div class="tool-layout">
+    <form id="clamp-form" class="panel">
+      <div class="field-grid is-stacked">
+        {/* 잘못된 입력을 지적하는 자리. 입력이 세로로 쌓이므로 맨 아래가 아니라
+            맨 위에 둔다. 아래에 두면 문제가 된 칸에서 너무 멀어진다 */}
+        <p class="field-error" id="form-error" role="alert" hidden></p>
+        <label class="field">
+          최소 뷰포트 (px)
+          <input
+            class="control"
+            type="number"
+            name="minVw"
+            value="360"
+            min="1"
+            step="1"
+            aria-describedby="form-error"
+          />
+        </label>
+        <label class="field">
+          최대 뷰포트 (px)
+          <input
+            class="control"
+            type="number"
+            name="maxVw"
+            value="1280"
+            min="1"
+            step="1"
+            aria-describedby="form-error"
+          />
+        </label>
+        <label class="field">
+          최소 크기 (px)
+          <input class="control" type="number" name="minSize" value="16" min="0" step="0.1" />
+        </label>
+        <label class="field">
+          최대 크기 (px)
+          <input class="control" type="number" name="maxSize" value="24" min="0" step="0.1" />
+        </label>
+        <label class="field">
+          기준 폰트 크기 (px)
+          <input
+            class="control"
+            type="number"
+            name="rootSize"
+            value="16"
+            min="1"
+            step="1"
+            aria-describedby="form-error"
+          />
+          <small>rem 변환 기준</small>
+        </label>
+      </div>
+      <div class="form-actions">
+        <button type="button" class="btn" id="reset">초기화</button>
+        <small>값을 바꾸면 주소도 함께 바뀝니다. 그 주소를 공유하면 같은 값으로 열립니다.</small>
+      </div>
+    </form>
 
-  <div class="output">
-    <div class="output-head">
-      <span>결과</span>
-      <button type="button" class="btn" id="copy">복사</button>
-    </div>
-    <code class="output-code" id="output">clamp(...)</code>
-    <p class="hint" id="hint" role="status"></p>
-  </div>
+    <div class="tool-aside">
+      <div class="output">
+        <div class="output-head">
+          <span>결과</span>
+          <button type="button" class="btn" id="copy">복사</button>
+        </div>
+        <code class="output-code" id="output">clamp(...)</code>
+        <p class="hint" id="hint" role="status"></p>
+      </div>
 
-  <div class="preview">
-    <span class="preview-label">미리보기 — 브라우저 창 크기를 바꿔보세요</span>
-    <p id="preview-text" style="margin:0">
-      다람쥐 헌 쳇바퀴에 타고파 — The quick brown fox 0123
-    </p>
+      <div class="preview">
+        <span class="preview-label">미리보기 — 브라우저 창 크기를 바꿔보세요</span>
+        <p id="preview-text" style="margin:0">
+          다람쥐 헌 쳇바퀴에 타고파 — The quick brown fox 0123
+        </p>
+      </div>
+    </div>
   </div>
 
   <section class="prose">
@@ -288,8 +293,14 @@ import ToolPage from '../../layouts/ToolPage.astro';
   applyParams(form, KEYS);
 
   copyBtn.addEventListener('click', async () => {
-    await navigator.clipboard.writeText(output.textContent ?? '');
-    copyBtn.textContent = '복사됨';
+    // 권한이 없거나 브라우저가 막으면 거부된다. 조용히 실패하면 눌러도
+    // 아무 일이 없는 것처럼 보이므로 버튼에 결과를 적어 준다
+    try {
+      await navigator.clipboard.writeText(output.textContent ?? '');
+      copyBtn.textContent = '복사됨';
+    } catch {
+      copyBtn.textContent = '복사 실패';
+    }
     setTimeout(() => (copyBtn.textContent = '복사'), 1500);
   });
 

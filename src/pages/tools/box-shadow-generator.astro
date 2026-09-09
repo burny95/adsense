@@ -270,7 +270,7 @@ import ToolPage from '../../layouts/ToolPage.astro';
           <label class="field">색상
             <span class="color-row">
               <input type="color" data-i="${i}" data-k="color" value="${layer.color}" aria-label="레이어 ${i + 1} 색상">
-              <input class="control" type="text" data-i="${i}" data-k="colorText" value="${layer.color}" spellcheck="false" aria-describedby="color-err-${i}">
+              <input class="control" type="text" data-i="${i}" data-k="colorText" value="${layer.color}" spellcheck="false" aria-label="레이어 ${i + 1} 색상 hex 값" aria-describedby="color-err-${i}">
             </span>
             <small class="color-error is-error" id="color-err-${i}" hidden>#RRGGBB 형식으로 입력하세요.</small>
           </label>
@@ -362,8 +362,14 @@ import ToolPage from '../../layouts/ToolPage.astro';
   });
 
   copyBtn.addEventListener('click', async () => {
-    await navigator.clipboard.writeText(output.textContent ?? '');
-    copyBtn.textContent = '복사됨';
+    // 권한이 없거나 브라우저가 막으면 거부된다. 조용히 실패하면 눌러도
+    // 아무 일이 없는 것처럼 보이므로 버튼에 결과를 적어 준다
+    try {
+      await navigator.clipboard.writeText(output.textContent ?? '');
+      copyBtn.textContent = '복사됨';
+    } catch {
+      copyBtn.textContent = '복사 실패';
+    }
     setTimeout(() => (copyBtn.textContent = '복사'), 1500);
   });
 
@@ -435,24 +441,6 @@ import ToolPage from '../../layouts/ToolPage.astro';
     justify-content: space-between;
     align-items: center;
     margin-bottom: var(--space-3);
-  }
-  .field-inline {
-    flex-direction: row !important;
-    align-items: center;
-    gap: var(--space-2);
-  }
-  .color-row {
-    display: flex;
-    gap: var(--space-2);
-  }
-  .color-row input[type='color'] {
-    width: 44px;
-    min-width: 44px;
-    height: 2.6rem;
-    padding: 2px;
-    border: 1px solid var(--border-strong);
-    border-radius: var(--radius-sm);
-    background: var(--surface);
   }
   .shadow-preview {
     position: sticky;

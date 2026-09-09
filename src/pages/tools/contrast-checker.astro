@@ -10,14 +10,28 @@ import ToolPage from '../../layouts/ToolPage.astro';
         글자색
         <span class="color-row">
           <input type="color" name="fgPick" value="#1a1a1a" aria-label="글자색 선택" />
-          <input class="control" type="text" name="fg" value="#1a1a1a" spellcheck="false" />
+          <input
+            class="control"
+            type="text"
+            name="fg"
+            value="#1a1a1a"
+            spellcheck="false"
+            aria-label="글자색 hex 값"
+          />
         </span>
       </label>
       <label class="field">
         배경색
         <span class="color-row">
           <input type="color" name="bgPick" value="#ffffff" aria-label="배경색 선택" />
-          <input class="control" type="text" name="bg" value="#ffffff" spellcheck="false" />
+          <input
+            class="control"
+            type="text"
+            name="bg"
+            value="#ffffff"
+            spellcheck="false"
+            aria-label="배경색 hex 값"
+          />
         </span>
       </label>
     </div>
@@ -28,7 +42,7 @@ import ToolPage from '../../layouts/ToolPage.astro';
   </form>
 
   <p class="ratio">
-    <span id="ratio-value" role="status">–</span><span class="ratio-label">대비비</span>
+    <span id="ratio-value" role="status">–</span><span class="ratio-label" id="ratio-label">대비비</span>
   </p>
 
   <table class="data-table">
@@ -160,6 +174,7 @@ import ToolPage from '../../layouts/ToolPage.astro';
   // WCAG 명도 대비 계산 (클라이언트에서만 실행)
   const form = document.getElementById('cc-form') as HTMLFormElement;
   const ratioValue = document.getElementById('ratio-value')!;
+  const ratioLabel = document.getElementById('ratio-label') as HTMLElement;
   const rows = document.querySelectorAll<HTMLTableRowElement>('.data-table tbody tr');
   const preview = document.getElementById('preview')!;
   const suggestionBox = document.getElementById('suggestion') as HTMLElement;
@@ -245,6 +260,8 @@ import ToolPage from '../../layouts/ToolPage.astro';
 
     if (!fg || !bg) {
       ratioValue.textContent = '색 형식 오류 — #RRGGBB로 입력하세요';
+      // 오류 문구 뒤에 '대비비'가 붙어 읽히지 않게 라벨을 감춘다
+      ratioLabel.hidden = true;
       rows.forEach((r) => {
         const c = r.querySelector('.verdict')!;
         c.textContent = '';
@@ -254,6 +271,7 @@ import ToolPage from '../../layouts/ToolPage.astro';
       return;
     }
 
+    ratioLabel.hidden = false;
     fgPick.value = toHex(fg);
     bgPick.value = toHex(bg);
 
@@ -320,19 +338,6 @@ import ToolPage from '../../layouts/ToolPage.astro';
 </script>
 
 <style>
-  .color-row {
-    display: flex;
-    gap: var(--space-2);
-  }
-  .color-row input[type='color'] {
-    width: 44px;
-    min-width: 44px;
-    height: 2.6rem;
-    padding: 2px;
-    border: 1px solid var(--border-strong);
-    border-radius: var(--radius-sm);
-    background: var(--surface);
-  }
   .suggestion-text {
     margin: 0 0 var(--space-3);
   }

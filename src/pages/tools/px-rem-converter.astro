@@ -7,57 +7,64 @@ const commonPx = [10, 12, 14, 16, 18, 20, 24, 28, 32, 40, 48, 64];
 ---
 
 <ToolPage slug="px-rem-converter">
-  <form id="conv-form" class="panel">
-    <div class="field-grid">
-      <label class="field">
-        기준 폰트 크기 (px)
-        <input class="control" type="number" name="root" value="16" min="1" step="1" />
-        <small>보통 html 요소의 font-size (기본 16)</small>
-        <small class="is-error" id="root-error" hidden>
-          1 이상의 숫자가 아니어서 16px로 계산하고 있습니다.
-        </small>
-      </label>
-      <label class="field">
-        px 값
-        <input class="control" type="number" name="px" value="24" step="0.1" />
-      </label>
-      <label class="field">
-        rem 값
-        <input class="control" type="number" name="rem" value="1.5" step="0.01" />
-      </label>
+  <div class="tool-layout">
+    <div class="sticky-col">
+      <form id="conv-form" class="panel">
+        <div class="field-grid is-stacked">
+          <label class="field">
+            기준 폰트 크기 (px)
+            <input class="control" type="number" name="root" value="16" min="1" step="1" />
+            <small>보통 html 요소의 font-size (기본 16)</small>
+            <small class="is-error" id="root-error" hidden>
+              1 이상의 숫자가 아니어서 16px로 계산하고 있습니다.
+            </small>
+          </label>
+          <label class="field">
+            px 값
+            <input class="control" type="number" name="px" value="24" step="0.1" />
+          </label>
+          <label class="field">
+            rem 값
+            <input class="control" type="number" name="rem" value="1.5" step="0.01" />
+          </label>
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn" id="reset">초기화</button>
+          <small>값을 바꾸면 주소도 함께 바뀝니다. 그 주소를 공유하면 같은 값으로 열립니다.</small>
+        </div>
+      </form>
     </div>
-    <div class="form-actions">
-      <button type="button" class="btn" id="reset">초기화</button>
-      <small>값을 바꾸면 주소도 함께 바뀝니다. 그 주소를 공유하면 같은 값으로 열립니다.</small>
-    </div>
-  </form>
 
-  <div class="output">
-    <div class="output-head"><span>변환 결과</span></div>
-    <code class="output-code" id="result"></code>
+    <div class="tool-aside">
+      <div class="output">
+        <div class="output-head"><span>변환 결과</span></div>
+        <code class="output-code" id="result"></code>
+      </div>
+
+      <section class="prose">
+        <h2>자주 쓰는 값 대조표</h2>
+        <p class="tool-intro">
+          현재 기준 폰트 크기(<span id="root-label">16</span>px) 기준입니다.
+        </p>
+        <table class="data-table">
+          <thead>
+            <tr><th>px</th><th>rem</th></tr>
+          </thead>
+          <tbody id="table-body">
+            {
+              commonPx.map((px) => (
+                <tr data-px={px}>
+                  <td>{px}px</td>
+                  <td class="rem-cell" />
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+      </section>
+    </div>
   </div>
 
-  <section class="prose">
-    <h2>자주 쓰는 값 대조표</h2>
-    <p class="tool-intro">
-      현재 기준 폰트 크기(<span id="root-label">16</span>px) 기준입니다.
-    </p>
-    <table class="data-table">
-      <thead>
-        <tr><th>px</th><th>rem</th></tr>
-      </thead>
-      <tbody id="table-body">
-        {
-          commonPx.map((px) => (
-            <tr data-px={px}>
-              <td>{px}px</td>
-              <td class="rem-cell" />
-            </tr>
-          ))
-        }
-      </tbody>
-    </table>
-  </section>
 
   <section class="prose">
     <h2>사용법</h2>
@@ -254,3 +261,23 @@ const commonPx = [10, 12, 14, 16, 18, 20, 24, 28, 32, 40, 48, 64];
   refreshTable();
   setResult();
 </script>
+
+
+<style>
+  /* 표를 훑는 동안 입력칸이 따라오게 한다.
+     sticky는 부모 칸이 늘어나 있어야 움직일 공간이 생기므로
+     .tool-layout의 align-items: start를 이 칸에서만 푼다 */
+  .sticky-col {
+    align-self: stretch;
+  }
+  .sticky-col > .panel {
+    position: sticky;
+    top: 5rem;
+  }
+  /* 1단으로 접히는 폭에서는 붙일 이유가 없다 (세로 공간만 잡아먹는다) */
+  @media (max-width: 860px) {
+    .sticky-col > .panel {
+      position: static;
+    }
+  }
+</style>
