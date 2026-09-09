@@ -28,6 +28,9 @@ API_BASE_URL</textarea
     </div>
   </form>
 
+  {/* 결과가 여섯 갈래라 낭독으로는 훑을 수가 없다 */}
+  <span class="sr-only" role="status" id="live"></span>
+
   <div class="case-results">
     {
       formats.map((f) => (
@@ -165,12 +168,14 @@ profileImageUrl`}</code></pre>
     applyParams,
     syncParams,
     resetForm,
+    announce,
   } from '../../scripts/tool-state';
 
   // 네이밍 표기법 변환 (클라이언트에서만 실행)
   const form = document.getElementById('case-form') as HTMLFormElement;
   const input = form.elements.namedItem('input') as HTMLTextAreaElement;
   const blocks = document.querySelectorAll<HTMLElement>('.case-results .output');
+  const live = document.getElementById('live') as HTMLElement;
 
   // 한 개의 식별자를 소문자 단어 배열로 분해
   function tokenize(raw: string): string[] {
@@ -196,6 +201,7 @@ profileImageUrl`}</code></pre>
   };
 
   function convert() {
+    const said: string[] = [];
     const lines = input.value.split('\n');
     blocks.forEach((block) => {
       const fmt = block.dataset.format!;
@@ -207,7 +213,17 @@ profileImageUrl`}</code></pre>
       // 변환 결과가 없으면 복사할 것도 없다
       const copy = block.querySelector<HTMLButtonElement>('.btn-copy');
       if (copy) copy.disabled = out.trim() === '';
+      said.push(`${block.querySelector('.output-head span')!.textContent}: ${out}`);
     });
+    // 이름 하나를 넣은 경우엔 여섯 결과를 다 읽어 주는 것이 가장 빠르다.
+    // 긴 목록을 붙여 넣었다면 낭독이 수십 초가 되므로 형식으로 직접 가라고만 알린다.
+    const full = said.join(', ');
+    announce(
+      live,
+      full.length <= 200
+        ? full
+        : `${blocks.length}개 형식으로 변환했습니다. 각 형식의 복사 버튼으로 가져갈 수 있습니다.`,
+    );
   }
 
   const KEYS = ['input'];

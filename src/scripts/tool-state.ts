@@ -70,3 +70,14 @@ export function replaceQuery(qs: string) {
   // 값을 만질 때마다 뒤로가기 기록이 쌓이지 않도록 replaceState를 쓴다
   history.replaceState(null, '', qs ? `?${qs}` : location.pathname);
 }
+
+// 결과가 바뀐 사실을 보조기술에 알린다.
+// 타이핑 중에는 글자마다 결과가 갱신되므로 그대로 라이브 리전에 넣으면
+// 한 글자마다 낭독이 끊겼다 다시 시작한다. 입력이 멎은 뒤 한 번만 읽히도록 늦춘다.
+let announceTimer: number | undefined;
+export function announce(el: HTMLElement, text: string) {
+  clearTimeout(announceTimer);
+  announceTimer = window.setTimeout(() => {
+    el.textContent = text;
+  }, 600);
+}

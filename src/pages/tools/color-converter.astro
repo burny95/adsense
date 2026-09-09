@@ -44,6 +44,9 @@ const FORMATS = [
 
   <div class="swatch-big" id="swatch" aria-hidden="true"></div>
 
+  {/* 값 넷은 화면으로는 한눈에 들어오지만 낭독에는 알려 줄 방법이 없다 */}
+  <span class="sr-only" role="status" id="live"></span>
+
   <div class="convert-list">
     {
       FORMATS.map((f) => (
@@ -175,6 +178,7 @@ const FORMATS = [
     syncParams,
     resetForm,
     setInvalid,
+    announce,
   } from '../../scripts/tool-state';
 
   type RGB = [number, number, number];
@@ -185,6 +189,7 @@ const FORMATS = [
   const swatch = document.getElementById('swatch')!;
   const parseError = document.getElementById('parse-error')!;
   const rows = document.querySelectorAll<HTMLElement>('.convert-row');
+  const live = document.getElementById('live') as HTMLElement;
 
   const clamp = (v: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, v));
   const round = (n: number, d = 0) => {
@@ -358,6 +363,16 @@ const FORMATS = [
     swatch.style.background = out.hex;
     // 색상 선택기는 6자리 hex만 받는다
     pickInput.value = out.hex;
+    // 타이핑이 멎은 뒤 네 값을 라벨과 함께 한 번만 읽어 준다
+    announce(
+      live,
+      [...rows]
+        .map(
+          (r) =>
+            `${r.querySelector('.convert-label')!.textContent}: ${out[r.dataset.format!]}`,
+        )
+        .join(', '),
+    );
   }
 
   function update() {
