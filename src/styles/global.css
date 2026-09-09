@@ -477,6 +477,30 @@ main {
   vertical-align: middle;
 }
 
+/* 레이어·정지점 묶음의 머리줄. box-shadow와 그라디언트가 함께 쓴다.
+   box-shadow의 is:global 블록에만 있어서 그라디언트 쪽에서는 스타일이 없는
+   맨 span으로 렌더되고 있었다 (.field-inline·.color-row와 같은 사고) */
+.layer-head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-3);
+}
+.layer-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+.layer-row-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-3);
+}
+
 .section-label {
   font-size: 0.9rem;
   font-weight: 600;

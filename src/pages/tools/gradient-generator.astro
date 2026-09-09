@@ -31,7 +31,7 @@ import ToolPage from '../../layouts/ToolPage.astro';
       </div>
 
       <div class="layer-controls">
-        <div class="layer-head">
+        <div class="layer-head" id="stops-head">
           <span class="section-label" style="margin:0;border:0;padding:0">색 정지점</span>
           <span class="layer-actions">
             <button type="button" class="btn" id="undo" disabled>실행취소</button>
@@ -482,5 +482,12 @@ background: repeating-linear-gradient(
     .grad-stage {
       aspect-ratio: 16 / 7;
     }
+  }
+
+  /* 설정 칸이 20rem이라 라벨과 버튼 3개가 한 줄에 안 들어간다.
+     라벨 옆에 두 개만 붙고 나머지가 떨어져 나가면 버튼 묶음이 쪼개져 보이므로,
+     아예 라벨을 한 줄로 올리고 버튼은 셋이 함께 내려오게 한다 */
+  #stops-head .layer-actions {
+    flex: 1 0 100%;
   }
 </style>
