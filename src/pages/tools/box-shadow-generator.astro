@@ -295,12 +295,26 @@ import ToolPage from '../../layouts/ToolPage.astro';
     syncUrl();
   }
 
+  // 슬라이더를 끄는 동안 input이 수십 번 온다. 한 조작에 스냅샷을 하나만 쌓고,
+  // change(드래그를 놓거나 칸을 벗어나는 순간)를 조작의 끝으로 본다.
+  let editing: string | null = null;
+  layersEl.addEventListener('change', () => {
+    editing = null;
+  });
+
   layersEl.addEventListener('input', (e) => {
     const el = e.target as HTMLInputElement;
     const i = Number(el.dataset.i);
     const k = el.dataset.k;
     if (Number.isNaN(i) || !k) return;
     const layer = layers[i];
+
+    // 바뀌기 전 상태를 쌓아 둔다 — 실행취소가 되돌아갈 지점이다
+    const key = `${i}:${k}`;
+    if (editing !== key) {
+      snapshot();
+      editing = key;
+    }
 
     if (k === 'inset') {
       layer.inset = el.checked;
@@ -348,8 +362,15 @@ import ToolPage from '../../layouts/ToolPage.astro';
   });
 
   undoBtn.addEventListener('click', () => {
-    const prev = undoStack.pop();
-    if (!prev) return;
+    // 값이 실제로 달라지는 지점까지 되돌린다.
+    // 눌렀는데 화면이 그대로면 도구가 고장 난 것으로 보인다.
+    const now = JSON.stringify(layers);
+    let prev = undoStack.pop();
+    while (prev && JSON.stringify(prev) === now) prev = undoStack.pop();
+    if (!prev) {
+      undoBtn.disabled = true;
+      return;
+    }
     layers = prev;
     undoBtn.disabled = undoStack.length === 0;
     render();
