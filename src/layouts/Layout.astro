@@ -67,6 +67,17 @@ const year = new Date().getFullYear();
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content={Astro.generator} />
 
+    {/* 본문 글꼴: Noto Sans KR (가변 폰트, 400~700).
+        한글 웹폰트는 통째로 받으면 무거워서, 구글이 unicode-range로 쪼갠
+        조각 중 실제 쓰인 글자만 내려받게 둔다.
+        display=swap — 폰트가 오기 전에는 기본 글꼴로 먼저 글자를 보여 준다 */}
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400..700&display=swap"
+    />
+
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
