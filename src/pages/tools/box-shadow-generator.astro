@@ -526,4 +526,17 @@ import ToolPage from '../../layouts/ToolPage.astro';
     border-color: var(--accent);
     color: var(--accent);
   }
+
+  /* 좁은 화면에서 auto-fit이 1열로 접히면 한 자리 숫자 칸이 293px을 차지해
+     레이어 하나가 681px이 된다. X/Y와 Blur/Spread는 원래 짝이므로
+     두 개씩 나란히 놓아 폼 길이를 줄인다 */
+  @media (max-width: 480px) {
+    #layers .field-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    /* 색상·투명도·inset은 반 칸에 들어가지 않으므로 한 줄을 다 쓴다 */
+    #layers .field-grid > .field:nth-child(n + 5) {
+      grid-column: 1 / -1;
+    }
+  }
 </style>
