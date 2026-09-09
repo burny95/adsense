@@ -72,9 +72,9 @@ const commonPx = [10, 12, 14, 16, 18, 20, 24, 28, 32, 40, 48, 64];
   <section class="prose">
     <h2>사용법</h2>
     <p>
-      세 칸 중 하나에 값을 입력하면 나머지가 자동으로 계산됩니다.
+      세 칸 중 하나에 값을 입력하면 나머지가 자동으로 계산됩니다.{' '}
       <strong>rem</strong>은 루트 요소(<code>html</code>)의 글자 크기를 1로 보는
-      상대 단위입니다. 기본값 16px 기준으로 <code>1rem = 16px</code>,
+      상대 단위입니다. 기본값 16px 기준으로 <code>1rem = 16px</code>,{' '}
       <code>1.5rem = 24px</code>이 됩니다.
     </p>
     <p>
@@ -84,7 +84,7 @@ const commonPx = [10, 12, 14, 16, 18, 20, 24, 28, 32, 40, 48, 64];
     </p>
     <p>
       프로젝트에서 <code>html {`{ font-size: 62.5% }`}</code>처럼 기준을 10px로
-      잡았다면 위 "기준 폰트 크기"를 10으로 바꾸세요. 그러면
+      잡았다면 위 "기준 폰트 크기"를 10으로 바꾸세요. 그러면{' '}
       <code>1rem = 10px</code>로 계산됩니다.
     </p>
   </section>
@@ -123,13 +123,13 @@ const commonPx = [10, 12, 14, 16, 18, 20, 24, 28, 32, 40, 48, 64];
 
     <h3>미디어쿼리의 rem은 html의 font-size를 보지 않는다</h3>
     <p>
-      알아두면 헷갈릴 일이 없어지는 부분입니다. 미디어쿼리 안의
+      알아두면 헷갈릴 일이 없어지는 부분입니다. 미디어쿼리 안의{' '}
       <code>rem</code>은 <strong>여러분이 <code>html</code>에 지정한 font-size가
       아니라, 브라우저 기본 글자 크기</strong>를 기준으로 계산됩니다.
     </p>
     <p>
       그래서 <code>html {`{ font-size: 62.5% }`}</code>로 1rem을 10px로 만들어
-      뒀더라도, <code>@media (min-width: 48rem)</code>은 480px이 아니라
+      뒀더라도, <code>@media (min-width: 48rem)</code>은 480px이 아니라{' '}
       <strong>768px</strong>입니다. 이 규칙을 모르면 중단점이 예상과 전혀 다른
       지점에서 걸려 한참 헤매게 됩니다. 미디어쿼리에서는 계산이 어긋날 여지가
       없도록 <code>px</code>를 쓰거나, 쓰더라도 항상 16px 기준으로 환산하세요.

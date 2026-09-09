@@ -29,7 +29,7 @@ const FORMATS = [
         />
       </span>
       <small id="format-hint">
-        <code>#3b82f6</code>, <code>rgb(59 130 246)</code>,
+        <code>#3b82f6</code>, <code>rgb(59 130 246)</code>,{' '}
         <code>hsl(217 91% 60%)</code>, <code>oklch(62.3% 0.188 260)</code> 모두 인식합니다.
       </small>
       <small class="is-error" id="parse-error" hidden>
@@ -62,7 +62,7 @@ const FORMATS = [
     <h2>사용법</h2>
     <p>
       위 칸에 색을 넣으면 네 가지 표기법으로 한 번에 바꿔 줍니다. <strong>어떤
-      형식으로 붙여넣어도 알아서 인식합니다.</strong> 디자인 도구에서 복사한
+      형식으로 붙여넣어도 알아서 인식합니다.</strong> 디자인 도구에서 복사한{' '}
       <code>#3b82f6</code>, 개발자도구에서 복사한 <code>rgb(59, 130, 246)</code>,
       CSS에 적혀 있던 <code>hsl(217 91% 60%)</code>을 그대로 넣으면 됩니다.
       색상 선택기로 직접 고를 수도 있습니다.
@@ -73,7 +73,7 @@ const FORMATS = [
       상대방도 같은 색을 보게 됩니다.
     </p>
     <p>
-      <strong>OKLCH</strong>는 비교적 최근에 브라우저에 들어온 표기법입니다.
+      <strong>OKLCH</strong>는 비교적 최근에 브라우저에 들어온 표기법입니다.{' '}
       <code>L</code>은 밝기(0~100%), <code>C</code>는 채도, <code>H</code>는
       색상 각도입니다. 아래에서 이 표기법이 왜 생겼는지 설명합니다.
     </p>
@@ -113,7 +113,7 @@ const FORMATS = [
 
     <h3>HSL로 색을 밝게 하면 왜 탁해지나</h3>
     <p>
-      실무에서 자주 겪는 문제입니다. 브랜드 색을 정해 두고 밝은 변형을 만들려고
+      실무에서 자주 겪는 문제입니다. 브랜드 색을 정해 두고 밝은 변형을 만들려고{' '}
       <code>HSL</code>의 <code>L</code>만 올렸는데, 어떤 색은 멀쩡하고 어떤 색은
       뿌옇게 뜹니다.
     </p>
@@ -133,7 +133,7 @@ const FORMATS = [
 
     <h3>팔레트를 만들 때</h3>
     <p>
-      브랜드 색 하나에서 단계별 팔레트(50~900 같은)를 만들 일이 많습니다.
+      브랜드 색 하나에서 단계별 팔레트(50~900 같은)를 만들 일이 많습니다.{' '}
       <code>OKLCH</code>로 옮겨 놓고 <strong><code>L</code>만 일정 간격으로
       바꾸면</strong> 밝기가 고르게 나뉜 팔레트가 나옵니다. 색상(<code>H</code>)과
       채도(<code>C</code>)는 그대로 두면 됩니다.

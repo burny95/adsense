@@ -63,7 +63,7 @@ import ToolPage from '../../layouts/ToolPage.astro';
   <section class="prose">
     <h2>사용법</h2>
     <p>
-      <strong>유형</strong>을 고르고 색 정지점을 넣으면 CSS가 만들어집니다.
+      <strong>유형</strong>을 고르고 색 정지점을 넣으면 CSS가 만들어집니다.{' '}
       <code>linear</code>는 정해진 방향으로 곧게, <code>radial</code>은 가운데에서
       바깥으로, <code>conic</code>은 시곗바늘처럼 원을 따라 색이 돕니다.
       각도는 <code>linear</code>와 <code>conic</code>에서만 쓰입니다.
@@ -118,7 +118,7 @@ import ToolPage from '../../layouts/ToolPage.astro';
 
     <h3>투명으로 사라지게 할 때는 transparent를 쓰지 않는다</h3>
     <p>
-      놓치기 쉬운 부분입니다. <code>transparent</code>는 사실
+      놓치기 쉬운 부분입니다. <code>transparent</code>는 사실{' '}
       <strong>투명한 검정</strong>(<code>rgba(0, 0, 0, 0)</code>)입니다. 그래서
       흰색에서 <code>transparent</code>로 가는 그라디언트를 만들면 중간이
       회색으로 뜹니다. 검정 쪽으로 섞이면서 지나가기 때문입니다.
@@ -131,7 +131,7 @@ linear-gradient(90deg, rgb(255 255 255 / 1), rgb(255 255 255 / 0))`}</code></pre
 
     <h3>줄무늬와 패턴</h3>
     <p>
-      정지점 두 개를 같은 위치에 두면 경계가 딱 떨어집니다. 여기에
+      정지점 두 개를 같은 위치에 두면 경계가 딱 떨어집니다. 여기에{' '}
       <strong>반복</strong>을 켜면 줄무늬가 됩니다. 이미지 없이 배경 패턴을
       만들 수 있어 로딩 자리표시자나 공사 중 표시에 씁니다.
     </p>
@@ -151,7 +151,7 @@ background: repeating-linear-gradient(
     <p>
       <code>background</code>는 GPU가 아니라 CPU가 매 프레임 다시 칠하는
       속성입니다. 그라디언트를 <code>transition</code>으로 움직이면 화면이
-      끊깁니다. 움직임이 필요하면 <strong>그라디언트를 크게 그려 두고
+      끊깁니다. 움직임이 필요하면 <strong>그라디언트를 크게 그려 두고{' '}
       <code>background-position</code>이나 <code>transform</code>으로
       옮기는 편</strong>이 훨씬 부드럽습니다.
     </p>
