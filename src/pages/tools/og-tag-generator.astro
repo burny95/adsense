@@ -4,74 +4,110 @@ import ToolPage from '../../layouts/ToolPage.astro';
 ---
 
 <ToolPage slug="og-tag-generator">
-  <form id="og-form" class="panel og-fields">
-    <label class="field">
-      페이지 제목
-      <input class="control" type="text" name="title" value="페이지 제목을 입력하세요" />
-      <small class="count" data-for="title" data-max="60"></small>
-    </label>
-    <label class="field">
-      설명
-      <textarea class="control" name="description" rows="2"
-        >이 페이지가 어떤 내용인지 한두 문장으로 설명합니다.</textarea
-      >
-      <small class="count" data-for="description" data-max="155"></small>
-    </label>
-    <label class="field">
-      페이지 URL
-      <input class="control" type="url" name="url" value="https://example.com/page" />
-    </label>
-    <label class="field">
-      이미지 URL
-      <input class="control" type="url" name="image" value="https://example.com/og-image.png" />
-      <small>권장 1200×630px, 절대 URL</small>
-    </label>
-    <label class="field">
-      사이트 이름
-      <input class="control" type="text" name="siteName" value="사이트 이름" />
-    </label>
-    <div class="field-grid">
+  <div class="tool-layout">
+    <form id="og-form" class="panel og-fields">
       <label class="field">
-        콘텐츠 유형
-        <select class="control" name="type">
-          <option value="website">website</option>
-          <option value="article">article</option>
-        </select>
+        페이지 제목
+        <input
+          class="control"
+          type="text"
+          name="title"
+          placeholder="페이지 제목"
+          value="우리 팀이 쓰는 디자인 토큰 정리법"
+        />
+        <small class="count" data-for="title" data-max="60"></small>
       </label>
       <label class="field">
-        트위터 카드
-        <select class="control" name="twitterCard">
-          <option value="summary_large_image">summary_large_image</option>
-          <option value="summary">summary</option>
-        </select>
+        설명
+        <textarea
+          class="control"
+          name="description"
+          rows="2"
+          placeholder="한두 문장으로 요약"
+          >색과 간격을 토큰으로 묶고 나서 리뷰에서 색 이야기가 사라졌습니다.</textarea
+        >
+        <small class="count" data-for="description" data-max="155"></small>
       </label>
       <label class="field">
-        로케일
-        <input class="control" type="text" name="locale" value="ko_KR" />
+        페이지 URL
+        <input
+          class="control"
+          type="url"
+          name="url"
+          value="https://example.com/blog/design-tokens"
+        />
       </label>
-    </div>
-    <div class="form-actions">
-      <button type="button" class="btn" id="reset">초기화</button>
-      <small>값을 바꾸면 주소도 함께 바뀝니다. 그 주소를 공유하면 같은 값으로 열립니다.</small>
-    </div>
-  </form>
+      <label class="field">
+        이미지 URL
+        <input
+        class="control"
+        type="url"
+        name="image"
+        value="https://burnytools.com/og.png"
+      />
+        <small>권장 1200×630px, 절대 URL</small>
+      </label>
+      {/* 한 번 정하면 잘 바꾸지 않는 값들. 접어 두고 필요할 때만 편다 */}
+      <details class="og-advanced" id="og-advanced">
+        <summary>고급 설정 — 사이트 이름 · 유형 · 카드 · 로케일</summary>
+        <label class="field">
+          사이트 이름
+          <input
+            class="control"
+            type="text"
+            name="siteName"
+            placeholder="사이트 이름"
+            value="우리 팀 블로그"
+          />
+        </label>
+        <div class="field-grid">
+          <label class="field">
+            콘텐츠 유형
+            <select class="control" name="type">
+              <option value="website">website</option>
+              <option value="article">article</option>
+            </select>
+          </label>
+          <label class="field">
+            트위터 카드
+            <select class="control" name="twitterCard">
+              <option value="summary_large_image">summary_large_image</option>
+              <option value="summary">summary</option>
+            </select>
+          </label>
+          <label class="field">
+            로케일
+            <input class="control" type="text" name="locale" value="ko_KR" />
+          </label>
+        </div>
+      </details>
+      <div class="form-actions">
+        <button type="button" class="btn" id="reset">초기화</button>
+        <small>값을 바꾸면 주소도 함께 바뀝니다. 그 주소를 공유하면 같은 값으로 열립니다.</small>
+      </div>
+    </form>
 
-  <div class="output">
-    <div class="output-head">
-      <span>결과 — &lt;head&gt; 안에 붙여넣기</span>
-      <button type="button" class="btn btn-primary" id="copy">복사</button>
-    </div>
-    <pre><code id="output"></code></pre>
-  </div>
+    <div class="tool-aside">
+      <div class="preview">
+        <span class="preview-label">공유 미리보기 — 카카오톡·슬랙 등의 대략적인 모습</span>
+        <div class="og-card">
+          <div class="og-img empty" id="p-img"></div>
+          <div class="og-body">
+            <span class="og-domain" id="p-domain"></span>
+            <strong id="p-title"></strong>
+            <span class="og-desc" id="p-desc"></span>
+          </div>
+        </div>
+      </div>
 
-  <div class="preview">
-    <span class="preview-label">공유 미리보기 — 카카오톡·슬랙 등의 대략적인 모습</span>
-    <div class="og-card">
-      <div class="og-img empty" id="p-img"></div>
-      <div class="og-body">
-        <span class="og-domain" id="p-domain"></span>
-        <strong id="p-title"></strong>
-        <span class="og-desc" id="p-desc"></span>
+      <div class="output">
+        <div class="output-head">
+          <span>결과 — &lt;head&gt; 안에 붙여넣기</span>
+          <button type="button" class="btn btn-primary" id="copy">복사</button>
+        </div>
+        <pre><code id="output"></code></pre>
+        {/* 태그 본문을 통째로 읽어 주면 소음이므로 길이와 줄 수만 알린다 */}
+        <span class="sr-only" role="status" id="live"></span>
       </div>
     </div>
   </div>
@@ -170,6 +206,7 @@ import ToolPage from '../../layouts/ToolPage.astro';
     applyParams,
     syncParams,
     resetForm,
+    announce,
   } from '../../scripts/tool-state';
 
   // OG/meta 태그 문자열 생성 (클라이언트에서만 실행)
@@ -177,8 +214,11 @@ import ToolPage from '../../layouts/ToolPage.astro';
   const output = document.getElementById('output')!;
   const copyBtn = document.getElementById('copy') as HTMLButtonElement;
   const counts = document.querySelectorAll<HTMLElement>('.count');
+  const live = document.getElementById('live') as HTMLElement;
 
   const pImg = document.getElementById('p-img')!;
+  // 마지막으로 시작한 이미지 확인의 순번
+  let imgSeq = 0;
   const pDomain = document.getElementById('p-domain')!;
   const pTitle = document.getElementById('p-title')!;
   const pDesc = document.getElementById('p-desc')!;
@@ -249,12 +289,31 @@ import ToolPage from '../../layouts/ToolPage.astro';
     pDesc.textContent = description;
     pDomain.textContent = domainOf(url);
     if (image) {
-      pImg.style.backgroundImage = `url("${image.replace(/"/g, '')}")`;
-      pImg.classList.remove('empty');
+      // 타이핑 중 여러 요청이 겹치면 늦게 끝난 옛 요청이 이길 수 있어 순번으로 막는다
+      const seq = ++imgSeq;
+      const probe = new Image();
+      probe.onload = () => {
+        if (seq !== imgSeq) return;
+        pImg.style.backgroundImage = `url("${image.replace(/"/g, '')}")`;
+        pImg.classList.remove('empty', 'failed');
+      };
+      probe.onerror = () => {
+        if (seq !== imgSeq) return;
+        pImg.style.backgroundImage = '';
+        pImg.classList.add('empty', 'failed');
+      };
+      probe.src = image;
     } else {
+      imgSeq++;
       pImg.style.backgroundImage = '';
       pImg.classList.add('empty');
+      pImg.classList.remove('failed');
     }
+
+    announce(
+      live,
+      `제목 ${title.length}자, 설명 ${description.length}자. 태그 ${lines.filter(Boolean).length}줄 생성됨.`,
+    );
   }
 
   const KEYS = ['title', 'description', 'url', 'image', 'siteName', 'type', 'twitterCard', 'locale'];
@@ -273,6 +332,15 @@ import ToolPage from '../../layouts/ToolPage.astro';
 
   // 공유 링크로 들어온 경우 주소의 값을 먼저 반영한다
   applyParams(form, KEYS);
+
+  // 접힌 칸의 값이 링크에 들어 있으면, 보이지 않는 곳에서 값이 달라진 것이 되므로 펼친다
+  const advanced = document.getElementById('og-advanced') as HTMLDetailsElement;
+  if (['siteName', 'type', 'twitterCard', 'locale'].some((k) => {
+    const el = form.elements.namedItem(k) as HTMLInputElement | HTMLSelectElement;
+    return el.value !== defaults[k];
+  })) {
+    advanced.open = true;
+  }
 
   copyBtn.addEventListener('click', async () => {
     // 권한이 없거나 브라우저가 막으면 거부된다. 조용히 실패하면 눌러도
@@ -295,6 +363,21 @@ import ToolPage from '../../layouts/ToolPage.astro';
     flex-direction: column;
     gap: var(--space-4);
   }
+  /* details 자체를 세로 스택으로 만들어 접힌 상태와 펼친 상태의 간격을 한 규칙으로 둔다 */
+  .og-advanced {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+  /* display를 바꾸면 펼침 삼각형이 사라지므로 기본값(list-item)을 그대로 둔다 */
+  .og-advanced summary {
+    min-height: 24px;
+    padding: var(--space-1) 0;
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--muted);
+    cursor: pointer;
+  }
   .og-card {
     max-width: 480px;
     border: 1px solid var(--border);
@@ -316,6 +399,11 @@ import ToolPage from '../../layouts/ToolPage.astro';
     height: 100%;
     color: var(--muted);
     font-size: 0.85rem;
+  }
+  /* 주소는 적혀 있는데 불러오지 못한 경우. "이미지 없음"과 뜻이 다르다 */
+  .og-img.failed::after {
+    content: '이미지를 불러오지 못했습니다 — 주소를 확인하세요';
+    color: var(--danger);
   }
   .og-body {
     padding: var(--space-3) var(--space-4);
