@@ -528,6 +528,13 @@ main {
   }
 }
 
+/* [hidden]은 UA 스타일시트에만 있어서 작성자 스타일인 .field{display:flex}에
+   특이도와 무관하게 진다. 그 결과 hidden 속성이 붙은 칸이 그대로 보였다.
+   숨김을 같은 층에서 처리해 실제로 사라지게 한다 */
+[hidden] {
+  display: none !important;
+}
+
 .field {
   display: flex;
   flex-direction: column;
