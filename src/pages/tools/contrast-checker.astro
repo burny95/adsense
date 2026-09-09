@@ -62,11 +62,15 @@ import ToolPage from '../../layouts/ToolPage.astro';
     <p class="suggestion-text">
       AA 일반 텍스트 기준 미달입니다. 배경은 그대로 두고 글자색만 바꾸면 통과합니다.
     </p>
-    <button type="button" class="btn" id="apply-suggestion">
-      {/* 색 견본 — 어떤 색으로 바뀌는지 코드값만 보고는 알 수 없다 */}
-      <span class="swatch" id="sugg-swatch" aria-hidden="true"></span>
-      <code id="sugg-hex"></code> 적용하기
-    </button>
+    <div class="suggestion-actions">
+      <button type="button" class="btn" id="apply-suggestion">
+        {/* 색 견본 — 어떤 색으로 바뀌는지 코드값만 보고는 알 수 없다 */}
+        <span class="swatch" id="sugg-swatch" aria-hidden="true"></span>
+        <code id="sugg-hex"></code> 적용하기
+      </button>
+      {/* 추천 색이 이 도구의 산출물이다. 적용만 되고 가져갈 수 없으면 반쪽이다 */}
+      <button type="button" class="btn btn-primary" id="copy-suggestion">복사</button>
+    </div>
   </div>
 
   <div class="preview" id="preview">
@@ -320,6 +324,20 @@ import ToolPage from '../../layouts/ToolPage.astro';
     update();
   });
 
+  // 추천 색을 시안이나 코드에 그대로 가져갈 수 있게 한다
+  const copySugg = document.getElementById('copy-suggestion') as HTMLButtonElement;
+  copySugg.addEventListener('click', async () => {
+    // 권한이 없거나 브라우저가 막으면 거부된다. 조용히 실패하면 눌러도
+    // 아무 일이 없는 것처럼 보이므로 버튼에 결과를 적어 준다
+    try {
+      await navigator.clipboard.writeText(suggHex.textContent ?? '');
+      copySugg.textContent = '복사됨';
+    } catch {
+      copySugg.textContent = '복사 실패';
+    }
+    setTimeout(() => (copySugg.textContent = '복사'), 1500);
+  });
+
   const defaults = defaultsOf(form, KEYS);
   const resetBtn = document.getElementById('reset') as HTMLButtonElement;
 
@@ -338,6 +356,11 @@ import ToolPage from '../../layouts/ToolPage.astro';
 </script>
 
 <style>
+  .suggestion-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
   .suggestion-text {
     margin: 0 0 var(--space-3);
   }

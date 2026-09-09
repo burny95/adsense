@@ -521,6 +521,12 @@ main {
 .tool-aside > .preview {
   margin: 0;
 }
+/* 오른쪽에 놓을 것이 아직 없으면 빈 열을 예약하지 않는다.
+   (이미지 변환기는 파일을 넣기 전까지 미리보기가 hidden이라 절반이 비어 보였다) */
+.tool-layout:has(> [hidden]:last-child) {
+  grid-template-columns: minmax(0, 20rem);
+}
+
 /* 좁은 화면에서는 한 줄에 하나씩 (결과가 입력 아래로 내려간다) */
 @media (max-width: 860px) {
   .tool-layout {
@@ -610,10 +616,13 @@ textarea.control {
 .btn:hover {
   background: var(--bg-subtle);
 }
+/* 주 액션. 사용자가 이 페이지에 온 이유이므로 옆 버튼보다 작아서는 안 된다 */
 .btn-primary {
   background: var(--accent);
   border-color: var(--accent);
   color: var(--accent-contrast);
+  padding-inline: var(--space-5);
+  font-weight: 600;
 }
 .btn-primary:hover {
   background: var(--accent-hover);
@@ -633,19 +642,25 @@ textarea.control {
   font-weight: 500;
 }
 .output pre,
+/* 결과는 사용자가 이 페이지에 온 이유다. 폼보다 크게 둔다 */
 .output-code {
   margin: 0;
-  padding: var(--space-4);
-  background: var(--bg-subtle);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
+  padding: var(--space-4) var(--space-5);
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
   overflow-x: auto;
-  font-size: 0.9rem;
-  line-height: 1.6;
+  font-size: 1rem;
+  line-height: 1.7;
+  /* 값이 바뀔 때 자릿수가 흔들리지 않게 */
+  font-variant-numeric: tabular-nums;
 }
 .output-code {
   display: block;
-  white-space: pre;
+  /* pre-wrap은 줄바꿈을 지키면서 긴 값은 접는다.
+     가로로 스크롤시키면 답의 뒷부분이 화면 밖에 숨는다 */
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
 }
 
 .hint {

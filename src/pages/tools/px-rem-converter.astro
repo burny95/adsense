@@ -37,7 +37,10 @@ const commonPx = [10, 12, 14, 16, 18, 20, 24, 28, 32, 40, 48, 64];
 
     <div class="tool-aside">
       <div class="output">
-        <div class="output-head"><span>변환 결과</span></div>
+        <div class="output-head">
+          <span>결과</span>
+          <button type="button" class="btn btn-primary" id="copy">복사</button>
+        </div>
         <code class="output-code" id="result"></code>
       </div>
 
@@ -257,6 +260,20 @@ const commonPx = [10, 12, 14, 16, 18, 20, 24, 28, 32, 40, 48, 64];
   if (applyParams(form, KEYS) && pxInput.value.trim() !== '') {
     remInput.value = trim(Number(pxInput.value) / root());
   }
+
+  // 결과를 손으로 긁지 않고 가져갈 수 있게 한다
+  const copyBtn = document.getElementById('copy') as HTMLButtonElement;
+  copyBtn.addEventListener('click', async () => {
+    // 권한이 없거나 브라우저가 막으면 거부된다. 조용히 실패하면 눌러도
+    // 아무 일이 없는 것처럼 보이므로 버튼에 결과를 적어 준다
+    try {
+      await navigator.clipboard.writeText(result.textContent ?? '');
+      copyBtn.textContent = '복사됨';
+    } catch {
+      copyBtn.textContent = '복사 실패';
+    }
+    setTimeout(() => (copyBtn.textContent = '복사'), 1500);
+  });
 
   refreshTable();
   setResult();
