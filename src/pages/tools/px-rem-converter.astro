@@ -42,6 +42,8 @@ const commonPx = [10, 12, 14, 16, 18, 20, 24, 28, 32, 40, 48, 64];
           <button type="button" class="btn btn-primary" id="copy">복사</button>
         </div>
         <code class="output-code" id="result"></code>
+        {/* 결과 문장은 눈으로 읽는 것이고, 낭독에는 답 하나만 보낸다 */}
+        <span class="sr-only" role="status" id="live"></span>
       </div>
 
       <section class="prose">
@@ -177,6 +179,7 @@ const commonPx = [10, 12, 14, 16, 18, 20, 24, 28, 32, 40, 48, 64];
     syncParams,
     resetForm,
     setInvalid,
+    announce,
   } from '../../scripts/tool-state';
 
   // px ↔ rem 상호 변환 (클라이언트에서만 실행)
@@ -185,6 +188,7 @@ const commonPx = [10, 12, 14, 16, 18, 20, 24, 28, 32, 40, 48, 64];
   const pxInput = form.elements.namedItem('px') as HTMLInputElement;
   const remInput = form.elements.namedItem('rem') as HTMLInputElement;
   const result = document.getElementById('result')!;
+  const live = document.getElementById('live') as HTMLElement;
   const rootLabel = document.getElementById('root-label')!;
   const tableRows = document.querySelectorAll<HTMLTableRowElement>('#table-body tr');
 
@@ -212,10 +216,18 @@ const commonPx = [10, 12, 14, 16, 18, 20, 24, 28, 32, 40, 48, 64];
     });
   }
 
+  // 마지막으로 손댄 칸. 사용자가 원하는 답은 그 반대편 값 하나다.
+  let lastEdited: 'px' | 'rem' = 'px';
+  // 복사·낭독에 쓸 답. 결과 문장 전체는 어디에도 붙여넣을 수 없다.
+  let answer = '';
+
   function setResult() {
     // 두 칸 모두 비어 있으면 안내만
     if (pxInput.value.trim() === '' && remInput.value.trim() === '') {
       result.textContent = '값을 입력하세요.';
+      answer = '';
+      copyBtn.disabled = true;
+      announce(live, '값을 입력하세요.');
       return;
     }
     const px = Number(pxInput.value);
@@ -223,15 +235,23 @@ const commonPx = [10, 12, 14, 16, 18, 20, 24, 28, 32, 40, 48, 64];
     result.textContent =
       `${trim(px)}px = ${trim(px / root())}rem` +
       `   |   ${trim(rem)}rem = ${trim(rem * root())}px`;
+    answer =
+      lastEdited === 'px'
+        ? `${trim(px / root())}rem`
+        : `${trim(rem * root())}px`;
+    copyBtn.disabled = false;
+    announce(live, answer);
   }
 
   // 어느 칸을 편집했는지에 따라 반대편 값 갱신 (빈 칸이면 반대편도 비움)
   pxInput.addEventListener('input', () => {
+    lastEdited = 'px';
     remInput.value =
       pxInput.value.trim() === '' ? '' : trim(Number(pxInput.value) / root());
     setResult();
   });
   remInput.addEventListener('input', () => {
+    lastEdited = 'rem';
     pxInput.value =
       remInput.value.trim() === '' ? '' : trim(Number(remInput.value) * root());
     setResult();
@@ -267,7 +287,7 @@ const commonPx = [10, 12, 14, 16, 18, 20, 24, 28, 32, 40, 48, 64];
     // 권한이 없거나 브라우저가 막으면 거부된다. 조용히 실패하면 눌러도
     // 아무 일이 없는 것처럼 보이므로 버튼에 결과를 적어 준다
     try {
-      await navigator.clipboard.writeText(result.textContent ?? '');
+      await navigator.clipboard.writeText(answer);
       copyBtn.textContent = '복사됨';
     } catch {
       copyBtn.textContent = '복사 실패';
