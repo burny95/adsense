@@ -42,6 +42,7 @@ const schema = {
   .breadcrumb {
     display: flex;
     flex-wrap: wrap;
+    align-items: center;
     gap: var(--space-2);
     font-size: 0.85rem;
     color: var(--muted);
@@ -50,6 +51,12 @@ const schema = {
   .breadcrumb a {
     color: var(--muted);
     text-decoration: none;
+    /* "홈"처럼 짧은 항목은 13x22였다. WCAG 2.2 AA 2.5.8의 24x24를 채운다 */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 24px;
+    min-height: 24px;
   }
   .breadcrumb a:hover {
     color: var(--text);

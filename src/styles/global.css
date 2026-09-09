@@ -341,6 +341,10 @@ main {
 .footer-head a {
   color: var(--text);
   text-decoration: none;
+  /* 칼럼 제목도 링크다. 최소 탭 크기를 채운다 */
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
 }
 .footer-col ul {
   list-style: none;
@@ -349,6 +353,14 @@ main {
   display: flex;
   flex-direction: column;
   gap: var(--space-2);
+}
+/* WCAG 2.2 AA 2.5.8: 목록형 링크는 최소 24x24를 채운다.
+   문장 속 인라인 링크가 아니라 예외가 적용되지 않는다 */
+.footer-col li a,
+.footer-bottom a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
 }
 .footer-col a:hover {
   color: var(--text);
@@ -535,6 +547,8 @@ main {
   flex-direction: row;
   align-items: center;
   gap: var(--space-2);
+  /* 라벨 전체가 체크박스의 탭 영역이다. 24px를 채운다 (WCAG 2.2 AA 2.5.8) */
+  min-height: 24px;
 }
 
 /* 색 선택기와 hex 입력칸을 나란히 놓는 줄 */
@@ -985,19 +999,27 @@ textarea.control {
   gap: var(--space-4);
 }
 
-/* 사용자가 움직임 최소화를 켜 두었으면 전환과 들림 효과를 끈다 */
+/* 움직임 최소화를 켠 사용자에게는 "자리를 옮기는 것"만 없앤다.
+   전환을 통째로 0.01ms로 죽이면 색·테두리가 바뀌는 상태 피드백까지 사라져
+   무슨 일이 일어났는지 알기 어려워진다. 실제로 움직이는 것은 아래 셋뿐이다 */
 @media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  /* 카드가 떠오르지 않게. 테두리 색 전환은 그대로 남아 hover가 보인다 */
+  .card:hover,
+  .post-nav-link:hover {
+    transform: none;
+  }
+  /* 건너뛰기 링크는 미끄러져 들어오지 않고 바로 나타난다 */
+  .skip-link {
+    transition: none;
+  }
   *,
   *::before,
   *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-  }
-  .card:hover,
-  .post-nav-link:hover {
-    transform: none;
   }
 }
 

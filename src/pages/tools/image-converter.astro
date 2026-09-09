@@ -621,7 +621,7 @@ import ToolPage from '../../layouts/ToolPage.astro';
           : '';
 
       body.innerHTML = `
-        <img class="result-thumb" src="${url}" alt="">
+        <img class="result-thumb" src="${url}" alt="변환 결과 미리보기">
         <div class="result-meta">
           <span>${out.w} × ${out.h}px</span>
           <span>${formatBytes(file.size)} → <strong>${formatBytes(out.blob.size)}</strong>

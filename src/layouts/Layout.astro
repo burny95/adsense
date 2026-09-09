@@ -82,7 +82,17 @@ const year = new Date().getFullYear();
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/site.webmanifest" />
-    <meta name="theme-color" content="#FF7A1A" />
+    {/* 브라우저 UI 색. accent 토큰과 같은 값을 쓰고 테마별로 나눈다 */}
+    <meta
+      name="theme-color"
+      media="(prefers-color-scheme: light)"
+      content="#b4480a"
+    />
+    <meta
+      name="theme-color"
+      media="(prefers-color-scheme: dark)"
+      content="#ff9a4d"
+    />
     <link
       rel="alternate"
       type="application/rss+xml"
