@@ -214,12 +214,12 @@ const year = new Date().getFullYear();
         <nav class="footer-sitemap" aria-label="사이트맵">
           <div class="footer-col">
             <p class="footer-head">
-              <a href="/tools">도구</a>
+              <a href="/tools/">도구</a>
             </p>
             <ul>
               {TOOLS.map((tool) => (
                 <li>
-                  <a href={`/tools/${tool.slug}`}>{tool.title}</a>
+                  <a href={`/tools/${tool.slug}/`}>{tool.title}</a>
                 </li>
               ))}
             </ul>
@@ -227,10 +227,10 @@ const year = new Date().getFullYear();
           <div class="footer-col">
             <p class="footer-head">사이트</p>
             <ul>
-              <li><a href="/blog">블로그</a></li>
-              <li><a href="/about">소개</a></li>
-              <li><a href="/contact">문의</a></li>
-              <li><a href="/privacy">개인정보처리방침</a></li>
+              <li><a href="/blog/">블로그</a></li>
+              <li><a href="/about/">소개</a></li>
+              <li><a href="/contact/">문의</a></li>
+              <li><a href="/privacy/">개인정보처리방침</a></li>
               <li><a href="/rss.xml">RSS</a></li>
             </ul>
           </div>

@@ -31,7 +31,7 @@ draft: false
   <button type="button" id="menu-close">닫기</button>
   <ul>
     <li><a href="/">홈</a></li>
-    <li><a href="/about">회사소개</a></li>
+    <li><a href="/about/">회사소개</a></li>
   </ul>
 </nav>
 ```

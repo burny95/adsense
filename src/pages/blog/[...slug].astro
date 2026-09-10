@@ -66,8 +66,8 @@ const schema = {
   <Breadcrumb
     items={[
       { label: '홈', href: '/' },
-      { label: '블로그', href: '/blog' },
-      { label: post.data.title, href: `/blog/${post.id}` },
+      { label: '블로그', href: '/blog/' },
+      { label: post.data.title, href: `/blog/${post.id}/` },
     ]}
   />
 
@@ -111,7 +111,7 @@ const schema = {
         <ul>
           {relatedTools.map((t) => (
             <li>
-              <a href={`/tools/${t.slug}`}>
+              <a href={`/tools/${t.slug}/`}>
                 <span class="related-title">{t.title}</span>
                 <span class="related-desc">{t.description}</span>
               </a>
@@ -126,13 +126,13 @@ const schema = {
     (prev || next) && (
       <nav class="post-nav" aria-label="이전 글 다음 글">
         {prev && (
-          <a class="post-nav-link" href={`/blog/${prev.id}`}>
+          <a class="post-nav-link" href={`/blog/${prev.id}/`}>
             <span class="post-nav-label">← 이전 글</span>
             <span class="post-nav-title">{prev.data.title}</span>
           </a>
         )}
         {next && (
-          <a class="post-nav-link is-next" href={`/blog/${next.id}`}>
+          <a class="post-nav-link is-next" href={`/blog/${next.id}/`}>
             <span class="post-nav-label">다음 글 →</span>
             <span class="post-nav-title">{next.data.title}</span>
           </a>

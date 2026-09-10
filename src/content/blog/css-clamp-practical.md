@@ -8,7 +8,7 @@ relatedTools:
 draft: false
 ---
 
-기본 문법과 계산식 뽑는 법은 [CSS clamp() 기초](/blog/css-clamp-basics)에서 다뤘습니다. 이번 편은 "그래서 어디에 쓰느냐"입니다.
+기본 문법과 계산식 뽑는 법은 [CSS clamp() 기초](/blog/css-clamp-basics/)에서 다뤘습니다. 이번 편은 "그래서 어디에 쓰느냐"입니다.
 
 ## clamp()가 잘 맞는 곳 / 안 쓰는 게 나은 곳
 
@@ -47,7 +47,7 @@ h3 { font-size: clamp(1.15rem, 1.05rem + 0.5vw, 1.375rem); }
 
 여백에 쓸 때는 최소값을 충분히 확보하는 게 중요합니다. 좁은 화면에서 `vw` 성분이 거의 0에 수렴하므로, 최소값이 곧 모바일에서의 실제 여백이 됩니다.
 
-> **값 뽑기가 번거로우면** [CSS clamp() 생성기](/tools/clamp-generator)에 최소·최대 크기와 화면 너비 범위만 넣으세요. 위 예제처럼 `rem + vw` 형태로 바로 나옵니다.
+> **값 뽑기가 번거로우면** [CSS clamp() 생성기](/tools/clamp-generator/)에 최소·최대 크기와 화면 너비 범위만 넣으세요. 위 예제처럼 `rem + vw` 형태로 바로 나옵니다.
 
 ## 실전 3: 유동 레이아웃
 

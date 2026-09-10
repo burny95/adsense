@@ -22,14 +22,14 @@ import { TOOLS } from '../tools';
       {
         TOOLS.map((t) => (
           <li>
-            <a href={`/tools/${t.slug}`}>{t.title}</a> — {t.description}
+            <a href={`/tools/${t.slug}/`}>{t.title}</a> — {t.description}
           </li>
         ))
       }
     </ul>
     <p>
       각 도구 페이지에는 그 기능을 언제, 왜 쓰는지 설명하는 내용을 함께 두고,
-      <a href="/blog">블로그</a>에서 관련 개념과 실무 팁을 더 자세히 다룹니다.
+      <a href="/blog/">블로그</a>에서 관련 개념과 실무 팁을 더 자세히 다룹니다.
     </p>
 
     <h2>운영 방식</h2>
@@ -49,7 +49,7 @@ import { TOOLS } from '../tools';
     <p>
       오류 제보, 도구 제안, 기타 문의는
       <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>로 보내주세요.
-      <a href="/contact">문의 페이지</a>에도 같은 내용이 있습니다.
+      <a href="/contact/">문의 페이지</a>에도 같은 내용이 있습니다.
     </p>
   </article>
 </Layout>

@@ -16,7 +16,7 @@ import { TOOLS } from '../../tools';
   <div class="card-grid">
     {
       TOOLS.map((tool) => (
-        <a class="card" href={`/tools/${tool.slug}`}>
+        <a class="card" href={`/tools/${tool.slug}/`}>
           <h2>
             {tool.title} <span class="badge">{CATEGORIES[tool.category]}</span>
           </h2>

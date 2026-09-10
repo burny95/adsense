@@ -24,7 +24,7 @@ const recentPosts = (await getCollection('blog', ({ data }) => !data.draft))
   <div class="card-grid">
     {
       TOOLS.map((tool) => (
-        <a class="card" href={`/tools/${tool.slug}`}>
+        <a class="card" href={`/tools/${tool.slug}/`}>
           <h3>
             {tool.title} <span class="badge">{CATEGORIES[tool.category]}</span>
           </h3>
@@ -33,7 +33,7 @@ const recentPosts = (await getCollection('blog', ({ data }) => !data.draft))
       ))
     }
   </div>
-  <p><a href="/tools">도구 전체 보기 →</a></p>
+  <p><a href="/tools/">도구 전체 보기 →</a></p>
 
   {
     recentPosts.length > 0 && (
@@ -42,13 +42,13 @@ const recentPosts = (await getCollection('blog', ({ data }) => !data.draft))
         <ul class="stack-list">
           {recentPosts.map((post) => (
             <li>
-              <a href={`/blog/${post.id}`}>{post.data.title}</a>
+              <a href={`/blog/${post.id}/`}>{post.data.title}</a>
               <p>{post.data.description}</p>
             </li>
           ))}
         </ul>
         <p>
-          <a href="/blog">블로그 전체 보기 →</a>
+          <a href="/blog/">블로그 전체 보기 →</a>
         </p>
       </>
     )

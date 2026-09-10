@@ -23,8 +23,8 @@ const schema = toolSchema(tool, Astro.site!.toString());
   <Breadcrumb
     items={[
       { label: '홈', href: '/' },
-      { label: '도구', href: '/tools' },
-      { label: tool.title, href: `/tools/${slug}` },
+      { label: '도구', href: '/tools/' },
+      { label: tool.title, href: `/tools/${slug}/` },
     ]}
   />
 
@@ -41,7 +41,7 @@ const schema = toolSchema(tool, Astro.site!.toString());
           {related.map((p) => (
             <li>
               {/* 링크 전체를 누를 수 있게 감싼다 — 제목만 링크면 모바일에서 목표가 너무 작다 */}
-              <a href={`/blog/${p.id}`}>
+              <a href={`/blog/${p.id}/`}>
                 <span class="related-title">{p.data.title}</span>
                 <span class="related-desc">{p.data.description}</span>
               </a>

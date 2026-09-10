@@ -185,7 +185,7 @@ linear-gradient(90deg, #0000ff, #ffff00)
 linear-gradient(90deg, #0000ff, #00b3a4 50%, #ffff00)
 ```
 
-어떤 색을 넣을지는 [색 변환기](/tools/color-converter)로 두 색의 색상(H) 값을
+어떤 색을 넣을지는 [색 변환기](/tools/color-converter/)로 두 색의 색상(H) 값을
 확인하고 그 중간 각도의 색을 골라 보면 감이 잡힙니다.
 
 `transparent`로 사라지게 만들 때는 사정이 조금 다릅니다. `transparent`는 사실

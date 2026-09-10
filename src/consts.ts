@@ -27,10 +27,10 @@ export interface NavLink {
 
 export const NAV_LINKS: NavLink[] = [
   { href: '/', label: '홈' },
-  { href: '/tools', label: '도구' },
-  { href: '/blog', label: '블로그' },
-  { href: '/about', label: '소개', secondary: true },
-  { href: '/contact', label: '문의', secondary: true },
+  { href: '/tools/', label: '도구' },
+  { href: '/blog/', label: '블로그' },
+  { href: '/about/', label: '소개', secondary: true },
+  { href: '/contact/', label: '문의', secondary: true },
 ];
 
 // 도구·글 공통 카테고리 (목록 페이지에서 섹션 구분에 사용)

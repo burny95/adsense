@@ -81,7 +81,7 @@ font-size: clamp(1.5rem, 1rem + 2vw, 2.5rem);
 목표점 두 개만 정하면 이 두 숫자는 저절로 결정됩니다.
 
 > **계산이 싫으면 여기서 넘어가세요.**
-> [CSS clamp() 생성기](/tools/clamp-generator)에 "최소 24px, 최대 40px, 화면 400~1200px"만 넣으면 `clamp(1.5rem, 1rem + 2vw, 2.5rem)`이 바로 나옵니다. 아래는 그 숫자가 어떻게 나오는지 궁금한 사람을 위한 내용입니다.
+> [CSS clamp() 생성기](/tools/clamp-generator/)에 "최소 24px, 최대 40px, 화면 400~1200px"만 넣으면 `clamp(1.5rem, 1rem + 2vw, 2.5rem)`이 바로 나옵니다. 아래는 그 숫자가 어떻게 나오는지 궁금한 사람을 위한 내용입니다.
 
 **가파른 정도 → `2vw`**
 
