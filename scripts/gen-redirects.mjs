@@ -9,9 +9,11 @@
 // 무한 루프가 된다. 그래서 실제로 만들어진 페이지만 한 줄씩 나열한다.
 import fs from 'node:fs';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-const DIST = new URL('../dist/', import.meta.url);
-const distDir = path.normalize(DIST.pathname.replace(/^\//, ''));
+// URL.pathname을 직접 쓰면 안 된다. 윈도우에서는 "/C:/..."라 앞 슬래시를 떼야 하고
+// 리눅스에서는 "/opt/..."라 떼면 상대 경로가 되어 빌드 서버에서 ENOENT가 난다.
+const distDir = fileURLToPath(new URL('../dist/', import.meta.url));
 
 /** dist 아래의 index.html을 모두 찾아 URL 경로로 바꾼다 */
 function collect(dir, base = '') {
