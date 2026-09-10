@@ -17,20 +17,17 @@ export const VERIFICATION = {
   naver: '261f9f84ec2f15dc260db12079fca98272f6a0a4', // 네이버 서치어드바이저
 };
 
-// 네비게이션 메뉴.
-// secondary: true 인 항목은 좁은 화면에서 헤더에 숨기고 푸터에만 노출
+// 상단 네비게이션. 핵심 세 곳만 둔다.
+// 소개·문의·개인정보처리방침은 푸터 사이트맵에서 간다.
 export interface NavLink {
   href: string;
   label: string;
-  secondary?: boolean;
 }
 
 export const NAV_LINKS: NavLink[] = [
   { href: '/', label: '홈' },
   { href: '/tools/', label: '도구' },
   { href: '/blog/', label: '블로그' },
-  { href: '/about/', label: '소개', secondary: true },
-  { href: '/contact/', label: '문의', secondary: true },
 ];
 
 // 도구·글 공통 카테고리 (목록 페이지에서 섹션 구분에 사용)

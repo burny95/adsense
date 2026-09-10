@@ -271,8 +271,8 @@ main {
   font-weight: 600;
 }
 
-/* 좁은 화면: 상단은 로고 + 핵심 메뉴(홈/도구/블로그)만.
-   소개·문의·테마토글은 헤더에서 숨기고 푸터로 (아래 .site-footer 규칙 참고) */
+/* 좁은 화면에서는 상단 메뉴 간격을 줄인다.
+   메뉴는 어느 폭에서나 홈·도구·블로그 셋뿐이다 */
 @media (max-width: 600px) {
   .site-header nav {
     gap: 0;
@@ -280,9 +280,6 @@ main {
   .site-header nav a {
     padding: var(--space-2);
     font-size: 0.9rem;
-  }
-  .site-header nav a.nav-secondary {
-    display: none;
   }
 }
 

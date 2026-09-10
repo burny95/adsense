@@ -172,7 +172,6 @@ const year = new Date().getFullYear();
             NAV_LINKS.map((link) => (
               <a
                 href={link.href}
-                class:list={{ 'nav-secondary': link.secondary }}
                 aria-current={isActive(link.href) ? 'page' : undefined}
               >
                 {link.label}
