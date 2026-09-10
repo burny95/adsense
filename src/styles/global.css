@@ -5,9 +5,9 @@
 
 :root {
   /* 레이아웃 폭 */
-  --w-text: 46rem; /* 읽기 본문 (블로그) */
-  --w-wide: 58rem; /* 도구 페이지 */
-  --w-post: 64rem; /* 글 페이지 — 본문 46rem + 오른쪽 목차 15rem + 사이 여백 */
+  --w-frame: 64rem; /* 모든 페이지의 바깥 틀. 글 페이지가 가장 넓어서
+                       (본문 46rem + 목차 15rem + 사이 여백) 그 값에 맞춘다 */
+  --w-text: 46rem; /* 읽는 글의 줄 길이 상한 — 틀이 넓어도 글줄은 여기서 멈춘다 */
 
   /* 간격 스케일 */
   --space-1: 0.25rem;
@@ -170,17 +170,13 @@ img {
 
 /* ---------- 레이아웃 ---------- */
 
+/* 헤더·본문·푸터가 모든 페이지에서 같은 틀을 쓴다.
+   페이지마다 폭이 달라지면 옮길 때마다 로고와 제목이 좌우로 흔들린다 */
 .container {
   width: 100%;
-  max-width: var(--w-text);
+  max-width: var(--w-frame);
   margin: 0 auto;
   padding-inline: var(--space-5);
-}
-.container.wide {
-  max-width: var(--w-wide);
-}
-.container.post {
-  max-width: var(--w-post);
 }
 
 @media (max-width: 480px) {
@@ -865,7 +861,9 @@ textarea.control {
 
 /* ---------- 본문 글(블로그) ---------- */
 
+/* 틀은 넓어도 읽는 글의 줄 길이는 여기서 멈춘다 */
 .prose {
+  max-width: var(--w-text);
   overflow-wrap: break-word;
 }
 .prose > * + * {
@@ -959,9 +957,6 @@ textarea.control {
 
 /* 목차를 옆에 둘 자리가 없어지면 본문 위로 되돌린다 */
 @media (max-width: 900px) {
-  .container.post {
-    max-width: var(--w-text);
-  }
   .post-layout.has-toc {
     grid-template-columns: minmax(0, 1fr);
     gap: var(--space-5);

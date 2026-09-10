@@ -19,7 +19,7 @@ const related = (await getCollection('blog', ({ data }) => !data.draft)).filter(
 const schema = toolSchema(tool, Astro.site!.toString());
 ---
 
-<Layout title={tool.title} description={tool.description} wide schema={schema}>
+<Layout title={tool.title} description={tool.description} schema={schema}>
   <Breadcrumb
     items={[
       { label: '홈', href: '/' },
