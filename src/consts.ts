@@ -38,6 +38,7 @@ export const CATEGORIES = {
   image: '이미지',
   markup: '마크업',
   productivity: '생산성',
+  ai: 'AI',
 } as const;
 
 export type CategoryKey = keyof typeof CATEGORIES;
