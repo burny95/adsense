@@ -2,7 +2,7 @@
 
 export const SITE_NAME = 'Burny Tools'; // 원하는 이름으로 자유롭게 변경 가능
 export const SITE_DESCRIPTION =
-  '웹 퍼블리셔·디자이너를 위한 프론트엔드 도구와 가이드 모음';
+  '웹 작업에 바로 쓰는 프론트엔드 도구와 실무 가이드, 클로드 사용법 모음';
 
 // 문의용 실제 이메일 (애드센스 심사 시 연락 가능한 주소가 있어야 함)
 export const CONTACT_EMAIL = 'shskse5@gmail.com';
