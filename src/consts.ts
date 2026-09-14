@@ -17,7 +17,7 @@ export const VERIFICATION = {
   naver: '261f9f84ec2f15dc260db12079fca98272f6a0a4', // 네이버 서치어드바이저
 };
 
-// 상단 네비게이션. 핵심 세 곳만 둔다.
+// 상단 네비게이션. 핵심 세 곳만 둔다 (홈은 사이트 이름 로고로 간다).
 // 소개·문의·개인정보처리방침은 푸터 사이트맵에서 간다.
 export interface NavLink {
   href: string;
@@ -25,7 +25,6 @@ export interface NavLink {
 }
 
 export const NAV_LINKS: NavLink[] = [
-  { href: '/', label: '홈' },
   { href: '/tools/', label: '도구' },
   { href: '/blog/', label: '블로그' },
   { href: '/claude/', label: '클로드' },

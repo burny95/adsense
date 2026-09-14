@@ -235,6 +235,8 @@ const year = new Date().getFullYear();
         </nav>
         <div class="footer-bottom">
           <span>© {year} {SITE_NAME}</span>
+          {/* 좁은 화면에서는 헤더 토글을 숨기고 여기서만 보여준다 */}
+          <ThemeToggle class="theme-toggle--footer" />
         </div>
       </div>
     </footer>

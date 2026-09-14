@@ -305,6 +305,18 @@ main {
 
 /* 토글 위치 전환: 데스크톱은 헤더, 좁은 화면은 푸터.
    (이 블록은 반드시 .theme-toggle 기본 규칙 뒤에 와야 override 됨) */
+.theme-toggle--footer {
+  display: none;
+}
+@media (max-width: 600px) {
+  .theme-toggle--header {
+    display: none;
+  }
+  .theme-toggle--footer {
+    display: inline-flex;
+  }
+}
+
 /* 아이콘 표시: 현재 적용된 테마 아이콘만 노출 */
 .theme-toggle .icon-moon {
   display: none;
