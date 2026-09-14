@@ -3,6 +3,7 @@ import rss from '@astrojs/rss';
 import { getCollection } from 'astro:content';
 import { SITE_NAME, SITE_DESCRIPTION } from '../consts';
 import type { APIContext } from 'astro';
+import { postHref } from '../posts';
 
 export async function GET(context: APIContext) {
   const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
@@ -17,7 +18,7 @@ export async function GET(context: APIContext) {
       title: post.data.title,
       description: post.data.description,
       pubDate: post.data.publishedAt,
-      link: `/blog/${post.id}/`,
+      link: postHref(post),
     })),
     customData: '<language>ko-KR</language>',
   });

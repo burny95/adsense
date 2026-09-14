@@ -1,7 +1,7 @@
 ---
 title: 클로드는 알겠는데, 클로드 코드는 뭐지? — 채팅 AI와 무엇이 다른가
 description: 클로드 코드는 새로운 AI가 아니라 클로드가 내 컴퓨터에서 파일을 직접 고치게 해 주는 도구입니다. 처음 시작하는 분을 위해 채팅과 무엇이 다른지, 어디서 쓰는지, 무엇이 필요한지 설명합니다.
-category: ai
+category: claude-code
 publishedAt: 2026-09-14T10:00:00+09:00
 draft: false
 ---
@@ -23,8 +23,8 @@ draft: false
 알아서 합니다.
 
 이 글에서는 채팅과 무엇이 다른지, 어디서 쓰는지, 시작하려면 무엇이 필요한지를
-차례로 봅니다. 설치하고 써 보는 과정은 [VS Code에서 클로드 코드 쓰기](/blog/claude-code-vscode/)에,
-처음 해 둘 설정은 [초기 세팅 추천](/blog/claude-code-initial-setup/)에 따로 정리했습니다.
+차례로 봅니다. 설치하고 써 보는 과정은 [VS Code에서 클로드 코드 쓰기](/claude/claude-code-vscode/)에,
+처음 해 둘 설정은 [초기 세팅 추천](/claude/claude-code-initial-setup/)에 따로 정리했습니다.
 
 ## 채팅 AI와 무엇이 다른가
 
@@ -105,12 +105,12 @@ Windows를 쓴다면 [Git for Windows](https://git-scm.com/downloads/win)도 설
 
 비밀번호가 담긴 파일처럼 아예 건드리면 안 되는 것은 설정 파일에 금지 규칙으로 적어 둘 수
 있습니다. 금지 규칙은 Auto를 포함해 어떤 모드에서도 지켜집니다. 적는 방법은
-[초기 세팅 추천](/blog/claude-code-initial-setup/)에서 다룹니다.
+[초기 세팅 추천](/claude/claude-code-initial-setup/)에서 다룹니다.
 
 ## 시작해 볼 차례
 
 클로드 코드는 클로드에게 손을 달아 주는 도구이고, 유료 요금제가 있으면 바로 쓸 수 있습니다.
 처음이라면 VS Code에서 Manual이나 Plan 모드로 시작하는 게 가장 부담이 적습니다.
 
-다음 편 [VS Code에서 클로드 코드 쓰기](/blog/claude-code-vscode/)에서는 확장 프로그램과 터미널,
+다음 편 [VS Code에서 클로드 코드 쓰기](/claude/claude-code-vscode/)에서는 확장 프로그램과 터미널,
 두 가지 방법으로 클로드 코드를 직접 설치하고 써 봅니다.

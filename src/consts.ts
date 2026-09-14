@@ -28,6 +28,7 @@ export const NAV_LINKS: NavLink[] = [
   { href: '/', label: '홈' },
   { href: '/tools/', label: '도구' },
   { href: '/blog/', label: '블로그' },
+  { href: '/claude/', label: '클로드' },
 ];
 
 // 도구·글 공통 카테고리 (목록 페이지에서 섹션 구분에 사용)
@@ -38,7 +39,15 @@ export const CATEGORIES = {
   image: '이미지',
   markup: '마크업',
   productivity: '생산성',
-  ai: 'AI',
 } as const;
 
 export type CategoryKey = keyof typeof CATEGORIES;
+
+// 클로드 섹션의 소분류. 이 키를 쓴 글은 /blog/가 아니라 /claude/ 아래에 실린다
+// (클로드 코워크, 아티팩트 등은 여기에 키를 추가한다)
+export const CLAUDE_CATEGORIES = {
+  'claude-code': '클로드 코드',
+} as const;
+
+// 글 스키마 검증과 배지 표시에 쓰는 전체 카테고리
+export const ALL_CATEGORIES = { ...CATEGORIES, ...CLAUDE_CATEGORIES };

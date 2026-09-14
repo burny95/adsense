@@ -1,14 +1,14 @@
 ---
-// 개별 블로그 글
+// 개별 클로드 글
 import { getCollection } from 'astro:content';
 import PostPage from '../../layouts/PostPage.astro';
 import { isClaudePost, postPaths } from '../../posts';
 
-// 발행된 글 중 클로드 소분류를 뺀 글만 /blog/ 아래에 만든다
+// 발행된 글 중 클로드 소분류(클로드 코드 등)만 /claude/ 아래에 만든다
 export async function getStaticPaths() {
   const posts = await getCollection(
     'blog',
-    (post) => !post.data.draft && !isClaudePost(post),
+    (post) => !post.data.draft && isClaudePost(post),
   );
   return postPaths(posts);
 }
@@ -16,4 +16,4 @@ export async function getStaticPaths() {
 const { post, prev, next } = Astro.props;
 ---
 
-<PostPage post={post} prev={prev} next={next} section={{ label: '블로그', href: '/blog/' }} />
+<PostPage post={post} prev={prev} next={next} section={{ label: '클로드', href: '/claude/' }} />

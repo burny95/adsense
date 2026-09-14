@@ -1,7 +1,7 @@
 // 블로그 글 컬렉션 정의 (src/content/blog/*.md)
 import { defineCollection, z } from 'astro:content';
 import { glob } from 'astro/loaders';
-import { CATEGORIES } from './consts';
+import { ALL_CATEGORIES } from './consts';
 
 const blog = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/blog' }),
@@ -9,7 +9,10 @@ const blog = defineCollection({
     title: z.string(),
     description: z.string(), // 목록·검색결과 노출용 한 줄 요약
     category: z.enum(
-      Object.keys(CATEGORIES) as [keyof typeof CATEGORIES, ...(keyof typeof CATEGORIES)[]],
+      Object.keys(ALL_CATEGORIES) as [
+        keyof typeof ALL_CATEGORIES,
+        ...(keyof typeof ALL_CATEGORIES)[],
+      ],
     ),
     publishedAt: z.coerce.date(),
     updatedAt: z.coerce.date().optional(),

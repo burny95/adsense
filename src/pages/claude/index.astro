@@ -1,0 +1,49 @@
+---
+// 클로드 글 목록 (클로드 코드 등 소분류별 섹션)
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import { CLAUDE_CATEGORIES } from '../../consts';
+
+// 발행된 글만, 발행순 정렬 (시리즈를 1편부터 차례로 읽도록)
+const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
+  (a, b) => a.data.publishedAt.getTime() - b.data.publishedAt.getTime(),
+);
+
+const dateFmt = new Intl.DateTimeFormat('ko-KR', { dateStyle: 'long' });
+
+// 글이 하나라도 있는 소분류만 순서대로 섹션으로 노출
+const sections = (Object.keys(CLAUDE_CATEGORIES) as (keyof typeof CLAUDE_CATEGORIES)[])
+  .map((key) => ({
+    key,
+    label: CLAUDE_CATEGORIES[key],
+    posts: posts.filter((p) => p.data.category === key),
+  }))
+  .filter((s) => s.posts.length > 0);
+---
+
+<Layout title="클로드" description="클로드 코드를 비롯한 클로드 도구를 처음 시작하는 분을 위한 사용 가이드. 설치부터 초기 설정까지 차례로 정리했습니다.">
+  <h1>클로드</h1>
+  <p class="tool-intro">클로드 코드 같은 클로드 도구를 처음 쓰는 분을 위한 글.</p>
+
+  {sections.length === 0 && <p>첫 번째 글을 준비 중입니다.</p>}
+
+  {
+    sections.map((section) => (
+      <section id={section.key}>
+        <h2 class="section-label">{section.label}</h2>
+        <ul class="stack-list">
+          {section.posts.map((post) => (
+            <li>
+              <a href={`/claude/${post.id}/`}>{post.data.title}</a>
+              <p class="post-meta">
+                <span class="badge">{section.label}</span>{' '}
+                {dateFmt.format(post.data.publishedAt)}
+              </p>
+              <p>{post.data.description}</p>
+            </li>
+          ))}
+        </ul>
+      </section>
+    ))
+  }
+</Layout>

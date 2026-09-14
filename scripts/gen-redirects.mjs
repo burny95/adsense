@@ -30,10 +30,20 @@ function collect(dir, base = '') {
 
 const paths = collect(distDir).sort();
 
+// 주소를 옮긴 글. 옛 주소로 들어오면(슬래시 유무 둘 다) 새 주소로 영구 이동시킨다
+const MOVED = [
+  // 2026-09-14 클로드 섹션 신설로 /blog/ → /claude/
+  ['/blog/claude-code-what-is', '/claude/claude-code-what-is/'],
+  ['/blog/claude-code-vscode', '/claude/claude-code-vscode/'],
+  ['/blog/claude-code-initial-setup', '/claude/claude-code-initial-setup/'],
+];
+
 const lines = [
   '# 자동 생성 — scripts/gen-redirects.mjs',
   '# 슬래시 없는 주소를 슬래시 있는 정본으로 영구 이동시킨다.',
   ...paths.map((p) => `${p} ${p}/ 301`),
+  '# 옮긴 글의 옛 주소',
+  ...MOVED.flatMap(([from, to]) => [`${from} ${to} 301`, `${from}/ ${to} 301`]),
 ];
 
 fs.writeFileSync(path.join(distDir, '_redirects'), lines.join('\n') + '\n', 'utf8');

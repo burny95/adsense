@@ -1,0 +1,198 @@
+---
+// 글 한 편 화면 (블로그·클로드 섹션 공용). 경로 생성은 각 섹션의 [...slug].astro가 맡는다
+import { render, type CollectionEntry } from 'astro:content';
+import Layout from './Layout.astro';
+import Breadcrumb from '../components/Breadcrumb.astro';
+import { ALL_CATEGORIES } from '../consts';
+import { TOOLS } from '../tools';
+import { postHref } from '../posts';
+
+interface Props {
+  post: CollectionEntry<'blog'>;
+  prev: CollectionEntry<'blog'> | null;
+  next: CollectionEntry<'blog'> | null;
+  // 빵부스러기 가운데 칸 (블로그 또는 클로드)
+  section: { label: string; href: string };
+}
+
+const { post, prev, next, section } = Astro.props;
+const { Content, headings } = await render(post);
+
+// 목차는 h2만 사용. 항목이 너무 적으면 오히려 방해되므로 3개 이상일 때만 노출
+const toc = headings.filter((h) => h.depth === 2);
+
+// 목차가 3개 이상일 때만 오른쪽에 붙인다 (적으면 자리만 차지한다)
+const hasToc = toc.length >= 3;
+
+const dateFmt = new Intl.DateTimeFormat('ko-KR', { dateStyle: 'long' });
+
+// 이 글이 참조하는 관련 도구
+const relatedTools = TOOLS.filter((t) =>
+  post.data.relatedTools?.includes(t.slug),
+);
+
+// 글 구조화 데이터 (Article)
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: post.data.title,
+  description: post.data.description,
+  datePublished: post.data.publishedAt.toISOString(),
+  dateModified: (post.data.updatedAt ?? post.data.publishedAt).toISOString(),
+  articleSection: ALL_CATEGORIES[post.data.category],
+  url: new URL(postHref(post), Astro.site).toString(),
+};
+---
+
+<Layout
+  title={post.data.title}
+  description={post.data.description}
+  ogType="article"
+  schema={schema}
+
+>
+  <Breadcrumb
+    items={[
+      { label: '홈', href: '/' },
+      section,
+      { label: post.data.title, href: postHref(post) },
+    ]}
+  />
+
+  <div class:list={['post-layout', { 'has-toc': hasToc }]}>
+    {/* 목차가 DOM에서 본문보다 앞이다. 좁은 화면에서 본문 위에 놓여
+        읽기 전에 구조를 훑을 수 있게 하려는 것. 넓은 화면의 오른쪽
+        배치는 CSS(grid-column)로만 바꾼다 */}
+    {
+      hasToc && (
+        <nav class="toc" aria-label="목차">
+          <p class="toc-head">목차</p>
+          <ul class="toc-list">
+            {toc.map((h) => (
+              <li>
+                <a class="toc-link" href={`#${h.slug}`}>
+                  {h.text}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      )
+    }
+
+    <div class="post-main">
+      <article class="prose">
+        <h1>{post.data.title}</h1>
+        <p class="post-meta">
+          <span class="badge">{ALL_CATEGORIES[post.data.category]}</span>
+          {dateFmt.format(post.data.publishedAt)}
+          {post.data.updatedAt && ` · 수정 ${dateFmt.format(post.data.updatedAt)}`}
+        </p>
+
+        <Content />
+      </article>
+
+      {
+    relatedTools.length > 0 && (
+      <aside class="related">
+        <h2>이 글과 함께 쓰는 도구</h2>
+        <ul>
+          {relatedTools.map((t) => (
+            <li>
+              <a href={`/tools/${t.slug}/`}>
+                <span class="related-title">{t.title}</span>
+                <span class="related-desc">{t.description}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </aside>
+    )
+  }
+
+  {
+    (prev || next) && (
+      <nav class="post-nav" aria-label="이전 글 다음 글">
+        {prev && (
+          <a class="post-nav-link" href={postHref(prev)}>
+            <span class="post-nav-label">← 이전 글</span>
+            <span class="post-nav-title">{prev.data.title}</span>
+          </a>
+        )}
+        {next && (
+          <a class="post-nav-link is-next" href={postHref(next)}>
+            <span class="post-nav-label">다음 글 →</span>
+            <span class="post-nav-title">{next.data.title}</span>
+          </a>
+        )}
+      </nav>
+    )
+  }
+    </div>
+  </div>
+</Layout>
+
+<script>
+  // 스크롤에 따라 지금 읽고 있는 절을 목차에 표시한다.
+  const links = Array.from(
+    document.querySelectorAll<HTMLAnchorElement>('.toc-link'),
+  );
+
+  if (links.length) {
+    // 목차 링크와 그 대상 제목을 문서 순서대로 짝지어 둔다
+    const pairs: { heading: HTMLElement; link: HTMLAnchorElement }[] = [];
+    for (const link of links) {
+      // 한글 앵커는 href에서 퍼센트 인코딩된 상태라 되돌려야 찾을 수 있다
+      const id = decodeURIComponent(link.hash.slice(1));
+      const heading = document.getElementById(id);
+      if (heading) pairs.push({ heading, link });
+    }
+
+    // 헤더(약 4rem) 아래로 조금 내려온 지점을 "읽고 있는 위치"로 본다
+    const LINE = 120;
+    let current: HTMLAnchorElement | null = null;
+
+    function setCurrent(link: HTMLAnchorElement | null) {
+      if (link === current) return;
+      current?.removeAttribute('aria-current');
+      // 보조기술에서도 현재 위치로 읽히도록 aria-current를 쓴다
+      link?.setAttribute('aria-current', 'location');
+      current = link;
+
+      // 목차 자체가 스크롤 중이면 활성 항목이 보이도록 따라간다.
+      // 여기는 본문 이동이 아니라 목차 안에서의 미세 조정이라,
+      // html의 scroll-behavior: smooth를 따라가지 않게 auto로 못 박는다.
+      if (link) {
+        const box = link.closest('.toc');
+        if (box && box.scrollHeight > box.clientHeight) {
+          link.scrollIntoView({ block: 'nearest', behavior: 'auto' });
+        }
+      }
+    }
+
+    let ticking = false;
+
+    function update() {
+      ticking = false;
+      // 기준선을 지난 마지막 제목이 지금 읽는 절이다.
+      // 문서 순서라 하나가 기준선 아래면 그 뒤는 볼 필요가 없다.
+      let found: HTMLAnchorElement | null = null;
+      for (const { heading, link } of pairs) {
+        if (heading.getBoundingClientRect().top <= LINE) found = link;
+        else break;
+      }
+      setCurrent(found);
+    }
+
+    function onScroll() {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(update);
+    }
+
+    addEventListener('scroll', onScroll, { passive: true });
+    // 창 크기가 바뀌면 제목 위치도 달라진다
+    addEventListener('resize', onScroll, { passive: true });
+    update();
+  }
+</script>

@@ -1,7 +1,7 @@
 ---
 title: 클로드 코드 초기 세팅 추천 — 복잡한 설정 말고 꼭 필요한 것만
 description: 클로드 코드를 막 시작한 분이 처음 해 두면 좋은 설정을 정리했습니다. 한국어로 답하게 하기, 폴더별 메모 남기기, 권한 모드, 건드리면 안 되는 파일 막기, 되돌릴 수 있게 저장해 두기까지 순서대로 설명합니다.
-category: ai
+category: claude-code
 publishedAt: 2026-09-14T10:20:00+09:00
 draft: false
 ---
@@ -16,7 +16,7 @@ draft: false
 했던 말을 또 하고 있을 때 설정에 적어 두라는 것이죠.
 
 이 글에서는 막 시작한 단계에서 해 두면 좋은 것만 골랐습니다. 아직 설치 전이라면
-[VS Code에서 클로드 코드 쓰기](/blog/claude-code-vscode/)부터 보고 오세요.
+[VS Code에서 클로드 코드 쓰기](/claude/claude-code-vscode/)부터 보고 오세요.
 
 ## 1. 항상 한국어로 답하게 하기
 
@@ -95,7 +95,7 @@ draft: false
 ## 3. 처음 시작할 권한 모드 정하기
 
 권한 모드는 클로드가 나에게 묻지 않고 어디까지 해도 되는지 정하는 설정입니다.
-[1편](/blog/claude-code-what-is/)에서 본 것처럼 Pro, Max, Team 요금제는 Auto 모드로 시작해서,
+[1편](/claude/claude-code-what-is/)에서 본 것처럼 Pro, Max, Team 요금제는 Auto 모드로 시작해서,
 클로드가 대부분의 일을 묻지 않고 진행합니다.
 
 처음에는 Manual 모드로 시작하는 게 좋습니다. Manual에서는 클로드가 파일을 고치기 전에
@@ -130,7 +130,7 @@ draft: false
 
 ## 5. 되돌릴 수 있게 저장해 두기
 
-[VS Code 편](/blog/claude-code-vscode/)에서 말했듯이 클로드 코드의 되돌리기 기능은 모든
+[VS Code 편](/claude/claude-code-vscode/)에서 말했듯이 클로드 코드의 되돌리기 기능은 모든
 변경을 되돌리지 못합니다. 그래서 중요한 작업을 하는 폴더라면 git으로 저장 지점을 남겨 두는
 게 안전합니다.
 
