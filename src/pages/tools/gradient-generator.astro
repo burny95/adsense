@@ -256,6 +256,41 @@ background: repeating-linear-gradient(
       .join(', ');
   }
 
+  // 브라우저가 실제로 그리는 위치(%)를 정지점마다 구한다 (CSS 규칙과 같은 순서)
+  // 1) 처음·끝이 비어 있으면 0%·100%
+  // 2) 앞 정지점보다 작은 값은 앞 값으로 끌어올린다
+  // 3) 비어 있는 칸은 앞뒤로 값이 있는 정지점 사이에 고르게 나눈다
+  function resolvedPositions(list: Stop[]): number[] {
+    const n = list.length;
+    const pos: (number | null)[] = list.map((s) => s.pos);
+    if (pos[0] === null) pos[0] = 0;
+    if (pos[n - 1] === null) pos[n - 1] = 100;
+
+    let maxSoFar = 0;
+    for (let i = 0; i < n; i++) {
+      const p = pos[i];
+      if (p === null) continue;
+      pos[i] = Math.max(p, maxSoFar);
+      maxSoFar = pos[i]!;
+    }
+
+    let i = 1;
+    while (i < n) {
+      if (pos[i] !== null) {
+        i++;
+        continue;
+      }
+      let end = i;
+      while (pos[end] === null) end++;
+      const a = pos[i - 1]!;
+      const b = pos[end]!;
+      const steps = end - (i - 1);
+      for (let k = i; k < end; k++) pos[k] = a + ((b - a) * (k - (i - 1))) / steps;
+      i = end;
+    }
+    return pos as number[];
+  }
+
   function gradientCss(): string {
     const prefix = repeating ? 'repeating-' : '';
     if (type === 'linear') return `${prefix}linear-gradient(${angle}deg, ${stopsCss()})`;
@@ -285,7 +320,7 @@ background: repeating-linear-gradient(
           </label>
           <label class="field">위치 (%)
             <input class="control" type="number" data-i="${i}" data-k="pos" min="0" max="100" step="1" value="${stop.pos ?? ''}" placeholder="자동">
-            <small>비우면 고르게 배치됩니다</small>
+            <small>비우면 앞뒤 정지점 사이에 고르게 놓입니다</small>
           </label>
         </div>
       `;
@@ -354,9 +389,22 @@ background: repeating-linear-gradient(
   addBtn.addEventListener('click', () => {
     if (stops.length >= MAX_STOPS) return;
     snapshot();
-    // 마지막 색을 복제해 넣는다 — 빈 값보다 조절하기 쉽다
-    const last = stops[stops.length - 1];
-    stops.push({ color: last.color, pos: null });
+    // 가장 넓게 벌어진 두 정지점 사이 한가운데에 넣는다.
+    // 예전에는 끝에 위치 없이 붙였는데, 마지막 정지점이 100%면 새 정지점도 100%에
+    // 겹쳐 미리보기가 전혀 안 바뀌었다 — 눌러도 아무 일이 없으면 고장으로 보인다
+    const at = resolvedPositions(stops);
+    let idx = stops.length - 1;
+    let widest = -1;
+    for (let i = 1; i < stops.length; i++) {
+      const gap = at[i] - at[i - 1];
+      if (gap > widest) {
+        widest = gap;
+        idx = i;
+      }
+    }
+    // 오른쪽 정지점의 색을 복제한다 — 그 색 구간이 넓어져 추가된 게 바로 보이고,
+    // 빈 값보다 조절하기도 쉽다
+    stops.splice(idx, 0, { color: stops[idx].color, pos: Math.round((at[idx - 1] + at[idx]) / 2) });
     render();
     syncUrl();
   });
