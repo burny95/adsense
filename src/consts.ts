@@ -46,6 +46,7 @@ export type CategoryKey = keyof typeof CATEGORIES;
 // (클로드 코워크, 아티팩트 등은 여기에 키를 추가한다)
 export const CLAUDE_CATEGORIES = {
   'claude-code': '클로드 코드',
+  'claude-tips': '클로드 꿀팁', // 질문 하나에 답하는 단발 글 (시리즈 아님)
 } as const;
 
 // 글 스키마 검증과 배지 표시에 쓰는 전체 카테고리
