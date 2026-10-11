@@ -223,8 +223,11 @@ figure/도식 CSS까지 되돌렸다. 스크린샷은 사용자만 찍을 수 �
 **경험담은 사용자 답으로만 쓴다(지어내지 않는다).** 사용자가 "없음"이라 하면 그 자리는 뺀다. 새 글은 주 2~3편으로 나눠 낸다.
 
 - 완료: `css-clamp-practical`을 `css-clamp-basics`에 합침(2026-10-11, 옛 주소 301, 경험담 2단락)
-- 남은 C등급: `claude-common-questions`, `naming-conventions-boundaries`, `image-practical`,
-  `gradient-practical`, `wcag-contrast-practical`, `claude-code-what-is`
+- 완료: `naming-conventions-boundaries`(경험담 3 + 사실 오류 3곳), `image-practical`(경험담 3) — 2026-10-11
+- 보류: `claude-common-questions` — 사용자가 쓸 경험이 없다고 함. 남은 글을 다 본 뒤 공식 문서 보강으로 할지 다시 묻는다
+- 남은 C등급: `gradient-practical`, `wcag-contrast-practical`, `claude-code-what-is`
+- 미리보기: 빌드된 `dist/.../index.html` 본문에 경험담 자리 상자를 끼워 아티팩트로 띄운다(사용자가 이 방식을 원함).
+  상자마다 무슨 상황인지 풀어 쓰고, 지어낸 예시임을 밝힌다
 - 이 환경의 `python`은 윈도우 스토어 껍데기라 아무것도 실행하지 않는다. 파일 수정은 Edit나 node로 한다.
 
 ### 로드맵과 별개로 남은 것
