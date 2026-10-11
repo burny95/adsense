@@ -36,6 +36,8 @@ const MOVED = [
   ['/blog/claude-code-what-is', '/claude/claude-code-what-is/'],
   ['/blog/claude-code-vscode', '/claude/claude-code-vscode/'],
   ['/blog/claude-code-initial-setup', '/claude/claude-code-initial-setup/'],
+  // 2026-10-11 얇은 활용편을 기초편에 합침
+  ['/blog/css-clamp-practical', '/blog/css-clamp-basics/'],
 ];
 
 const lines = [
