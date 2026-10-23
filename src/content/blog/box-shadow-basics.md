@@ -31,7 +31,7 @@ box-shadow: <가로> <세로> <흐림> <번짐> <색상>;
 
 앞의 두 값은 그림자를 어느 쪽으로 얼마나 밀지 정합니다. 양수면 오른쪽·아래로 갑니다.
 
-여기서 실무 규칙이 하나 나옵니다. **가로 오프셋은 대부분 0으로 둡니다.** 화면 위 요소는 보통 정면 위쪽에서 빛을 받는다고 가정하기 때문에, 그림자는 아래로만 떨어지는 게 자연스럽습니다. `0 4px`처럼 세로만 주는 값이 많은 이유입니다.
+여기서 실무 규칙이 하나 나옵니다. **가로 오프셋은 대부분 0으로 둡니다.** 화면 위 요소는 보통 정면 위쪽에서 빛을 받는다고 가정하기 때문에, 그림자는 아래로만 떨어지는 게 자연스럽습니다. 그래서 `0 4px`처럼 세로만 주는 값이 많습니다.
 
 <div style="background:#fff;color:#1c1e21;border:1px solid #e4e6ea;border-radius:10px;padding:1.5rem;display:flex;gap:1.5rem;flex-wrap:wrap;justify-content:center;font-family:system-ui,sans-serif">
   <div style="text-align:center"><div style="width:88px;height:64px;background:#fff;border-radius:8px;box-shadow:0 4px 8px rgba(0,0,0,.25)"></div><div style="font-size:11px;color:#555;margin-top:10px">0 4px — 아래로</div></div>

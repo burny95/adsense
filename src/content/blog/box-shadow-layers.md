@@ -20,7 +20,7 @@ draft: false
 
 가로는 0, 흐림은 오프셋의 두 배 이상, 색은 반투명 검정, 번짐은 음수. 틀린 게 없는데도 어딘가 밋밋합니다. 진하게 하면 탁해지고 옅게 하면 안 보입니다.
 
-문제는 값이 아니라 **겹 수**입니다.
+값이 아니라 **겹 수**가 문제입니다.
 
 ## 현실의 그림자는 두 종류다
 
@@ -85,7 +85,7 @@ box-shadow:
 
 여기서 많이 막힙니다. 검정에 가까운 배경 위에 반투명 검정 그림자를 얹으면 **아무 변화가 없습니다.** 어두운 것 위에 어두운 것을 올렸으니 당연합니다.
 
-라이트 모드의 그림자를 그대로 두면 다크 모드에서 카드가 배경에 그냥 잠깁니다. 해법은 그림자를 더 진하게 하는 쪽보다 **다른 신호를 쓰는 것**입니다. 다크 모드에서는 높이 뜬 요소일수록 **표면을 밝게** 합니다.
+라이트 모드의 그림자를 그대로 두면 다크 모드에서 카드가 배경에 그냥 잠깁니다. 그림자를 더 진하게 하기보다 **다른 신호를 씁니다.** 다크 모드에서는 높이 뜬 요소일수록 **표면을 밝게** 합니다.
 
 <div style="background:#16181c;border:1px solid #2a2e36;border-radius:10px;padding:1.75rem 1.5rem;display:flex;gap:1.75rem;flex-wrap:wrap;justify-content:center;font-family:system-ui,sans-serif">
   <div style="text-align:center"><div style="width:96px;height:70px;background:#16181c;border-radius:10px;box-shadow:0 8px 24px -4px rgba(0,0,0,.5)"></div><div style="font-size:11px;color:#9aa1ad;margin-top:12px">✗ 그림자만 — 안 보임</div></div>

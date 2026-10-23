@@ -19,7 +19,7 @@ const userId = res.user_id;        // API는 snake_case
 .user-id { }                        /* CSS는 kebab-case */
 ```
 
-같은 개념인데 표기가 셋입니다. 취향 문제로 보이지만 실제로 아픈 건 **검색**입니다. `user_id`로 찾으면 JS 코드가 안 걸리고 `userId`로 찾으면 API 스펙과 CSS가 안 걸립니다. 어디까지 고쳐야 하는지 파악이 안 되죠.
+같은 개념인데 표기가 셋입니다. 취향 문제로 보이지만 실제로는 **검색**이 문제입니다. `user_id`로 찾으면 JS 코드가 안 걸리고 `userId`로 찾으면 API 스펙과 CSS가 안 걸립니다. 어디까지 고쳐야 하는지 파악이 안 되죠.
 
 표기법은 여섯 개뿐이고 어느 자리에 무엇을 쓸지는 대체로 정해져 있습니다.
 
@@ -36,9 +36,9 @@ const userId = res.user_id;        // API는 snake_case
 | `CONSTANT_CASE` | `USER_PROFILE_ID` | 밑줄 + 전부 대문자 |
 | `dot.case` | `user.profile.id` | 점 |
 
-여섯 개가 다 달라 보이지만 하는 일은 하나입니다. **어디서 단어가 끊기는지 표시하는 것.** 공백을 못 쓰는 자리에서 단어 경계를 나타내려고 각자 다른 방식을 쓰는 것뿐입니다.
+여섯 개가 다 달라 보이지만 모두 **어디서 단어가 끊기는지 표시합니다.** 공백을 못 쓰는 자리에서 단어 경계를 나타내려고 각자 다른 방식을 쓰는 것뿐입니다.
 
-그래서 변환의 핵심도 단어를 어떻게 쪼개느냐입니다. `getUserName`이든 `GET_USER_NAME`이든 `get-user-name`이든, 일단 이렇게 쪼개고 나면 나머지는 다시 이어 붙이기만 하면 됩니다.
+그래서 변환도 단어를 어떻게 쪼개느냐에 달려 있습니다. `getUserName`이든 `GET_USER_NAME`이든 `get-user-name`이든, 일단 이렇게 쪼개고 나면 나머지는 다시 이어 붙이기만 하면 됩니다.
 
 <div style="background:#fff;color:#1c1e21;border:1px solid #e4e6ea;border-radius:10px;padding:1.5rem;font-family:system-ui,sans-serif;color:#111">
   <div style="font-family:ui-monospace,Menlo,monospace;font-size:15px;margin-bottom:14px">getUserName</div>
@@ -88,7 +88,7 @@ HTML 속성 이름은 대소문자를 구분하지 않습니다. 브라우저는
 el.dataset.userId  // "42"
 ```
 
-HTML에서는 `kebab-case`, JS에서는 `camelCase`. 둘이 자동으로 이어지도록 설계돼 있어서 관례를 따르면 신경 쓸 일이 없고 어기면 조용히 `undefined`가 나옵니다. 값이 안 나오는데 오타는 없어 보여서 찾는 데 한참 걸리는 부류의 버그입니다.
+HTML에서는 `kebab-case`를, JS에서는 `camelCase`를 씁니다. 둘이 자동으로 이어지도록 설계돼 있어서 관례를 따르면 신경 쓸 일이 없고 어기면 조용히 `undefined`가 나옵니다. 값이 안 나오는데 오타는 없어 보여서 찾는 데 한참 걸리는 부류의 버그입니다.
 
 > **표기법을 한 번에 바꾸려면** [네이밍 컨벤션 변환기](/tools/case-converter/)에 이름을 넣으세요. 여섯 가지 결과를 동시에 보여 주고 여러 줄을 붙여 넣으면 줄 단위로 한꺼번에 바꿉니다. 공백·하이픈·밑줄·점은 물론 `camelCase`의 대소문자 경계까지 단어 구분으로 인식합니다.
 
@@ -101,7 +101,7 @@ HTML에서는 `kebab-case`, JS에서는 `camelCase`. 둘이 자동으로 이어�
 <UserCard />   {/* 컴포넌트로 해석된다 */}
 ```
 
-JSX는 **첫 글자가 소문자면 HTML 태그**, 대문자면 컴포넌트로 봅니다. 그래서 리액트에서 컴포넌트 이름이 `PascalCase`인 건 스타일 규칙을 넘어 문법입니다. 파이썬·자바에서 클래스만 대문자로 시작하는 관례도 같은 맥락입니다 — "이건 인스턴스를 찍어 내는 틀"이라는 표시죠.
+JSX는 **첫 글자가 소문자면 HTML 태그**, 대문자면 컴포넌트로 봅니다. 그래서 리액트에서 컴포넌트 이름이 `PascalCase`인 건 스타일 규칙이기 전에 문법입니다. 파이썬·자바에서 클래스만 대문자로 시작하는 관례도 같은 맥락입니다 — "이건 인스턴스를 찍어 내는 틀"이라는 표시죠.
 
 ## 요약
 

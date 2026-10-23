@@ -58,7 +58,7 @@ const id = user.userId;   // 이 아래로는 camelCase만 존재
 
 `userID`를 쪼개면 `user` + `ID`인데, 다시 붙일 때는 각 단어의 첫 글자만 대문자가 되니 `userId`가 됩니다. 원본과 다릅니다. 한 프로젝트 안에 `userId`와 `userID`가 공존하면 자동 변환을 한 번 돌릴 때마다 이름이 흔들립니다.
 
-그래서 규칙은 하나입니다. **약어도 보통 단어처럼 취급한다.**
+그래서 **약어도 보통 단어처럼 취급합니다.**
 
 ```js
 userId, apiUrl, htmlParser, httpClient     // ✓

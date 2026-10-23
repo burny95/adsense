@@ -125,7 +125,7 @@ clamp() 기초 글이라면 이렇게 채웁니다.
 ## 요약
 
 - `<head>`의 메타 정보가 검색결과 스니펫과 공유 카드를 결정한다
-- **검색용**: `<title>`(유일·50~60자), `description`(클릭 유도·120~160자), `canonical`, `robots`, `charset`·`viewport`
+- **검색용**: `<title>`(유일·한글 25~30자), `description`(클릭 유도·한글 70~80자), `canonical`, `robots`, `charset`·`viewport`
 - **Open Graph**: `og:title`·`og:description`·`og:image`·`og:url`·`og:type`, 트위터는 `twitter:card`만 추가
 - `og:image`는 절대 URL, 1200×630 권장
 - 검색 엔진은 `<title>`을, 메신저는 `og:*`를 읽으므로 둘 다 넣고 맥락별로 다듬는다
