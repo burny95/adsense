@@ -29,7 +29,7 @@
 
 | 항목 | 상태 |
 |---|---|
-| 글 | 28편 발행 (클로드 코드 시리즈 5편 + 클로드 꿀팁 4편 포함). `practice-popup`만 초안 상태 |
+| 글 | 25편 공개 (2026-10-24 기준. 얇은 글 3쌍을 합쳐 28→25. 클로드 코드 시리즈 5편 + 클로드 꿀팁 4편 포함) |
 | 도구 | 9개 (clamp, 대비검사, OG태그, px↔rem, box-shadow, 네이밍, 색변환, 그라디언트, 이미지변환). 각 페이지에 사용법 + 실제 응용 문서 |
 | 레이아웃 | **사이트 사이드바 없음**(2026-09-08 제거). 도구 전체 목록은 푸터 사이트맵이 유일한 통로 |
 | 글 페이지 | 본문 + **오른쪽 목차** 2단(`.post-layout.has-toc`, 900px 이하에서 1단). 목차 h2가 3개 이상일 때만 |
@@ -250,7 +250,10 @@ figure/도식 CSS까지 되돌렸다. 스크린샷은 사용자만 찍을 수 �
 - 완료: `gradient-practical`(경험담 2 + 사실 정정 3곳: 접두사·고대비·@property) — 2026-10-11
 - 완료: `wcag-contrast-practical`(경험담 4 + 사실 오류 3곳: 플레이스홀더 예외 아님·버튼 글자 4.5:1·비텍스트 3:1) — 2026-10-17
 - 완료: `claude-code-what-is`(경험담 4 + Auto 모드 시작 기준을 최신 공식 문서로 정정) — 2026-10-18. **C등급 전부 끝**
-- 보류: `claude-common-questions` — 사용자가 쓸 경험이 없다고 함. 남은 글을 다 본 뒤 공식 문서 보강으로 할지 다시 묻는다
+- 완료(2026-10-24, `b5d54ea`): `box-shadow-layers`→`box-shadow-basics`, `link-preview-not-showing-checklist`→`seo-meta-tags-and-open-graph` 합침(옛 주소 301).
+  `claude-common-questions`는 경험담 대신 support.claude.com 기준으로 보강(2,198→4,262자). 설정 화면이 새 화면(설정 → Your Claude)과 예전 화면(설정 → 메모리)으로 갈려 있어 둘 다 적었다
+- 다음: 경험담 4편 하나씩 — `wcag-contrast-basics`(미리보기 띄움) → `px-rem-scale` → `naming-conventions-basics` → `px-rem-basics`
+- 미리보기 생성기는 `scripts/make-preview.mjs`로 저장소에 옮겼다(스크래치패드 것이 지워져서). `node scripts/make-preview.mjs <dist html> <slots.json> <out.html>`
 - 미리보기: 빌드된 `dist/.../index.html` 본문에 경험담 자리 상자를 끼워 아티팩트로 띄운다(사용자가 이 방식을 원함).
   상자마다 무슨 상황인지 풀어 쓰고, 지어낸 예시임을 밝힌다
 - 이 환경의 `python`은 원래 윈도우 스토어 껍데기였다. 2026-10-23에 Python 3.12를 설치했지만, 파일 수정은 계속 Edit나 node로 한다.
