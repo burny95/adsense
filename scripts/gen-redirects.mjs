@@ -38,6 +38,9 @@ const MOVED = [
   ['/blog/claude-code-initial-setup', '/claude/claude-code-initial-setup/'],
   // 2026-10-11 얇은 활용편을 기초편에 합침
   ['/blog/css-clamp-practical', '/blog/css-clamp-basics/'],
+  // 2026-10-24 얇은 글 두 쌍을 하나씩으로 합침
+  ['/blog/box-shadow-layers', '/blog/box-shadow-basics/'],
+  ['/blog/link-preview-not-showing-checklist', '/blog/seo-meta-tags-and-open-graph/'],
 ];
 
 const lines = [
