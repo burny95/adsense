@@ -29,7 +29,7 @@
 
 | 항목 | 상태 |
 |---|---|
-| 글 | 25편 공개 (2026-10-24 기준. 얇은 글 3쌍을 합쳐 28→25. 클로드 코드 시리즈 5편 + 클로드 꿀팁 4편 포함) |
+| 글 | 26편 공개 (2026-10-26 practice-maintenance 추가. 2026-10-24 기준 25편. 얇은 글 3쌍을 합쳐 28→25. 클로드 코드 시리즈 5편 + 클로드 꿀팁 4편 포함) |
 | 도구 | 9개 (clamp, 대비검사, OG태그, px↔rem, box-shadow, 네이밍, 색변환, 그라디언트, 이미지변환). 각 페이지에 사용법 + 실제 응용 문서 |
 | 레이아웃 | **사이트 사이드바 없음**(2026-09-08 제거). 도구 전체 목록은 푸터 사이트맵이 유일한 통로 |
 | 글 페이지 | 본문 + **오른쪽 목차** 2단(`.post-layout.has-toc`, 900px 이하에서 1단). 목차 h2가 3개 이상일 때만 |
@@ -253,6 +253,7 @@ figure/도식 CSS까지 되돌렸다. 스크린샷은 사용자만 찍을 수 �
 - 완료(2026-10-24, `b5d54ea`): `box-shadow-layers`→`box-shadow-basics`, `link-preview-not-showing-checklist`→`seo-meta-tags-and-open-graph` 합침(옛 주소 301).
   `claude-common-questions`는 경험담 대신 support.claude.com 기준으로 보강(2,198→4,262자). 설정 화면이 새 화면(설정 → Your Claude)과 예전 화면(설정 → 메모리)으로 갈려 있어 둘 다 적었다
 - 완료(2026-10-26): 경험담 4편 — `wcag-contrast-basics`(3단락) `571e153`, `px-rem-scale`(2단락 + "글자는 배수로" 정정) `b80003f`, `naming-conventions-basics`(1단락) `e08e2cb`, `px-rem-basics`(2단락 + em 기준·"저시력 사용자가 더 많이 씀" 단정 정정) `38b000d`. 매번 배포 전 /humanize-scan 0신호 확인
+- 새 글(2026-10-26, `d27aeda`): `practice-maintenance` "신입 퍼블리셔를 위한 유지보수". **사용자가 직접 쓴 글**(1~6번 항목)을 정리하고 초안의 표·예제를 붙인 방식. 사실 정정 2곳: `>`는 우선순위를 올리지 않음, `http-equiv Cache-Control` 메타는 브라우저가 무시(→ Disable cache로 대체). 사용자가 "두서없이 써서 주면 자리 잡아 달라"는 방식을 원함 — 다음 새 글도 이렇게 받을 수 있다
 - **이번 보강은 여기서 마무리.** 다음은 재신청까지 2~4주 동안 경험담이 처음부터 들어간 새 글을 주 2~3편씩(2~4편). 도구 추가는 권하지 않았다(심사에서 콘텐츠로 잡히는 몫이 작음). 재신청 직전 Search Console 색인 수 확인
 - 미리보기 생성기는 `scripts/make-preview.mjs`로 저장소에 옮겼다(스크래치패드 것이 지워져서). `node scripts/make-preview.mjs <dist html> <slots.json> <out.html>`
 - 미리보기: 빌드된 `dist/.../index.html` 본문에 경험담 자리 상자를 끼워 아티팩트로 띄운다(사용자가 이 방식을 원함).
