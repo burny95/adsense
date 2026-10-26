@@ -3,6 +3,7 @@ title: 네이밍 컨벤션 기초 — 여섯 표기법과 어디에 무엇을 �
 description: camelCase, PascalCase, snake_case, kebab-case, CONSTANT_CASE, dot.case가 각각 무엇이고 어느 자리에 쓰는 표기법인지, 그리고 data-* 속성에서 대소문자가 사라지는 함정까지 정리합니다.
 category: productivity
 publishedAt: 2026-09-02
+updatedAt: 2026-10-26
 relatedTools:
   - case-converter
 draft: false
@@ -20,6 +21,8 @@ const userId = res.user_id;        // API는 snake_case
 ```
 
 같은 개념인데 표기가 셋입니다. 취향 문제로 보이지만 실제로는 **검색**이 문제입니다. `user_id`로 찾으면 JS 코드가 안 걸리고 `userId`로 찾으면 API 스펙과 CSS가 안 걸립니다. 어디까지 고쳐야 하는지 파악이 안 되죠.
+
+저도 이전 담당자가 작업하던 코드를 넘겨받았을 때 이걸 겪었습니다. 여러 표기법이 섞여 있어서 어느 게 id고 어느 게 class인지부터 헷갈렸습니다. 그 뒤로 제가 작업할 때는 둘을 확실히 구분해서 씁니다. id는 `user_id`처럼 밑줄로, class는 `user-id`처럼 하이픈으로 짓습니다.
 
 표기법은 여섯 개뿐이고 어느 자리에 무엇을 쓸지는 대체로 정해져 있습니다.
 
