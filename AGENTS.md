@@ -252,7 +252,8 @@ figure/도식 CSS까지 되돌렸다. 스크린샷은 사용자만 찍을 수 �
 - 완료: `claude-code-what-is`(경험담 4 + Auto 모드 시작 기준을 최신 공식 문서로 정정) — 2026-10-18. **C등급 전부 끝**
 - 완료(2026-10-24, `b5d54ea`): `box-shadow-layers`→`box-shadow-basics`, `link-preview-not-showing-checklist`→`seo-meta-tags-and-open-graph` 합침(옛 주소 301).
   `claude-common-questions`는 경험담 대신 support.claude.com 기준으로 보강(2,198→4,262자). 설정 화면이 새 화면(설정 → Your Claude)과 예전 화면(설정 → 메모리)으로 갈려 있어 둘 다 적었다
-- 다음: 경험담 4편 하나씩 — `wcag-contrast-basics`(미리보기 띄움) → `px-rem-scale` → `naming-conventions-basics` → `px-rem-basics`
+- 완료(2026-10-26): 경험담 4편 — `wcag-contrast-basics`(3단락) `571e153`, `px-rem-scale`(2단락 + "글자는 배수로" 정정) `b80003f`, `naming-conventions-basics`(1단락) `e08e2cb`, `px-rem-basics`(2단락 + em 기준·"저시력 사용자가 더 많이 씀" 단정 정정) `38b000d`. 매번 배포 전 /humanize-scan 0신호 확인
+- **이번 보강은 여기서 마무리.** 다음은 재신청까지 2~4주 동안 경험담이 처음부터 들어간 새 글을 주 2~3편씩(2~4편). 도구 추가는 권하지 않았다(심사에서 콘텐츠로 잡히는 몫이 작음). 재신청 직전 Search Console 색인 수 확인
 - 미리보기 생성기는 `scripts/make-preview.mjs`로 저장소에 옮겼다(스크래치패드 것이 지워져서). `node scripts/make-preview.mjs <dist html> <slots.json> <out.html>`
 - 미리보기: 빌드된 `dist/.../index.html` 본문에 경험담 자리 상자를 끼워 아티팩트로 띄운다(사용자가 이 방식을 원함).
   상자마다 무슨 상황인지 풀어 쓰고, 지어낸 예시임을 밝힌다
