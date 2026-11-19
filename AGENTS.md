@@ -29,7 +29,7 @@
 
 | 항목 | 상태 |
 |---|---|
-| 글 | 27편 공개 (2026-10-29 practice-final-check, 2026-10-26 practice-maintenance 추가. 2026-10-24 기준 25편. 얇은 글 3쌍을 합쳐 28→25. 클로드 코드 시리즈 5편 + 클로드 꿀팁 4편 포함) |
+| 글 | 25편 공개 (2026-11-19 그라디언트·네이밍 두 쌍을 합쳐 27→25. 2026-10-29 practice-final-check, 2026-10-26 practice-maintenance 추가. 2026-10-24 기준 25편. 얇은 글 3쌍을 합쳐 28→25. 클로드 코드 시리즈 5편 + 클로드 꿀팁 4편 포함) |
 | 도구 | 9개 (clamp, 대비검사, OG태그, px↔rem, box-shadow, 네이밍, 색변환, 그라디언트, 이미지변환). 각 페이지에 사용법 + 실제 응용 문서 |
 | 레이아웃 | **사이트 사이드바 없음**(2026-09-08 제거). 도구 전체 목록은 푸터 사이트맵이 유일한 통로 |
 | 글 페이지 | 본문 + **오른쪽 목차** 2단(`.post-layout.has-toc`, 900px 이하에서 1단). 목차 h2가 3개 이상일 때만 |
@@ -272,6 +272,9 @@ figure/도식 CSS까지 되돌렸다. 스크린샷은 사용자만 찍을 수 �
 - 완료(2026-11-19): `claude-code-initial-setup` 경험담 4(크론탭 표준시·PHP 5.6/8 병행·Manual→Plan→Auto·git 복구) `d9cf8ff`,
   `claude-code-vscode` 2(파일 삭제 부탁 후 필요해짐·--continue+/compact) `a9deaae`,
   `claude-common-questions` 3(맞춤 지침·근거부터 묻기·클로드 코드 메모리에 다음 할 일. 메모리 경험은 클로드 코드 쪽이라 웹·앱 메모리 절이 아니라 끝 절에 넣음) `894f716`
+- 완료(2026-11-19): `gradient-practical`→`gradient-basics` `89e8e5c`, `naming-conventions-boundaries`→`naming-conventions-basics` `8c98de4` 합침(옛 주소 301, 경험담 그대로, 요약 통합).
+  합치면 따로 있던 "~가 아니라" 대구가 한 글에 모여 C-8이 걸릴 수 있다 — 네이밍에서 실제로 걸려 1곳을 평서문으로. **공개 글 25편**
+- 완료(2026-11-19): `claude-artifacts-guide` 경험담 4(앱 기획+화면을 아티팩트로 같이·게임 샘플 테스트 / 건드리지 말 부분부터 지정 / 파워포인트 발표 자료 / 기획서 공유해 담당자별 정책 받기). 5번(클로드 코드에서 띄우기)은 패스
 - 미리보기 생성기는 `scripts/make-preview.mjs`로 저장소에 옮겼다(스크래치패드 것이 지워져서). `node scripts/make-preview.mjs <dist html> <slots.json> <out.html>`
 - 미리보기: 빌드된 `dist/.../index.html` 본문에 경험담 자리 상자를 끼워 아티팩트로 띄운다(사용자가 이 방식을 원함).
   상자마다 무슨 상황인지 풀어 쓰고, 지어낸 예시임을 밝힌다
