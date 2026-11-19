@@ -43,6 +43,7 @@ const MOVED = [
   ['/blog/link-preview-not-showing-checklist', '/blog/seo-meta-tags-and-open-graph/'],
   // 2026-11-19 그라디언트 활용편을 기초편에 합침
   ['/blog/gradient-practical', '/blog/gradient-basics/'],
+  ['/blog/naming-conventions-boundaries', '/blog/naming-conventions-basics/'],
 ];
 
 const lines = [
