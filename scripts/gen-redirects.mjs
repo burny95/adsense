@@ -44,6 +44,7 @@ const MOVED = [
   // 2026-11-19 그라디언트 활용편을 기초편에 합침
   ['/blog/gradient-practical', '/blog/gradient-basics/'],
   ['/blog/naming-conventions-boundaries', '/blog/naming-conventions-basics/'],
+  ['/blog/wcag-contrast-practical', '/blog/wcag-contrast-basics/'],
 ];
 
 const lines = [
