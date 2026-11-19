@@ -41,6 +41,8 @@ const MOVED = [
   // 2026-10-24 얇은 글 두 쌍을 하나씩으로 합침
   ['/blog/box-shadow-layers', '/blog/box-shadow-basics/'],
   ['/blog/link-preview-not-showing-checklist', '/blog/seo-meta-tags-and-open-graph/'],
+  // 2026-11-19 그라디언트 활용편을 기초편에 합침
+  ['/blog/gradient-practical', '/blog/gradient-basics/'],
 ];
 
 const lines = [
