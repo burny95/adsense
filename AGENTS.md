@@ -29,7 +29,7 @@
 
 | 항목 | 상태 |
 |---|---|
-| 글 | 25편 공개 (2026-11-19 그라디언트·네이밍 두 쌍을 합쳐 27→25. 2026-10-29 practice-final-check, 2026-10-26 practice-maintenance 추가. 2026-10-24 기준 25편. 얇은 글 3쌍을 합쳐 28→25. 클로드 코드 시리즈 5편 + 클로드 꿀팁 4편 포함) |
+| 글 | 22편 공개 (2026-11-19 기초/활용 다섯 쌍을 합쳐 27→22. 2026-10-29 practice-final-check, 2026-10-26 practice-maintenance 추가. 2026-10-24 기준 25편. 얇은 글 3쌍을 합쳐 28→25. 클로드 코드 시리즈 5편 + 클로드 꿀팁 4편 포함) |
 | 도구 | 9개 (clamp, 대비검사, OG태그, px↔rem, box-shadow, 네이밍, 색변환, 그라디언트, 이미지변환). 각 페이지에 사용법 + 실제 응용 문서 |
 | 레이아웃 | **사이트 사이드바 없음**(2026-09-08 제거). 도구 전체 목록은 푸터 사이트맵이 유일한 통로 |
 | 글 페이지 | 본문 + **오른쪽 목차** 2단(`.post-layout.has-toc`, 900px 이하에서 1단). 목차 h2가 3개 이상일 때만 |
@@ -273,7 +273,14 @@ figure/도식 CSS까지 되돌렸다. 스크린샷은 사용자만 찍을 수 �
   `claude-code-vscode` 2(파일 삭제 부탁 후 필요해짐·--continue+/compact) `a9deaae`,
   `claude-common-questions` 3(맞춤 지침·근거부터 묻기·클로드 코드 메모리에 다음 할 일. 메모리 경험은 클로드 코드 쪽이라 웹·앱 메모리 절이 아니라 끝 절에 넣음) `894f716`
 - 완료(2026-11-19): `gradient-practical`→`gradient-basics` `89e8e5c`, `naming-conventions-boundaries`→`naming-conventions-basics` `8c98de4` 합침(옛 주소 301, 경험담 그대로, 요약 통합).
-  합치면 따로 있던 "~가 아니라" 대구가 한 글에 모여 C-8이 걸릴 수 있다 — 네이밍에서 실제로 걸려 1곳을 평서문으로. **공개 글 25편**
+  합치면 따로 있던 "~가 아니라" 대구가 한 글에 모여 C-8이 걸릴 수 있다 — 네이밍에서 실제로 걸려 1곳을 평서문으로
+- 완료(2026-11-19): 세 쌍 더 합침 — `wcag-contrast-practical`→`-basics` `7560046`, `px-rem-scale`→`px-rem-basics` `054e391`,
+  `image-practical`→`image-formats-basics` `e8f6885`(포맷 편 끝 크기·품질 안내는 뒤 절과 겹쳐 다리 문장으로). `practice-final-check`의
+  옛 실전편 링크 2개는 합친 글의 해당 절 앵커로 바꿈. **공개 글 22편.** 남은 기초/활용 쌍은 없다
+- 완료(2026-11-19): `claude-plans-compare` 요금제 개편 반영 — **Max 5x→Max, Max 20x→Ultra**(주간 Pro의 10배, 인증된 계정은 5시간 한도 없음,
+  기존 20x 가입자 자동 이동). 무료도 주간 한도, Max/Ultra API 크레딧, Fable 포함 범위, Enterprise 좌석+API 요금. 경험담 4(개인은 Pro·
+  무료는 채팅엔 충분·회사는 Pro→Ultra·/compact). 사용자가 "팀 계정으로 울트라"라 했지만 Ultra는 개인 요금제라 "회사 계정"으로 적음.
+  `claude-code-what-is`의 경험담 "Max 20x"는 사용자 요청으로 "Ultra"로만 바꿈(6시 시작 요령 문장은 그대로)
 - 완료(2026-11-19): `claude-artifacts-guide` 경험담 4(앱 기획+화면을 아티팩트로 같이·게임 샘플 테스트 / 건드리지 말 부분부터 지정 / 파워포인트 발표 자료 / 기획서 공유해 담당자별 정책 받기). 5번(클로드 코드에서 띄우기)은 패스
 - 미리보기 생성기는 `scripts/make-preview.mjs`로 저장소에 옮겼다(스크래치패드 것이 지워져서). `node scripts/make-preview.mjs <dist html> <slots.json> <out.html>`
 - 미리보기: 빌드된 `dist/.../index.html` 본문에 경험담 자리 상자를 끼워 아티팩트로 띄운다(사용자가 이 방식을 원함).
