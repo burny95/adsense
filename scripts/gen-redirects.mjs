@@ -46,6 +46,7 @@ const MOVED = [
   ['/blog/naming-conventions-boundaries', '/blog/naming-conventions-basics/'],
   ['/blog/wcag-contrast-practical', '/blog/wcag-contrast-basics/'],
   ['/blog/px-rem-scale', '/blog/px-rem-basics/'],
+  ['/blog/image-practical', '/blog/image-formats-basics/'],
 ];
 
 const lines = [
