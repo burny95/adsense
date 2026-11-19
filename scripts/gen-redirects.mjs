@@ -45,6 +45,7 @@ const MOVED = [
   ['/blog/gradient-practical', '/blog/gradient-basics/'],
   ['/blog/naming-conventions-boundaries', '/blog/naming-conventions-basics/'],
   ['/blog/wcag-contrast-practical', '/blog/wcag-contrast-basics/'],
+  ['/blog/px-rem-scale', '/blog/px-rem-basics/'],
 ];
 
 const lines = [
