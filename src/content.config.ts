@@ -16,7 +16,6 @@ const blog = defineCollection({
     ),
     publishedAt: z.coerce.date(),
     updatedAt: z.coerce.date().optional(),
-    relatedTools: z.array(z.string()).optional(), // 관련 도구 slug
     draft: z.boolean().default(false), // true면 목록·빌드에서 제외
   }),
 });

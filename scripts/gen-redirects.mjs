@@ -47,6 +47,17 @@ const MOVED = [
   ['/blog/wcag-contrast-practical', '/blog/wcag-contrast-basics/'],
   ['/blog/px-rem-scale', '/blog/px-rem-basics/'],
   ['/blog/image-practical', '/blog/image-formats-basics/'],
+  // 2026-11-27 도구 페이지를 모두 내리고 각 도구의 해설 글로 보낸다
+  ['/tools', '/blog/'],
+  ['/tools/clamp-generator', '/blog/css-clamp-basics/'],
+  ['/tools/contrast-checker', '/blog/wcag-contrast-basics/'],
+  ['/tools/og-tag-generator', '/blog/seo-meta-tags-and-open-graph/'],
+  ['/tools/px-rem-converter', '/blog/px-rem-basics/'],
+  ['/tools/box-shadow-generator', '/blog/box-shadow-basics/'],
+  ['/tools/color-converter', '/blog/color-formats-basics/'],
+  ['/tools/gradient-generator', '/blog/gradient-basics/'],
+  ['/tools/image-converter', '/blog/image-formats-basics/'],
+  ['/tools/case-converter', '/blog/naming-conventions-basics/'],
 ];
 
 const lines = [

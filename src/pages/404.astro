@@ -1,37 +1,20 @@
 ---
-// 404 페이지: 잘못된 주소로 들어온 방문자를 도구·주요 페이지로 되돌린다
+// 404 페이지: 잘못된 주소로 들어온 방문자를 주요 페이지로 되돌린다
 import Layout from '../layouts/Layout.astro';
-import { TOOLS } from '../tools';
-import { CATEGORIES } from '../consts';
 ---
 
 <Layout
   title="페이지를 찾을 수 없습니다"
-  description="요청하신 주소에 해당하는 페이지가 없습니다. 도구 목록에서 찾으시는 것을 골라 보세요."
+  description="요청하신 주소에 해당하는 페이지가 없습니다. 블로그나 클로드 글 목록에서 찾으시는 것을 골라 보세요."
   noindex
 >
   <h1>페이지를 찾을 수 없습니다</h1>
   <p>
-    주소가 바뀌었거나 삭제된 페이지입니다. 아래 도구 중에서 찾으시던 것을 골라
+    주소가 바뀌었거나 삭제된 페이지입니다. 아래 목록에서 찾으시던 것을 골라
     보시거나, <a href="/">홈</a>으로 돌아가세요.
   </p>
 
-  <h2 class="section-label">도구</h2>
-  <div class="card-grid">
-    {
-      TOOLS.map((tool) => (
-        <a class="card" href={`/tools/${tool.slug}/`}>
-          <h3>
-            {tool.title}
-            <span class="badge">{CATEGORIES[tool.category]}</span>
-          </h3>
-          <p>{tool.description}</p>
-        </a>
-      ))
-    }
-  </div>
-
-  <h2 class="section-label">그 밖의 페이지</h2>
+  <h2 class="section-label">페이지</h2>
   <ul class="plain-links">
     <li><a href="/blog/">블로그</a></li>
     <li><a href="/claude/">클로드</a></li>

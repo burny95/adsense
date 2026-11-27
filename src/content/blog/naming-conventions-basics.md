@@ -4,8 +4,6 @@ description: camelCase, PascalCase, snake_case, kebab-case, CONSTANT_CASE, dot.c
 category: productivity
 publishedAt: 2026-09-02
 updatedAt: 2026-11-19
-relatedTools:
-  - case-converter
 draft: false
 ---
 
@@ -95,7 +93,6 @@ el.dataset.userId  // "42"
 
 HTML에서는 `kebab-case`를, JS에서는 `camelCase`를 씁니다. 둘이 자동으로 이어지도록 설계돼 있어서 관례를 따르면 신경 쓸 일이 없고 어기면 조용히 `undefined`가 나옵니다. 값이 안 나오는데 오타는 없어 보여서 찾는 데 한참 걸리는 부류의 버그입니다.
 
-> **표기법을 한 번에 바꾸려면** [네이밍 컨벤션 변환기](/tools/case-converter/)에 이름을 넣으세요. 여섯 가지 결과를 동시에 보여 주고 여러 줄을 붙여 넣으면 줄 단위로 한꺼번에 바꿉니다. 공백·하이픈·밑줄·점은 물론 `camelCase`의 대소문자 경계까지 단어 구분으로 인식합니다.
 
 ## 대문자로 시작하느냐가 의미를 가질 때
 
@@ -167,7 +164,6 @@ userID, APIUrl, HTMLParser, HTTPClient     // ✗ 왕복이 안 된다
 
 구글 자바 스타일 가이드도 같은 규칙을 씁니다(`XmlHttpRequest`). 마이크로소프트 .NET 가이드라인은 두 글자 약어만 예외로 두고(`IOStream`), 세 글자 이상은 `HtmlParser`처럼 씁니다. 읽기에 어색해 보여도, 변환이 안정적이고 단어 경계가 항상 명확하다는 이점이 훨씬 큽니다.
 
-> **왕복이 되는지 확인하려면** [네이밍 컨벤션 변환기](/tools/case-converter/)에 이름을 넣어 보세요. 이 도구는 약어를 소문자 한 단어로 정규화하므로 `API_BASE_URL`은 `apiBaseUrl`이 됩니다. 나온 결과를 다시 넣었을 때 같은 값이 나오면 그 이름은 안전합니다.
 
 ## 경계 3 — 파일명 대소문자
 

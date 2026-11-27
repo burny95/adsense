@@ -2,7 +2,7 @@
 
 export const SITE_NAME = 'Burny Tools'; // 원하는 이름으로 자유롭게 변경 가능
 export const SITE_DESCRIPTION =
-  '웹 작업에 바로 쓰는 프론트엔드 도구와 실무 가이드, 클로드 사용법 모음';
+  '웹 퍼블리셔의 실무 가이드와 클로드 사용법 모음';
 
 // 문의용 실제 이메일 (애드센스 심사 시 연락 가능한 주소가 있어야 함)
 export const CONTACT_EMAIL = 'shskse5@gmail.com';
@@ -17,7 +17,7 @@ export const VERIFICATION = {
   naver: '261f9f84ec2f15dc260db12079fca98272f6a0a4', // 네이버 서치어드바이저
 };
 
-// 상단 네비게이션. 핵심 세 곳만 둔다 (홈은 사이트 이름 로고로 간다).
+// 상단 네비게이션. 핵심 두 곳만 둔다 (홈은 사이트 이름 로고로 간다).
 // 소개·문의·개인정보처리방침은 푸터 사이트맵에서 간다.
 export interface NavLink {
   href: string;
@@ -25,7 +25,6 @@ export interface NavLink {
 }
 
 export const NAV_LINKS: NavLink[] = [
-  { href: '/tools/', label: '도구' },
   { href: '/blog/', label: '블로그' },
   { href: '/claude/', label: '클로드' },
 ];

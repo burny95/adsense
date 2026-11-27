@@ -3,9 +3,6 @@ title: HEX·RGB·HSL·OKLCH 기초 — 같은 색을 네 가지로 적는 이유
 description: 색 표기법이 넷이나 되는 이유와 각각이 무엇을 축으로 삼는지, HSL의 밝기가 눈에 보이는 밝기와 다른 까닭, OKLCH가 무엇을 고치려 나왔는지 정리합니다.
 category: color
 publishedAt: 2026-09-08
-relatedTools:
-  - color-converter
-  - contrast-checker
 draft: false
 ---
 

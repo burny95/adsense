@@ -4,9 +4,6 @@ description: linear·radial·conic 그라디언트의 각도 기준과 색 정�
 category: css
 publishedAt: 2026-09-08
 updatedAt: 2026-11-19
-relatedTools:
-  - gradient-generator
-  - color-converter
 draft: false
 ---
 
@@ -187,7 +184,7 @@ linear-gradient(90deg, #0000ff, #ffff00)
 linear-gradient(90deg, #0000ff, #00b3a4 50%, #ffff00)
 ```
 
-어떤 색을 넣을지는 [색 변환기](/tools/color-converter/)로 두 색의 색상(H) 값을
+어떤 색을 넣을지는 두 색을 HSL로 바꿔 색상(H) 값을
 확인하고 그 중간 각도의 색을 골라 보면 감이 잡힙니다.
 
 `transparent`로 사라지게 만들 때는 사정이 조금 다릅니다. `transparent`는 사실
@@ -280,8 +277,8 @@ linear-gradient(90deg, #0000ff, #00b3a4 50%, #ffff00)
 ```
 
 사진은 위쪽이 그대로 보이고 글자가 놓인 아래쪽만 어두워집니다. 어두운 정도는
-`0.75` 부분으로 조절하는데, **흰 글자 기준 대비 4.5:1을 넘기는 값**을
-[대비 검사기](/tools/contrast-checker/)로 확인해 두면 안전합니다. 사진마다
+`0.75` 부분으로 조절하는데, **흰 글자 기준 대비 4.5:1을 넘기는 값**인지
+확인해 두면 안전합니다([색 대비 글](/blog/wcag-contrast-basics/)에 계산법을 정리해 뒀습니다). 사진마다
 밝기가 다르므로 가장 밝은 사진을 기준으로 잡습니다.
 
 이 문제는 메인 슬라이드에서 실제로 겪었습니다. 사진이 깔린 메인 슬라이드 위에
@@ -320,9 +317,6 @@ linear-gradient(90deg, #0000ff, #00b3a4 50%, #ffff00)
 }
 ```
 
-> **색 조합을 고르는 게 어렵다면** [그라디언트 생성기](/tools/gradient-generator/)에
-> 정지점을 넣고 각도를 돌려 가며 CSS를 그대로 가져가세요. 중간이 탁해지는지도
-> 미리보기에서 바로 보입니다.
 
 ## 흔한 실수
 
@@ -343,7 +337,7 @@ linear-gradient(90deg, #0000ff, #00b3a4 50%, #ffff00)
   지원하지 않는 환경에서 배경이 비어 보일 수 있으니, 대체 색을 먼저 적고
   그라디언트를 뒤에 적으세요.
 - **정지점을 색상환 반대편끼리 잇는 것** — 중간이 무채색을 지나며 탁해집니다.
-  [색 변환기](/tools/color-converter/)로 두 색의 `H` 값을 확인하고 차이가 크면
+  두 색을 HSL로 바꿔 `H` 값을 확인하고 차이가 크면
   중간 정지점을 하나 넣습니다.
 
 ## 요약

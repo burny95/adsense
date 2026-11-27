@@ -8,7 +8,6 @@ import {
   VERIFICATION,
 } from '../consts';
 import ThemeToggle from '../components/ThemeToggle.astro';
-import { TOOLS } from '../tools';
 import '../styles/global.css';
 
 interface Props {
@@ -212,20 +211,8 @@ const year = new Date().getFullYear();
 
     <footer class="site-footer">
       <div class="container">
-        {/* 전체 도구·페이지 목록 — 어느 페이지에서든 도구 전체에 닿는 유일한 통로 */}
+        {/* 사이트 주요 페이지 목록 */}
         <nav class="footer-sitemap" aria-label="사이트맵">
-          <div class="footer-col">
-            <p class="footer-head">
-              <a href="/tools/">도구</a>
-            </p>
-            <ul>
-              {TOOLS.map((tool) => (
-                <li>
-                  <a href={`/tools/${tool.slug}/`}>{tool.title}</a>
-                </li>
-              ))}
-            </ul>
-          </div>
           <div class="footer-col">
             <p class="footer-head">사이트</p>
             <ul>

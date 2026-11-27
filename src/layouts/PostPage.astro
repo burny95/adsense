@@ -4,7 +4,6 @@ import { render, type CollectionEntry } from 'astro:content';
 import Layout from './Layout.astro';
 import Breadcrumb from '../components/Breadcrumb.astro';
 import { ALL_CATEGORIES } from '../consts';
-import { TOOLS } from '../tools';
 import { postHref } from '../posts';
 
 interface Props {
@@ -25,11 +24,6 @@ const toc = headings.filter((h) => h.depth === 2);
 const hasToc = toc.length >= 3;
 
 const dateFmt = new Intl.DateTimeFormat('ko-KR', { dateStyle: 'long' });
-
-// 이 글이 참조하는 관련 도구
-const relatedTools = TOOLS.filter((t) =>
-  post.data.relatedTools?.includes(t.slug),
-);
 
 // 글 구조화 데이터 (Article)
 const schema = {
@@ -91,24 +85,6 @@ const schema = {
 
         <Content />
       </article>
-
-      {
-    relatedTools.length > 0 && (
-      <aside class="related">
-        <h2>이 글과 함께 쓰는 도구</h2>
-        <ul>
-          {relatedTools.map((t) => (
-            <li>
-              <a href={`/tools/${t.slug}/`}>
-                <span class="related-title">{t.title}</span>
-                <span class="related-desc">{t.description}</span>
-              </a>
-            </li>
-          ))}
-        </ul>
-      </aside>
-    )
-  }
 
   {
     (prev || next) && (
