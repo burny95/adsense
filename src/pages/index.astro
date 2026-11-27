@@ -1,25 +1,64 @@
 ---
-// 홈 페이지: 사이트 소개 + 최근 글 + 두 섹션 바로가기
+// 홈 페이지: 운영자 소개 → 먼저 읽어 볼 글 → 최근 글
 import { getCollection } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
 import { postHref } from '../posts';
 
-// 공개된 글을 최신순으로 8편
-const recentPosts = (await getCollection('blog', ({ data }) => !data.draft))
+// 먼저 읽어 볼 글. 바꾸려면 이 목록의 글 주소(파일 이름)만 고친다
+const FEATURED = [
+  'practice-final-check',
+  'practice-maintenance',
+  'claude-code-initial-setup',
+];
+
+const posts = await getCollection('blog', ({ data }) => !data.draft);
+
+// 목록 순서대로 찾는다. 없는 이름이 있으면 빌드를 멈춰 바로 알 수 있게 한다
+const featured = FEATURED.map((id) => {
+  const post = posts.find((p) => p.id === id);
+  if (!post) throw new Error(`홈 추천 글을 찾지 못함: ${id}`);
+  return post;
+});
+
+// 최근 글 5편 (추천 글과 겹치는 것은 뺀다)
+const recentPosts = posts
+  .filter((p) => !FEATURED.includes(p.id))
   .sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime())
-  .slice(0, 8);
+  .slice(0, 5);
 ---
 
 <Layout
   description="현업 웹 퍼블리셔가 직접 겪은 일을 바탕으로 쓴 CSS·마크업 실무 가이드와, 클로드·클로드 코드를 처음 쓰는 분을 위한 사용법."
 >
-  <h1>웹 퍼블리셔의 실무 가이드와 클로드 사용법</h1>
-  <p class="tool-intro">
-    현업 퍼블리셔가 작업하면서 실제로 걸렸던 것들을 정리합니다. CSS·색·이미지·마크업
-    실무 글은 <a href="/blog/">블로그</a>에, 클로드와 클로드 코드를 처음 쓰는 분을 위한
-    글은 <a href="/claude/">클로드</a>에 있습니다.
-  </p>
+  {/* 운영자 소개 */}
+  <section class="home-intro">
+    <h1>안녕하세요, 웹 퍼블리셔 Burny입니다</h1>
+    <p>
+      첫 회사에서는 공공기관과 기업 홍보 홈페이지를 만들었고 지금은 사내 작업과 앱
+      화면 작업을 하면서 AI를 활용한 앱·웹 개발도 함께 맡고 있는 3년 차 퍼블리셔입니다.
+    </p>
+    <p>
+      이 사이트에는 작업하면서 직접 겪은 일을 바탕으로 퍼블리싱 실무 글과 클로드 사용법을
+      씁니다. 실무 글은 <a href="/blog/">블로그</a>에, 클로드와 클로드 코드를 처음 쓰는
+      분을 위한 글은 <a href="/claude/">클로드</a>에 있습니다.
+    </p>
+    <p><a href="/about/">소개 더 보기 →</a></p>
+  </section>
 
+  {/* 먼저 읽어 볼 글 */}
+  <h2 class="section-label">먼저 읽어 볼 글</h2>
+  <ul class="stack-list">
+    {
+      featured.map((post) => (
+        <li>
+          <a href={postHref(post)}>{post.data.title}</a>
+          <p>{post.data.description}</p>
+        </li>
+      ))
+    }
+  </ul>
+
+  {/* 최근 글 */}
   {
     recentPosts.length > 0 && (
       <>
@@ -39,3 +78,19 @@ const recentPosts = (await getCollection('blog', ({ data }) => !data.draft))
     )
   }
 </Layout>
+
+<style>
+  /* 소개 블록: 본문 줄 길이를 넘지 않게 하고, 아래 목록과 간격을 둔다 */
+  .home-intro {
+    max-width: 68ch;
+    margin-bottom: var(--space-6);
+  }
+  .home-intro p {
+    color: var(--muted);
+    margin: var(--space-3) 0 0;
+  }
+  /* 한글이 '씁/니다'처럼 낱말 중간에서 끊기지 않게 어절 단위로 줄바꿈 */
+  .home-intro {
+    word-break: keep-all;
+  }
+</style>
