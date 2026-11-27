@@ -192,17 +192,6 @@ main {
 
 /* 화면에서는 감추되 낭독에는 남긴다.
    display:none이나 visibility:hidden은 보조기술에서도 사라지므로 쓰지 않는다 */
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  margin: -1px;
-  padding: 0;
-  overflow: hidden;
-  clip-path: inset(50%);
-  white-space: nowrap;
-  border: 0;
-}
 
 .skip-link {
   position: absolute;
@@ -268,7 +257,7 @@ main {
 }
 
 /* 좁은 화면에서는 상단 메뉴 간격을 줄인다.
-   메뉴는 어느 폭에서나 홈·도구·블로그 셋뿐이다 */
+   메뉴는 어느 폭에서나 블로그·클로드 둘뿐이다 */
 @media (max-width: 600px) {
   .site-header nav {
     gap: 0;
@@ -360,7 +349,7 @@ main {
   color: var(--muted);
 }
 
-/* 푸터 사이트맵: 전체 도구 목록 + 주요 페이지 */
+/* 푸터 사이트맵: 주요 페이지 목록 */
 .footer-sitemap {
   display: flex;
   flex-wrap: wrap;
@@ -416,52 +405,7 @@ main {
   scroll-margin-top: 5rem;
 }
 
-/* ---------- 카드 목록 (홈 / 도구 / 블로그) ---------- */
-
-.card-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-4);
-  margin: var(--space-5) 0;
-}
-.card-grid .card {
-  /* 카드 크기를 일정하게: 혼자여도 안 늘어나고, 여럿이면 나눠 채움 */
-  flex: 1 1 16rem;
-  max-width: 22rem;
-}
-
-.card {
-  display: block;
-  padding: var(--space-4);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  background: var(--surface);
-  text-decoration: none;
-  color: inherit;
-  transition:
-    border-color 0.15s,
-    transform 0.15s;
-}
-.card:hover {
-  border-color: var(--border-strong);
-  transform: translateY(-2px);
-}
-.card h2,
-.card h3,
-.card h4 {
-  margin: 0 0 var(--space-2);
-  font-size: 1.05rem;
-  color: var(--text);
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: var(--space-2);
-}
-.card p {
-  margin: 0;
-  color: var(--muted);
-  font-size: 0.9rem;
-}
+/* ---------- 글 목록 (홈 / 블로그 / 클로드) ---------- */
 
 .stack-list {
   list-style: none;
@@ -496,30 +440,6 @@ main {
   vertical-align: middle;
 }
 
-/* 레이어·정지점 묶음의 머리줄. box-shadow와 그라디언트가 함께 쓴다.
-   box-shadow의 is:global 블록에만 있어서 그라디언트 쪽에서는 스타일이 없는
-   맨 span으로 렌더되고 있었다 (.field-inline·.color-row와 같은 사고) */
-.layer-head {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: center;
-  gap: var(--space-2);
-  margin-bottom: var(--space-3);
-}
-.layer-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-2);
-}
-.layer-row-head {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: var(--space-2);
-  margin-bottom: var(--space-3);
-}
-
 .section-label {
   font-size: 0.9rem;
   font-weight: 600;
@@ -529,7 +449,7 @@ main {
   border-bottom: 1px solid var(--border);
 }
 
-/* ---------- 도구 공통 UI ---------- */
+/* ---------- 목록 페이지 소개 문단 ---------- */
 
 .tool-intro {
   max-width: 68ch;
@@ -538,337 +458,11 @@ main {
   margin-bottom: var(--space-5);
 }
 
-.panel {
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  background: var(--bg-subtle);
-  padding: var(--space-5);
-  margin: var(--space-5) 0;
-}
-
-.field-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
-  gap: var(--space-4);
-}
-
-/* 입력칸을 한 줄에 하나씩 세로로 쌓는다.
-   위에서 아래로 훑으며 채우게 되어 값의 순서가 눈에 들어온다 */
-.field-grid.is-stacked {
-  /* 1fr은 최소값이 auto라 긴 select 옵션이 트랙을 밀어낸다. minmax(0,·)로 막는다 */
-  grid-template-columns: minmax(0, 1fr);
-}
-
-/* 왼쪽에 입력, 오른쪽에 결과·미리보기를 붙이는 2단 배치.
-   입력을 세로로 쌓으면 폼이 길어지므로 남는 가로 공간에 결과를 둔다 */
-.tool-layout {
-  display: grid;
-  /* 입력은 숫자·선택이라 좁아도 되고, 결과와 미리보기는 넓어야 읽힌다 */
-  grid-template-columns: minmax(0, 20rem) minmax(0, 1fr);
-  gap: var(--space-6);
-  align-items: start;
-  margin-bottom: var(--space-6);
-}
-/* 오른쪽 칸: 결과와 미리보기가 세로로 이어진다 */
-.tool-aside {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
-  min-width: 0;
-}
-/* 간격은 위 gap이 맡으므로 개별 여백을 지워 폼과 윗줄을 맞춘다 */
-.tool-aside > .output,
-.tool-aside > .preview {
-  margin: 0;
-}
-/* 오른쪽에 놓을 것이 아직 없으면 빈 열을 예약하지 않는다.
-   (이미지 변환기는 파일을 넣기 전까지 미리보기가 hidden이라 절반이 비어 보였다) */
-.tool-layout:has(> [hidden]:last-child) {
-  grid-template-columns: minmax(0, 20rem);
-}
-
-/* 좁은 화면에서는 한 줄에 하나씩 (결과가 입력 아래로 내려간다) */
-@media (max-width: 860px) {
-  .tool-layout {
-    grid-template-columns: minmax(0, 1fr);
-  }
-}
-
-/* [hidden]은 UA 스타일시트에만 있어서 작성자 스타일인 .field{display:flex}에
+/* [hidden]은 UA 스타일시트에만 있어서 작성자 스타일의 display 지정에
    특이도와 무관하게 진다. 그 결과 hidden 속성이 붙은 칸이 그대로 보였다.
    숨김을 같은 층에서 처리해 실제로 사라지게 한다 */
 [hidden] {
   display: none !important;
-}
-
-.field {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-  font-size: 0.88rem;
-  font-weight: 500;
-}
-.field small {
-  font-weight: 400;
-  color: var(--muted);
-  font-size: 0.8rem;
-}
-
-/* 체크박스처럼 라벨과 컨트롤이 한 줄에 서야 하는 항목.
-   .field 뒤에 두어 세로 배치를 소스 순서로 덮는다 */
-.field-inline {
-  flex-direction: row;
-  align-items: center;
-  gap: var(--space-2);
-  /* 라벨 전체가 체크박스의 탭 영역이다. 24px를 채운다 (WCAG 2.2 AA 2.5.8) */
-  min-height: 24px;
-}
-
-/* 색 선택기와 hex 입력칸을 나란히 놓는 줄 */
-.color-row {
-  display: flex;
-  gap: var(--space-2);
-}
-/* 입력의 기본 min-content(약 220px)가 칸보다 넓어 밖으로 삐져나온다.
-   flex 항목의 자동 최소 크기를 풀어 칸에 맞춰 줄어들게 한다 */
-.color-row .control {
-  min-width: 0;
-}
-.color-row input[type='color'] {
-  width: 44px;
-  min-width: 44px;
-  height: 2.6rem;
-  padding: 2px;
-  border: 1px solid var(--border-control);
-  border-radius: var(--radius-sm);
-  background: var(--surface);
-}
-
-.control {
-  padding: 0.55rem 0.7rem;
-  border: 1px solid var(--border-control);
-  border-radius: var(--radius-sm);
-  background: var(--surface);
-  color: var(--text);
-  font: inherit;
-  min-height: 2.75rem; /* 모바일 탭 타겟 44px */
-}
-textarea.control {
-  min-height: 4rem;
-  resize: vertical;
-}
-
-.btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-2);
-  padding: 0.5rem 1rem;
-  min-height: 2.75rem;
-  border: 1px solid var(--border-control);
-  border-radius: var(--radius-sm);
-  background: var(--surface);
-  color: var(--text);
-  font: inherit;
-  cursor: pointer;
-  white-space: nowrap;
-}
-.btn:hover {
-  background: var(--bg-subtle);
-}
-/* 주 액션. 사용자가 이 페이지에 온 이유이므로 옆 버튼보다 작아서는 안 된다 */
-.btn-primary {
-  background: var(--accent);
-  border-color: var(--accent);
-  color: var(--accent-contrast);
-  padding-inline: var(--space-5);
-  font-weight: 600;
-}
-.btn-primary:hover {
-  background: var(--accent-hover);
-}
-
-/* 결과 코드 박스 + 복사 버튼 */
-.output {
-  margin: var(--space-5) 0;
-}
-.output-head {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: var(--space-3);
-  margin-bottom: var(--space-2);
-  font-size: 0.88rem;
-  font-weight: 500;
-}
-.output pre,
-/* 결과는 사용자가 이 페이지에 온 이유다. 폼보다 크게 둔다 */
-.output-code {
-  margin: 0;
-  padding: var(--space-4) var(--space-5);
-  background: var(--surface);
-  border: 1px solid var(--border-control);
-  border-radius: var(--radius-md);
-  overflow-x: auto;
-  font-size: 1rem;
-  line-height: 1.7;
-  /* 값이 바뀔 때 자릿수가 흔들리지 않게 */
-  font-variant-numeric: tabular-nums;
-}
-.output-code {
-  display: block;
-  /* pre-wrap은 줄바꿈을 지키면서 긴 값은 접는다.
-     가로로 스크롤시키면 답의 뒷부분이 화면 밖에 숨는다 */
-  white-space: pre-wrap;
-  overflow-wrap: anywhere;
-}
-
-.hint {
-  min-height: 1.2em;
-  font-size: 0.83rem;
-  color: var(--danger);
-}
-
-/* 초기화·실행취소 같은 폼 하단 동작 */
-.form-actions {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--space-3);
-  margin-top: var(--space-4);
-}
-.form-actions small {
-  color: var(--muted);
-  font-size: 0.83rem;
-}
-
-/* 비활성 버튼 — 지금은 누를 수 없다는 것이 보이도록 */
-.btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-/* 입력 오류 — 문제가 된 필드 자리에 붙는다 */
-.field-error {
-  grid-column: 1 / -1;
-  margin: 0;
-  color: var(--danger);
-  font-size: 0.85rem;
-}
-.field small.is-error {
-  color: var(--danger);
-}
-.control[aria-invalid='true'] {
-  border-color: var(--danger);
-}
-
-/* 결과가 유효하지 않을 때 — 복사할 값이 없다는 것을 색으로도 알린다 */
-.output-code[data-invalid] {
-  color: var(--muted);
-}
-
-/* 미리보기 박스 */
-.preview {
-  margin: var(--space-5) 0;
-  padding: var(--space-5);
-  border: 1px dashed var(--border-strong);
-  border-radius: var(--radius-md);
-}
-.preview-label {
-  display: block;
-  font-size: 0.78rem;
-  color: var(--muted);
-  margin-bottom: var(--space-3);
-}
-
-/* 결과 테이블 */
-.data-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 0.9rem;
-}
-.data-table th,
-.data-table td {
-  text-align: left;
-  padding: var(--space-3) var(--space-2);
-  border-bottom: 1px solid var(--border);
-}
-.data-table th {
-  color: var(--muted);
-  font-weight: 500;
-}
-.is-pass {
-  color: var(--success);
-  font-weight: 600;
-}
-.is-fail {
-  color: var(--danger);
-  font-weight: 600;
-}
-
-.callout {
-  margin: var(--space-5) 0;
-  padding: var(--space-3) var(--space-4);
-  border: 1px solid var(--border-strong);
-  border-radius: var(--radius-sm);
-  background: var(--bg-subtle);
-  font-size: 0.92rem;
-}
-
-/* 관련 글 / 관련 도구 상자.
-   도구 페이지와 블로그 글이 같은 마크업을 쓰므로 스타일도 여기 한 곳에 둔다. */
-.related {
-  margin-top: var(--space-7);
-  padding: var(--space-5);
-  background: var(--bg-subtle);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-}
-.related h2 {
-  margin: 0 0 var(--space-4);
-  font-size: 1rem;
-  color: var(--muted);
-}
-.related ul {
-  display: grid;
-  gap: var(--space-2);
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-/* 링크 전체가 클릭 영역이 되도록 블록으로 편다 (모바일 탭 목표 확보) */
-.related a {
-  display: block;
-  padding: var(--space-3) var(--space-4);
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  color: inherit;
-  text-decoration: none;
-}
-.related a:hover {
-  border-color: var(--accent);
-}
-.related-title {
-  display: block;
-  font-weight: 600;
-  color: var(--accent);
-}
-/* 화살표로 이동할 수 있는 링크임을 드러낸다 */
-.related-title::after {
-  content: ' →';
-  color: var(--muted);
-}
-.related a:hover .related-title,
-.related a:hover .related-title::after {
-  color: var(--accent-hover);
-}
-.related-desc {
-  display: block;
-  margin-top: var(--space-1);
-  font-size: 0.9rem;
-  line-height: 1.5;
-  color: var(--muted);
 }
 
 /* ---------- 본문 글(블로그) ---------- */
@@ -927,12 +521,6 @@ textarea.control {
 }
 /* .data-table은 .prose 안에서도 자기 모양(아래 선만)을 지킨다.
    위의 .prose th/td가 CSS에서 더 뒤에 있어 그냥 두면 격자 표로 덮인다. */
-.prose .data-table th,
-.prose .data-table td {
-  border: 0;
-  border-bottom: 1px solid var(--border);
-  padding: var(--space-3) var(--space-2);
-}
 .prose img {
   border-radius: var(--radius-sm);
 }
@@ -1088,7 +676,6 @@ textarea.control {
     scroll-behavior: auto;
   }
   /* 카드가 떠오르지 않게. 테두리 색 전환은 그대로 남아 hover가 보인다 */
-  .card:hover,
   .post-nav-link:hover {
     transform: none;
   }
